@@ -1,0 +1,302 @@
+<app-header></app-header>
+
+
+<div class="container">
+  <br>
+  <div class="card border-primary mb-12">
+    <div class="card-header bg-primary" style="color: white">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8">
+            <h6>ASIGNACIÓN DE META PRESUPUESTAL POR PLAZA</h6>
+          </div>
+
+          <div class="col-md-4" *ngIf="user.id_estado === 3">
+            <div class="row">
+              <div class="col-md-6">
+                <select class="form-control form-control-sm" name="regimen" [(ngModel)]="datoSelectReporte"
+                        (change)="exportAsXLSX()">
+                  <option value="1">Todos</option>
+                  <option value="2">CAS</option>
+                  <option value="3">276 - NOMBRADO</option>
+                  <option value="4">276 - OBSERVADOR</option>
+                  <option value="5">728</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <button class="btn btn-success btn-sm float-left" [disabled]="estadoBoton" (click)="descargarXls()">
+                  <i class="fas fa-spinner spinner" *ngIf="spinerReporte"></i>&nbsp;<i class="fas fa-file-excel"></i>&nbsp;
+                  Exportar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form class="example-form" [formGroup]="form">
+        <div class="col-2">
+          <button class="btn btn-info" (click)="limpiar()">Limpiar</button>
+        </div>
+        <div *ngIf="dataReporteTitulo.length !== 0">
+          <table class="table table-bordered" id="tablaReporte" style="display: none">
+            <thead>
+            <tr>
+              <th [attr.colspan]="gastosPermanentesReporte.length + 16">ESTIMACIÓN DE GASTO</th>
+              <th *ngFor="let dato of cantidadesRegimenReporte; let i = index" [attr.colspan]="dato">ESTIMACIÓN DE GASTO
+                - {{dataReporteTitulo[i].regimen + ' - ' + dataReporteTitulo[i].tipoRegimen}}</th>
+              <td rowspan="4">TOTAL ANUAL</td>
+            </tr>
+
+            <tr>
+              <td rowspan="3">N</td>
+              <td rowspan="3">COD PLAZA</td>
+              <td rowspan="3">CONDICION</td>
+              <td rowspan="3">ESTADO</td>
+              <td rowspan="3">COD_EMP</td>
+              <td rowspan="3">DNI</td>
+              <td rowspan="3">A_PATERNO</td>
+              <td rowspan="3">A_MATERNO</td>
+              <td rowspan="3">NOMBRE</td>
+              <td rowspan="3">FECHA_INGRESO</td>
+              <td rowspan="3">DEPENDENCIA</td>
+              <td rowspan="3">UNIDAD</td>
+              <td rowspan="3">CARGO</td>
+              <td rowspan="3">SEC FUNCIONAL</td>
+              <td rowspan="3">PROGRAMA PRESUPUESTAL</td>
+              <td [attr.colspan]="gastosPermanentesReporte.length">GASTO MENSUAL</td>
+              <td rowspan="2">PERIODO</td>
+              <td *ngFor="let dato of cantidadTipoGastoReporte" [attr.colspan]="dato.cantidad">{{dato.tipo}}</td>
+
+            </tr>
+            <tr>
+              <td [attr.colspan]="gastosPermanentesReporte.length">GASTO PERMANENTE</td>
+              <td *ngFor="let dato of concetoGastoReporte"
+                  [attr.colspan]="dato.cantidad">{{dato.descripcion + ' ' + dato.codigo}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let dato of gastosPermanentesReporte">{{dato}}</td>
+              <td>MESES</td>
+              <td *ngFor="let dato of mesesReporte">{{dato}}</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let dato of cuerpoReporte">
+              <td>{{dato.numeracion}}</td>
+              <td>{{dato.cod_plaza}}</td>
+              <td>{{dato.condicion}}</td>
+              <td>{{dato.estado}}</td>
+              <td>{{dato.cod_personal}}</td>
+              <td>{{dato.dni}}</td>
+              <td>{{dato.a_paterno}}</td>
+              <td>{{dato.a_materno}}</td>
+              <td>{{dato.nom_emp}}</td>
+              <td>{{dato.f_ingreso}}</td>
+              <td>{{dato.dependencia}}</td>
+              <td>{{dato.unidad}}</td>
+              <td>{{dato.nombre_cargo}}</td>
+              <td>{{dato.sec_func}}</td>
+              <td>{{dato.nombre_programa}}</td>
+              <td *ngFor="let dato2 of dato.gastosPermanentes">{{dato2}}</td>
+              <td>12</td>
+              <td *ngFor="let dato2 of dato.montos">{{dato2.monto}}</td>
+              <td>{{dato.suma_total}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-row">
+          <div class="col-lg-4 col-sm-12 col-md-6">
+            <label class="col-sm-4 col-form-label">REGIMEN</label><br>
+            <select class="form-control form-control-sm "
+                    [(ngModel)]="regimen"
+                    (change)="getlistaplazacargos()"
+                    [ngModelOptions]="{standalone: true}">
+              <option value="CAS" selected>CAS</option>
+              <option value="276" selected>276</option>
+              <option value="728" selected>728</option>
+            </select> <br>
+          </div>
+          <div class="col-lg-4 col-sm-12 col-md-6">
+            <label class="col-form-label">DEPENDENCIA</label><br>
+            <select class="form-control form-control-sm "
+                    (change)="getlistaplazacargos()"
+                    [(ngModel)]="dependencia"
+                    [disabled]="disable"
+                    [ngModelOptions]="{standalone: true}">
+              <option selected disabled>...SELECCIONE...</option>
+              <option *ngFor="let dependencia of dependencias"
+                      value="{{dependencia.nombre}}" selected>{{dependencia.nombre}}</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-sm-12 col-md-6" *ngIf="unidades.length>0">
+            <label class=" col-form-label">UNIDAD</label><br>
+            <select class="form-control form-control-sm"
+                    [(ngModel)]="unidad"
+                    (change)="getlistaplazacargos()"
+                    [disabled]="disable"
+                    [ngModelOptions]="{standalone: true}">
+              <option selected disabled>...SELECCIONE...</option>
+              <option *ngFor="let unidad of unidades"
+                      value="{{unidad.nombre}}" selected>{{unidad.nombre}}</option>
+
+            </select>
+          </div>
+
+          <div class="col-lg-4 col-sm-12 col-md-6"
+               *ngIf="plazasformulario.value != null">
+            <label class="col-form-label">BUSCAR:</label><br>
+            <input type="text"
+                   class="form-control form-control-sm"
+                   placeholder="Filtrar por nombre de personal, cargo o código de plaza"
+                   [(ngModel)]="filtro_plaza"
+                   [ngModelOptions]="{standalone: true}"/>
+          </div>
+        </div>
+
+        <p>LISTA DE PLAZAS</p>
+        <div class="table-responsive">
+          <div class="col-12 text-center" *ngIf="plazas != 0">
+            <pagination-controls id="pag_plazas" class="my-pagination" (pageChange)="p1 = $event"
+                                 previousLabel="Anterior"
+                                 nextLabel="Siguiente">
+            </pagination-controls>
+          </div>
+          <table class="table table-sm table-default">
+            <thead>
+            <tr class="align-middle">
+              <th>N°</th>
+              <th class="text-left">COD_PLAZA</th>
+              <th class="text-left">COD_CARGO</th>
+              <th class="text-left">NOMBRE_CARGO</th>
+              <th class="text-left">REGIMEN</th>
+              <th class="text-left">CONDICION</th>
+              <th class="text-left">DEPENDENCIA</th>
+              <th class="text-left">UNIDAD</th>
+              <th class="text-left">COD_PERSONAL</th>
+              <th class="text-left">PERSONAL</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              *ngFor="let plaza of plazasformulario.value  | plazasfilter: filtro_plaza |  paginate: { id: 'pag_plazas', itemsPerPage: 5, currentPage: p1};index as i"
+              [ngClass]="{ selected: plaza.id == id_plazaformulario.value }"
+              (click)="saveid_plaza(plaza.id)"
+              style="cursor: pointer;"
+            >
+              <td>{{i + 1}}</td>
+              <td class="text-center align-middle">
+                {{plaza.cod_plaza}}
+              </td>
+              <td>{{plaza.cod_cargo}}</td>
+              <td>{{plaza.nombre_cargo}}</td>
+              <td>{{plaza.regimen}}</td>
+              <td>{{plaza.condicion}}</td>
+              <td>{{plaza.dependencia}}</td>
+              <td>{{plaza.unidad}}</td>
+              <td>{{plaza.cod_personal}}</td>
+              <td>{{plaza.personal}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <button *ngIf="disable" type="button" (click)="save()" class="btn btn-primary btn-lg btn-block">Vincular
+        </button>
+        <!--        lista de metas-->
+        <p>LISTA DE METAS PRESUPUESTALES</p>
+        <div class="col-md-12"
+             *ngIf="lista_meta.length != null">
+          <input type="text"
+                 class="form-control form-control-sm"
+                 placeholder="Filtrar por nombre o código"
+                 [(ngModel)]="filtro_meta"
+                 [ngModelOptions]="{standalone: true}"
+          />
+          <br>
+        </div>
+        <div class="table-resposive">
+          <table class="table table-sm table-default">
+            <thead>
+            <tr class="align-middle">
+              <th>N°</th>
+              <th class="text-left">SECUENCIA</th>
+              <th class="text-left">SEC_FUNC</th>
+              <th class="text-left">CATEGORIA PRESUPUESTAL</th>
+              <th class="text-left">CADENA FUNCIONAL</th>
+              <th class="text-left">UBIGEO</th>
+              <th class="text-center">ESTADO</th>
+              <th class="text-center">MEDIDA</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              *ngFor="let item of lista_meta | metafilter: filtro_meta | paginate: { id: 'pag_meta', itemsPerPage: 3, currentPage: p }; index as i"
+              [ngClass]="{ 'selected' :  item.id == id_metaformulario.value }"
+              (click)="saveid_meta(item.id)"
+            >
+              <td class="align-middle">{{i + 1}}</td>
+              <td class="text-center align-middle">
+                <a style="cursor: pointer;"
+                >
+                  0000{{ item.id }}
+                </a>
+              </td>
+              <td class="text-left align-middle">
+                {{ item.sec_func }}
+              </td>
+              <!--              <td>-->
+              <!--                {{item.ao_ugp}}-->
+              <!--              </td>-->
+              <td class="text-left">
+                {{ item.nombre_categoria }} <br> {{ item.nombre_programa }}
+                <br> {{ item.nombre_producto }} <br> {{ item.nombre_actividad }}
+              </td>
+              <td class="text-left">
+                {{ item.nombre_funcion }} <br> {{ item.nombre_division }}
+                <br> {{ item.nombre_grupo }} <br> {{ item.nombre_finalidad }}
+              </td>
+              <td class="text-left align-middle">
+                {{ item.nombre_departamento }} <br> {{ item.nombre_provincia }} <br> {{ item.nombre_distrito }}
+              </td>
+              <td class="text-center align-middle">
+                                                  <span class="label label-{{ item.nombre_estado }}">
+                                                      {{ item.nombre_estado }}
+                                                  </span>
+              </td>
+              <td class="text-center align-middle">
+                {{ item.nombre_unidad }}
+              </td>
+            </tr>
+            <tr *ngIf="lista_meta.length == 0">
+              <td colspan="6">
+                <p class="text-center mt-2">No hay datos que mostrar</p>
+              </td>
+            </tr>
+            <tr *ngIf="lista_meta == null">
+              <td colspan="6" class="text-center">
+                <div _ngcontent-yme-c5="" class="progressBar">
+                  <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75"
+                         class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         style="width: 100%"></div>
+                  </div>
+                  <h6 class="mt-3">
+                    Procesando Consulta de Actividad Operativa...
+                  </h6>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-12 text-center" *ngIf="lista_meta.length != 0">
+          <pagination-controls id="pag_meta" class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior"
+                               nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,362 @@
+<app-header></app-header>
+<div class="container">
+  <a [routerLink]="['/objetivo-estrategico']"
+    ><button class="btn btn-sm btn-info mb-3">
+      <i class="fas fa-arrow-left mr-2"></i>Volver
+    </button></a
+  >
+
+  <h3>Detalle de Objetivo Estratégico</h3>
+  <hr />
+  <div class="row">
+    <div class="col-12">
+      <div id="detalle">
+        <form (ngSubmit)="editarObjEstrategico()" #_accion="ngForm">
+          <div class="row">
+            <div class="col-12">
+              <input
+                type="text"
+                name="id"
+                [(ngModel)]="objEstrategico.id_oe"
+                class="d-none"
+              />
+              <label>Código de objetivo estratégico:</label>
+              <input
+                type="text"
+                name="codigo"
+                [(ngModel)]="objEstrategico.codigo_oe"
+                class="form-control form-control-sm"
+              />
+              <label>Descripción:</label>
+              <textarea
+                [(ngModel)]="objEstrategico.nombre_oe"
+                name="descripcion"
+                class="form-control form-control-sm"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-sm btn-success mt-3"
+            [disabled]="!_accion.valid"
+          >
+            Editar objetivo
+          </button>
+        </form>
+      </div>
+      <hr />
+      <button
+        class="btn btn-success btn-sm float-left"
+        data-toggle="modal"
+        data-target="#agregarIndicadores"
+      >
+        Agregar
+      </button>
+      <h5 class=" ml-4 float-left">Indicadores</h5>
+      <div class="table-responsive">
+        <table class="table table-hover table-sm mt-1">
+          <thead class="thead-dark bg-blue">
+            <tr>
+              <th class="">Indicador</th>
+              <th class="">Método de cálculo</th>
+              <th class="">Valor base</th>
+              <th class="">Valor actual</th>
+              <th class="">Año base</th>
+              <th class="">Año actual</th>
+              <th class="">Responsable</th>
+              <th class=""></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let indicador of indicadoresxOE">
+              <td>{{ indicador.nombre }}</td>
+              <td>{{ indicador.metodo_calculo }}</td>
+              <td>{{ indicador.valor_base }}</td>
+              <td>{{ indicador.valor_actual }}</td>
+              <td>{{ indicador.anio_base }}</td>
+              <td>{{ indicador.anio_actual }}</td>
+              <td>{{ indicador.nombre_organo }}</td>
+              <td>
+                <i
+                  class="far fa-edit mr-3"
+                  (click)="getIndicador(indicador)"
+                  data-toggle="modal"
+                  data-target="#editarIndicadores"
+                ></i>
+                <i
+                  class="fas fa-trash-alt"
+                  (click)="eliminarIndicador(indicador.id)"
+                ></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- INICIO DEL MODAL (AGREGAR INDICADORES) -->
+    <div
+      class="modal fade"
+      id="agregarIndicadores"
+      #agregarIndicadores
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="ModalLabel"
+      aria-hidden="true"
+      data-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="ModalLabel">
+              Agregar Indicador
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form (ngSubmit)="guardarIndicador()" #_indicador="ngForm">
+            <div class="modal-body">
+              <div class="form-row">
+                <input
+                  class="form-control form-control-sm d-none"
+                  [(ngModel)]="indicador.id_oe"
+                  name="id_oe"
+                />
+                <div class="form-group col-md-12">
+                  <label>Nombre del indicador:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.nombre"
+                    name="nombre"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-12">
+                  <label>Método de cálculo:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.metodo_calculo"
+                    name="metodo_calculo"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Valor base:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.valor_base"
+                    name="valor_base"
+                    (keypress)="validarSoloNumeros($event)"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Valor Actual</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.valor_actual"
+                    name="valor_actual"
+                    (keypress)="validarSoloNumeros($event)"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Año base:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.anio_base"
+                    (keypress)="validarSoloNumeros($event)"
+                    name="anio_base"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Año Actual</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.anio_actual"
+                    name="anio_actual"
+                    (keypress)="validarSoloNumeros($event)"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-12">
+                  <label>Responsable:</label>
+                  <select
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.id_organo"
+                    name="id_organo"
+                    required
+                  >
+                    <option
+                      *ngFor="let dependencia of listaOrganos"
+                      value="{{ dependencia.id }}"
+                    >
+                      {{ dependencia.nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-success"
+                [disabled]="!_indicador.valid"
+              >
+                Agregar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- FIN DEL MODAL-->
+    <!-- INICIO DEL MODAL (EDITAR INDICADORES) -->
+    <div
+      class="modal fade"
+      id="editarIndicadores"
+      #editarIndicadores
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="ModalLabel"
+      aria-hidden="true"
+      data-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="ModalLabel">
+              Editar indicador
+            </h6>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form (ngSubmit)="editarIndicador()" #_indicador="ngForm">
+            <div class="modal-body">
+              <div class="form-row">
+                <input
+                  class="form-control form-control-sm d-none"
+                  [(ngModel)]="indicador.id_oe"
+                  name="id_oe"
+                />
+                <div class="form-group col-md-12">
+                  <label>Nombre del indicador:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.nombre"
+                    name="nombre"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-12">
+                  <label>Método de cálculo:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.metodo_calculo"
+                    name="metodo_calculo"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Valor base:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.valor_base"
+                    name="valor_base"
+                    (keypress)="validarSoloNumeros($event)"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Valor Actual</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.valor_actual"
+                    name="valor_actual"
+                    (keypress)="validarSoloNumeros($event)"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Año base:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.anio_base"
+                    (keypress)="validarSoloNumeros($event)"
+                    name="anio_base"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Año Actual</label>
+                  <input
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.anio_actual"
+                    name="anio_actual"
+                    (keypress)="validarSoloNumeros($event)"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-12">
+                  <label>Responsable:</label>
+                  <select
+                    class="form-control form-control-sm"
+                    [(ngModel)]="indicador.id_organo"
+                    name="id_organo"
+                    required
+                  >
+                    <option
+                      *ngFor="let dependencia of listaOrganos"
+                      value="{{ dependencia.id }}"
+                    >
+                      {{ dependencia.nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-success"
+                type="submit"
+                [disabled]="!_indicador.valid"
+              >
+                Editar indicador
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- FIN DEL MODAL-->
+  </div>
+</div>

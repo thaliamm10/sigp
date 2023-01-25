@@ -1,0 +1,28 @@
+export interface ReportePresupuestalInterface {
+
+    id?:number,
+    id_prog_pres?: number,
+    id_act_pres?: number,
+    id_producto?: number,
+    nombre_producto?: string,
+    id_finalidad?: number,
+    nombre_finalidad?: string,
+    id_departamento?: number,
+    nombre_departamento?: string,
+    id_provincia?: number,
+    nombre_provincia?: string,
+    id_distrito?: number,
+    nombre_distrito?: string,
+    id_uni_med?: number,
+    nombre_unidad?: string,
+    meta_fisica?: string,
+    generica_gastos?: string,
+    nombre_gastos?: string,
+    clasificador_gastos?: string,
+    anio_1?: string,
+    anio_2?: string,
+    anio_3?: string,
+    id_estado?: number,
+    id_reporte?: number,
+}
+

@@ -1,0 +1,39 @@
+#tacciones,
+#tbienes {
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+}
+
+#tacciones thead,
+#tbienes thead {
+  flex: 0 0 auto;
+}
+
+#tacciones tbody,
+#tbienes tbody {
+  flex: 1 1 auto;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#tacciones tr,
+#tbienes tr {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+
+#tacciones tbody,
+#tbienes tbody {
+  max-height: 250px;
+  min-height: 30px;
+  overflow-y: scroll;
+}
+
+table input[type="number"],
+table input[type="text"] {
+  -moz-appearance: textfield;
+  text-align: right;
+}

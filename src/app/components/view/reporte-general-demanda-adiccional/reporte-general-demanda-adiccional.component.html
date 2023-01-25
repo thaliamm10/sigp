@@ -1,0 +1,90 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <h4>
+    <img src="./assets/img/GIFProgramacion.png" width="40" height="40" style="background-color: #3c97dd;" /> Reporte General
+  </h4>
+  <hr/>
+  <br>
+  <div class="row">
+    <div class="col-md-1">
+      <label>Periodo:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+    </div>
+    <div class="col-md-2">
+      <label>Etapa:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-success btn-sm float-right" (click)="exportAsXLSX()" style="margin-top: 17%;">
+        <i class="fas fa-file-excel"></i> Exportar
+      </button>
+    </div>
+  </div>
+  <br>
+  <div class="row" *ngIf="lista_rep == null">
+    <div class="col-md-12">
+      <div _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+        </div>
+        <h6 class="mt-3">
+          Procesando Consulta de Reporte (Puede tardar varios minutos)...
+        </h6>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="cantidad_lista == 0">
+    <div class="col-md-12">
+      No hay datos para mostrar
+    </div>
+  </div>
+  <div class="row" *ngIf="cantidad_lista > 0">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table id="tablaPFisica" class="table pb-30 dataTable" style="font-size: 12px;">
+          <thead class="thead-dark bg-blue sticky-top justify-content-between">
+          <tr>
+            <th class="text-left align-middle" style="width: 350px;">UGP</th>
+            <th class="text-center align-middle" style="width: 350px;">PRODUCTO</th>
+            <th class="text-center align-middle" style="width: 350px;">ACCION</th>
+            <th class="text-left align-middle" style="width: 350px;">NUEVO CLASIFICADOR</th>
+            <th class="text-left align-middle" style="width: 350px;">BIEN</th>
+            <th class="text-center align-middle" style="width: 350px;">TIPO</th>
+            <th class="text-center align-middle" style="width: 350px;">TOTAL</th>
+          </tr>
+          </thead>
+          <tbody class="tbody" style="background-color: white; width:700px !important">
+          <tr *ngFor="let item of lista_rep ">
+            <td class="text-left align-middle">
+              {{ item.ugp_nombre }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.producto_nombre }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.accion_nombre }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.clasificador }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.bien }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.canalizado_text }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.total }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <br>
+  </div>
+</div>
+

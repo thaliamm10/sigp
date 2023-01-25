@@ -1,0 +1,52 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/portafolio.png" width="40" height="40" title="Módulo Estratégico" /> Configuración de Cadena Funcional
+    </h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <!-- FINAL - Se comento periodo  -->
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+    </div>
+    <br>
+    <div class="row m-1">
+        <div class="col-12 mt-2 p-0">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#funcion" role="tab" data-toggle="tab">Función</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#division" role="tab" data-toggle="tab">División Funcional</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#grupo" role="tab" data-toggle="tab">Grupo Funcional</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#finalidad" role="tab" data-toggle="tab">Finalidad</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="funcion">
+                    <app-efp-funcion></app-efp-funcion>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="division">
+                    <app-efp-division></app-efp-division>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="grupo">
+                    <app-efp-grupo></app-efp-grupo>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="finalidad">
+                    <app-efp-finalidad></app-efp-finalidad>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

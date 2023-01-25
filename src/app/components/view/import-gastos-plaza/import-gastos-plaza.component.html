@@ -1,0 +1,190 @@
+<app-header></app-header>
+
+
+<div class="container">
+  <br>
+  <div class="card border-primary mb-12">
+    <div class="card-header bg-primary" style="color: white"><h6>GATOS DEL PERSONAL</h6></div>
+    <div class="card-body">
+      <form class="example-form" [formGroup]="formulario">
+        <div class="row">
+          <div class="col-12">
+            <label>REGIMEN</label>
+            <select class="form-control" formControlName="regimen" (change)="changeregimen()"
+                    aria-label="Default select example">
+              <option selected>Seleccione...</option>
+              <option value="1">CAS</option>
+              <option value="2">276 NOMBRADO</option>
+              <option value="3">276 OBSERVADOR</option>
+              <option value="4">D.L 728</option>
+            </select> <br>
+            <div class="messages" *ngIf="regimenformularioGastos.touched && regimenformularioGastos.invalid">
+              <div *ngIf="regimenformularioGastos.hasError('required')">
+                <div class="alert alert-danger alert-dismissible fade show"  role="alert">
+                  Seleccione un regimen
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label>SELECCIONE UN ARCHIVO .CSV(delimitado por comas)</label><br>
+            <div class="button-wrapper">
+              <button class="btn btn-outline-primary btn-sm" ><i class="fas fa-upload"></i> Seleccione un archivo
+              </button>
+              <span>{{namefile}}</span>
+              <input
+                (change)="onFileChange($event)"
+                formControlName="inputfile"
+                id="upload-file"
+                name="file"
+                class="inputfile"
+                type="file"
+                accept=".csv">
+            </div>
+
+            <div class="messages" *ngIf="inputfileformularioGastos.touched && inputfileformularioGastos.invalid">
+              <div *ngIf="inputfileformularioGastos.hasError('required')">
+                <br>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  Seleccione un archivo
+
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <br>
+            <button *ngIf="!this.hidebutoon.value" type="submit" (click)="grabar()" class="btn btn-primary btn">
+              Importar
+            </button>
+            <button *ngIf="this.hidebutoon.value" type="submit" [disabled]="true" class="btn btn-primary btn">
+              Procesando...
+            </button>
+            <div *ngIf="this.wanings.length>0" class="alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Alerta!</strong>  {{this.wanings}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div><br>
+    <div class="card text-white bg-light mb-12">
+      <div class="card-header bg-primary">Programación de Asignación de Puestos</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="col-12 text-center">
+            <pagination-controls id="pag_plazas" class="my-pagination" (pageChange)="p1 = $event"
+                                 previousLabel="Anterior"
+                                 nextLabel="Siguiente">
+            </pagination-controls>
+          </div>
+          <table class="table table-sm table-secondary">
+            <thead>
+            <tr class="align-middle">
+              <th>N°</th>
+              <th class="text-left">COD_PLAZA</th>
+              <th class="text-left">COD_CARGO</th>
+              <th class="text-left">NOMBRE_CARGO</th>
+              <th class="text-left">REGIMEN</th>
+              <th class="text-left">CONDICION</th>
+              <th class="text-left">DEPENDENCIA</th>
+              <th class="text-left">UNIDAD</th>
+              <th class="text-left">COD_PERSONAL</th>
+              <th class="text-left">PERSONAL</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              *ngFor="let plaza of plazas |  paginate: { id: 'pag_plazas', itemsPerPage: 5, currentPage: p1};index as i"
+              [ngClass]="{ selected: plaza.id == id_plaza }"
+              (click)="saveid_plaza(plaza.id)"
+              style="cursor: pointer;"
+            >
+              <td>{{i + 1}}</td>
+              <td class="text-center align-middle">
+                {{plaza.cod_plaza}}
+              </td>
+              <td>{{plaza.cod_cargo}}</td>
+              <td>{{plaza.nombre_cargo}}</td>
+              <td>{{plaza.regimen}}</td>
+              <td>{{plaza.condicion}}</td>
+              <td>{{plaza.dependencia}}</td>
+              <td>{{plaza.unidad}}</td>
+              <td>{{plaza.cod_personal}}</td>
+              <td>{{plaza.personal}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="card text-white bg-light mb-12" *ngIf="gastosplaza.length>0">
+    <div class="card-header bg-primary">Detalle de gastos por concepto</div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-sm table-default">
+          <thead>
+          <tr>
+            <th>CODIGO</th>
+            <th>CONCEPTO</th>
+            <th>ENERO</th>
+            <th>FEBRERO</th>
+            <th>MARZO</th>
+            <th>ABRIL</th>
+            <th>MAYO</th>
+            <th>JUNIO</th>
+            <th>JULIO</th>
+            <th>AGOSTO</th>
+            <th>SETIEMBRE</th>
+            <th>OCTIBRE</th>
+            <th>NOVIEMBRE</th>
+            <th>DICIEMBRE</th>
+            <!--            <th>TOTAL</th>-->
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let gastos of gastosplaza;index as i">
+            <td>{{gastos.codigo_gasto}}</td>
+            <td>{{gastos.descripcion_gasto}}</td>
+            <td *ngFor="let montos of gastosplaza[i].lista_gasto_plaza">
+              {{montos.monto}}
+            </td>
+            <td>
+
+            </td>
+          </tr>
+          <tr>
+            <!--           <th colspan="2">TOTAL</th>-->
+
+            <!--          </tr>-->
+          </tbody>
+          <tbody>
+          <!--          <tr *ngFor="let gastos of gastosplaza;index as i">-->
+          <!--        ñ-->
+          <!--          </tr>-->
+          <!--          -->
+          <!--          </tbody>-->
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+

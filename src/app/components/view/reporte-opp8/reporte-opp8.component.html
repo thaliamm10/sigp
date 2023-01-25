@@ -1,0 +1,135 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #3c97dd;" /> Reporte de Presupuesto
+    </h4>
+    <hr/>
+    <div class="row">
+        <div class="col-md-4">
+            <label>Centro de Costo:</label>
+            <select [(ngModel)]="id_centro_costo" class="form-control form-control-sm" (change)="getAllReporte()" name="id_organo">
+            <option
+                *ngFor="let organo of lista_organo"
+                value="{{ organo.id }}">
+                {{ organo.nombre }}
+            </option>
+        </select>
+        </div>
+        <!-- <div class="col-md-4">
+            <label>Fuente de Financiamiento:</label>
+            <select *ngIf="lista_recursos == null" [(ngModel)]="reporte.id_reporte" class="form-control form-control-sm" name="id_recurso">
+            <option value="1">Recursos Ordinarios </option>
+            <option value="2">Recursos Directamente Recaudados </option>
+            <option value="3">Recursos por Operaciones Oficiales de Credito </option>
+            <option value="4">Donaciones y Transferencias </option>
+        </select>
+        </div> -->
+        <!-- <div class="col-md-2 mt-4">
+            <button class="btn btn-success btn-sm float-left" (click)="exportAsXLSX()">
+                <i class="fas fa-file-excel"></i> Exportar
+            </button>
+        </div> -->
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover display pb-30 dataTable">
+                    <thead class="bg-blue thead-dark">
+                        <tr>
+                            <th class="text-left">Prog. Presupuestal</th>
+                            <th class="text-left">Producto</th>
+                            <th class="text-left">Act. Presupuestal</th>
+                            <th class="text-center">Finalidad</th>
+                            <th class="text-center">Departamento</th>
+                            <th class="text-center">Provincia</th>
+                            <th class="text-center">Distrito</th>
+                            <th class="text-center">Und/Med</th>
+                            <th class="text-center">Meta Física</th>
+                            <th class="text-center">Genérica de Gastos</th>
+                            <th class="text-center">Clasificador</th>
+                            <th class="text-center">Año 1</th>
+                            <th class="text-center">Año 2</th>
+                            <th class="text-center">Año 3</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: white;">
+                        <tr *ngIf="lista_recursos == null">
+                            <td colspan="14" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <label _ngcontent-yme-c5="" class="text-center">Procesando Reporte</label
+                                    >
+                                </div>
+                            </td>
+                            </tr>
+                            <tr *ngIf="lista_recursos == []">
+                            <td colspan="10">
+                                No hay datos que mostrar
+                            </td>
+                            </tr>
+                            <tr *ngFor="let item of lista_recursos | paginate: { itemsPerPage: 10, currentPage: p }">
+                            <td class="text-left align-middle">
+                                {{ item.id_prog_pres }}
+                                           
+                            </td>
+                            <td class="text-left align-middle">
+                                    {{ item.nombre_producto }}
+                                </td>
+                                <td class="text-left align-middle">
+                                    {{ item.id_act_pres }}
+                                </td>  
+                                <td class="text-center align-middle">
+                              {{ item.nombre_finalidad }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.nombre_departamento }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.nombre_provincia }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.nombre_distrito }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.nombre_unidad }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.meta_fisica }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.nombre_gastos }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.clasificador_gatos }}                  
+                            </td>   
+                                <td class="text-center align-middle">
+                              {{ item.anio_1 }}                  
+                            </td>   
+                            <td class="text-center align-middle">
+                          {{ item.anio_2 }}                  
+                        </td>   
+                            <td class="text-center align-middle">
+                          {{ item.anio_3 }}                  
+                        </td>   
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <div class="col-12 text-center" *ngIf="lista_recursos != null">
+      <pagination-controls
+        class="my-pagination"
+        (pageChange)="p = $event"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+      >
+      </pagination-controls>
+    </div>
+  </div>
+    <br>
+</div>

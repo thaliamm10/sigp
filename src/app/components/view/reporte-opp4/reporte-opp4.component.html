@@ -1,0 +1,196 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-xs-12">
+            <h4>
+                <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Reporte de Programación de Comisiones Mensual
+            </h4>
+        </div>
+        <div class="col-xl-2 col-lg-2 d-none d-lg-block d-xl-block"></div>
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <button class="btn btn-warning float-right btn-sm mt-1" data-toggle="modal" data-target="#modalMarcoPresupuestal">
+                Total: S/. {{total_comision | thousandsPipe }} <i class="fas fa-check-double"></i></button>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <select [(ngModel)]="id_ciclo" class="form-control form-control-sm form-inline w-100" name="id_ciclo" (change)="getAllReporte()">
+                <option
+                    *ngFor="let ciclo of lista_ciclo"
+                    value="{{ ciclo.id }}">
+                    {{ ciclo.anio }}
+                </option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <select [(ngModel)]="id_etapa" class="form-control form-control-sm mb-3" name="id_etapa" (change)="getAllReporte()">
+                <option
+                    *ngFor="let etapa of lista_etapa"
+                    value="{{ etapa.id }}">
+                    {{ etapa.nombre }}
+                </option>
+            </select>
+        </div>
+        <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12">
+            <input type="text" class="form-control form-control" placeholder="Ingresa texto para buscar.." [(ngModel)]="term" style="margin-top: 5%;" />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-xs-12">
+            <button class="btn btn-success btn-sm float-right" (click)="exportAsXLSX()" style="margin-top: 16%;">
+                Exportar Tabla <i class="fas fa-file-excel"></i> 
+            </button>
+        </div>
+    </div>
+    <!-- <div class="row">
+        <div class="col-md-4">
+            <label>Centro de Costo:</label>
+            <select [(ngModel)]="id_centro_costo" class="form-control form-control-sm" (change)="getAllReporte()" name="id_organo">
+                <option *ngFor="let organo of lista_organo" value="{{ organo.id }}">
+                {{ organo.nombre }}
+                </option>
+            </select>
+        </div>
+    </div> -->
+    <br>
+    <div class="row" *ngIf="lista_ugp == null">
+        <div class="col-md-12">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="mt-3">
+                    Procesando Consulta de Programación...
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="cantidad_lista == 0">
+        <div class="col-md-12">
+            No hay datos para mostrar
+        </div>
+    </div>
+    <div class="row pr-2" *ngFor="let item_ugp of lista_ugp | namefilter : term">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12" style="color: #006DDC;">
+                    UGP: {{ item_ugp.nombre }}
+                </div>
+            </div>
+            <div class="row" *ngFor="let item_producto of item_ugp.lista_producto">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12" style="color: #006DDC;">
+                            Producto: {{ item_producto.nombre }}
+                        </div>
+                    </div>
+                    <div class="row" *ngFor="let item_accion of item_producto.lista_accion">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    Acción: {{ item_accion.nombre }}
+                                </div>
+                            </div>
+                            <div class="row mt-2"></div>
+                            <!-- <div class="row" style="font-weight:bold; color:gray;">
+                            <div class="col-md-1">
+                                Código
+                            </div>
+                            <div class="col-md-3">
+                                Descripción
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-1">Ene</div>
+                                    <div class="col-md-1">Feb</div>
+                                    <div class="col-md-1">Mar</div>
+                                    <div class="col-md-1">Abr</div>
+                                    <div class="col-md-1">May</div>
+                                    <div class="col-md-1">Jun</div>
+                                    <div class="col-md-1">Jul</div>
+                                    <div class="col-md-1">Ago</div>
+                                    <div class="col-md-1">Set</div>
+                                    <div class="col-md-1">Oct</div>
+                                    <div class="col-md-1">Nov</div>
+                                    <div class="col-md-1">Dic</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngFor="let item_clasificador of item_accion.lista_clasificador">
+                            <div class="col-md-1">
+                                {{ item_clasificador.CODIGO }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ item_clasificador.DESCRIPCION }}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-1 text-center" *ngFor="let item_periodo of item_clasificador.lista_periodo"
+                                    [ngStyle]="{'background-color': (item_periodo.monto != 0) ? '#FFE65D': '#E5E8E8' }">
+                                            {{ item_periodo.monto  | thousandsPipe}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="tablaPFisica" class="table pb-30 dataTable" style="font-size: 12px;">
+                                            <thead class="thead-dark bg-blue">
+                                                <tr>
+                                                    <th class="text-left align-middle">Codigo</th>
+                                                    <th class="text-left align-middle" style="width: 350px;">Descripción</th>
+                                                    <th class="text-center align-middle width:70px !important">ENE</th>
+                                                    <th class="text-center align-middle width:70px !important">FEB</th>
+                                                    <th class="text-center align-middle width:70px !important">MAR</th>
+                                                    <th class="text-center align-middle width:70px !important">ABR</th>
+                                                    <th class="text-center align-middle width:70px !important">MAY</th>
+                                                    <th class="text-center align-middle width:70px !important">JUN</th>
+                                                    <th class="text-center align-middle width:70px !important">JUL</th>
+                                                    <th class="text-center align-middle width:70px !important">AGO</th>
+                                                    <th class="text-center align-middle width:70px !important">SET</th>
+                                                    <th class="text-center align-middle width:70px !important">OCT</th>
+                                                    <th class="text-center align-middle width:70px !important">NOV</th>
+                                                    <th class="text-center align-middle width:70px !important">DIC</th>
+                                                    <th class="text-center align-middle width:70px !important">TOTAL</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="tbody" style="background-color: white; width:700px !important">
+                                                <tr *ngFor="let item_clasificador of item_accion.lista_clasificador">
+                                                    <td class="text-left align-middle">
+                                                        {{ item_clasificador.CODIGO }}
+                                                    </td>
+                                                    <td class="text-left align-middle">
+                                                        {{ item_clasificador.DESCRIPCION }}
+                                                    </td>
+                                                    <td class="text-center align-middle" style="width:90px !important; text-align: -webkit-center !important" *ngFor="let item_periodo of item_clasificador.lista_periodo" [ngStyle]="{'background-color': (item_periodo.monto != 0) ? '#FFE65D': '#E5E8E8' }">
+                                                        {{ item_periodo.monto | thousandsPipe}}
+                                                    </td>
+                                                    <td style="width:90px !important" class="text-center align-middle">
+                                                        {{ item_clasificador.MONTO | thousandsPipe}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>

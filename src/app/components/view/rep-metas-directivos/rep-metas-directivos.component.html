@@ -1,0 +1,108 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 col-xs-12 text-left">
+            <span class="btn btn-sm">
+                <span class="btn btn-sm no-border header_icon">
+                    <img src="./assets/img/icon_ruta.png" width="25"/>
+                </span>
+                <span class="btn btn-sm no-border header_title" style="padding: 0px 5px; font-size: 24px;">
+                    Matriz de identificación de Metas GdR Directivos
+                </span>
+            </span>
+    </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12 form-inline">
+      <button *ngIf="flagbtn" class="btn  btn-sm btn-success float-right" (click)="exportAsXLSX()">
+        Exportar Tabla <i class="fas fa-file-excel"></i>
+      </button>
+      <button *ngIf="!flagbtn" class="btn btn-success btn-sm float-right" type="button"
+              (click)="exportAsXLSX()"
+              disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </span>
+        Descargando...
+      </button>
+    </div>
+  </div>
+  <br>
+  <div *ngIf="listaAe == null">
+    <div class="text-center">
+      <div _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75"
+               class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+               style="width: 100%"></div>
+        </div>
+        <h6 class="text-center mt-2">Recuperando Comisiones...</h6>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="listaAe?.length == 0">
+    <h6>
+      No hay datos que mostrar
+    </h6>
+  </div>
+  <div class="row" *ngIf="listaAe?.length > 0">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table mdbTable class="table table-hover display pb-30 dataTable">
+          <thead class="bg-blue thead-dark">
+          <tr>
+            <th class="text-left">ACCION_ESTRATEGICA</th>
+            <th class="text-left">INDICADOR</th>
+            <th class="text-left">OBJETIVO</th>
+            <th class="text-left">PRODUCTO</th>
+            <th class="text-left">INDICADOR_GDR</th>
+            <th class="text-left">ATRIBUTO_INDICADOR</th>
+            <th class="text-left">FORMULA_CALCULO</th>
+            <th class="text-left">EVIDENCIA</th>
+            <th class="text-left">META</th>
+          </tr>
+          </thead>
+          <tbody class="tbody">
+          <!--          <tr *ngFor="let item_comision of lista_comision | comisionFilter: term | paginate: { itemsPerPage: 20, currentPage: p }">-->
+
+          <tr *ngFor="let item of listaAe | paginate: { id: 'pag_meta', itemsPerPage: 5, currentPage: p }">
+            <td class="text-left align-middle">
+              {{ item.ACCION_ESTRATEGICA }}
+            </td>
+            <td class="text-left align-middle">
+              {{ item.indicador }}
+            </td>
+            <td class="text-left align-middle" style="max-width: 230px !important;">
+              {{ item.objetivo }}
+            </td>
+            <td class="text-left align-middle" style="max-width: 230px !important;">
+              {{ item.producto }}
+            </td>
+            <td class="text-left align-middle" style="max-width: 230px !important;">
+              {{ item.indicador_gdr }}
+            </td>
+            <td class="text-left align-middle" style="min-width: 120px !important;">
+              {{ item.atributo_indicador }}
+            </td>
+            <td class="text-left align-middle" style="min-width: 120px !important;">
+              {{ item.formula_calculo}}
+            </td>
+            <td class="text-left align-middle" style="min-width: 160px !important;">
+              {{ item.evidencia}}
+            </td>
+            <td class="text-right align-middle" style="min-width: 100px !important;">
+              {{ item.VALOR_BASE * 100 }} %
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="col-12 text-center" *ngIf="listaAe!= 0">
+          <pagination-controls id="pag_meta" class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior"
+                               nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,352 @@
+<app-header></app-header>
+
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <h3>
+                <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Bandeja Ficha Adicional
+            </h3>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text" class="form-control form-control-sm"
+            placeholder="Buscador" [(ngModel)]="term"/>
+        </div>
+      <div class="col-md-2">
+        <button *ngIf="flagbtn" class="btn btn-success btn-sm float-right" (click)="exportAsXLSX()">
+          <i class="fas fa-file-excel"></i> Exportar
+        </button>
+        <button *ngIf="!flagbtn" class="btn btn-success btn-sm float-right" type="button"
+                (click)="exportAsXLSX()"
+                disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </span>
+          Descargando...
+        </button>
+      </div>
+    </div>
+    <div *ngIf="lista_bandeja == null">
+        <div class="text-center">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="text-center mt-2">Recuperando Demanda Adicional...</h6>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="lista_bandeja?.length == 0">
+        <h6>
+            No hay datos que mostrar
+        </h6>
+    </div>
+    <div class="row mt-2" *ngIf="lista_bandeja?.length > 0">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table display pb-30 dataTable">
+                    <thead class="bg-blue thead-dark">
+                        <tr>
+                            <th class="text-center">Código</th>
+                            <th class="text-left">UGP</th>
+                            <th class="text-left">Programa Presupuestal</th>
+                            <th class="text-left">Actividad Presupuestal</th>
+                            <th class="text-left">Finalidad</th>
+                            <th class="text-left">Situación</th>
+                            <th class="text-center">Prioridad</th>
+                            <th class="text-center">Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white;">
+                        <tr *ngFor="let item of lista_bandeja | fichafilter: term | paginate : { itemsPerPage: 10 , currentPage: p}">
+                            <td class="text-center">
+                                <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalAgregarDemanda" (click)="getElemento(item)">
+                                    {{ pad(item.id,6) }}
+                                </a>
+                            </td>
+                            <td class="text-left"> {{item.nombre_ugp}} </td>
+                            <td class="text-left">{{item.programa_presupuestal}}</td>
+                            <td class="text-left"> {{item.actv_presupuestal}} </td>
+                            <td class="text-left"> {{item.nombre_finalidad}} </td>
+                            <td class="text-left"> {{item.nombre_situacion}}</td>
+                            <td class="text-center"> {{item.nombre_prioridad}}</td>
+                            <td class="text-right" style="min-width:140px;"> S/. {{item.monto | thousandsPipe}}</td>
+                            <td>
+                                <a style="color: #006DDC; cursor: pointer;" href="#/ficha-adicional/{{item.id}}" target="_blank">
+                                Imprimir
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 text-center" *ngIf="lista_bandeja != null">
+            <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
+        </div>
+    </div>
+
+    <!-- DEMANDA -->
+    <div class="modal fade" #modalAgregarDemanda id="modalAgregarDemanda" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">Demanda Adicional - Ficha {{demanda.id}}</h5>
+                    <button type="button" #CloseModalDemanada class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3"> PRIORIDAD: </div>
+                        <div class="col-md-2" style="font-weight: lighter;">
+                            <select class="form-control form-control-sm" name="prioridad" [(ngModel)]="demanda.prioridad" [disabled]="demanda.situacion==3">
+                                <option value="1"> Alta</option>
+                                <option value="2"> Media</option>
+                                <option value="3"> Baja</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;"> MONTO DE LA DEMANDA: </div>
+                        <div class="col-md-2"> S/. {{total | thousandsPipe}}</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3"> UGP: </div>
+                        <div class="col-md-9">
+                            <input type="text" name="nombre_ugp" [(ngModel)]="demanda.nombre_ugp" class="form-control form-control-sm" disabled/>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3"> NOMBRE DE LA DEMANDA: </div>
+                        <div class="col-md-9">
+                            <input type="text" name="nombre_demanda" [(ngModel)]="demanda.nombre_demanda" class="form-control form-control-sm"  [disabled]="demanda.situacion==3"/>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3"> TIPO DE DEMANDA: </div>
+                        <div class="col-md-9">
+                            <input type="text" name="tipo_demanda" [(ngModel)]="demanda.tipo_demanda" class="form-control form-control-sm"  [disabled]="demanda.situacion==3"/>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3"> PROGRAMA PRESUPUESTAL: </div>
+                        <div class="col-md-9">
+                            <input type="text" name="programa_presupuestal" [(ngModel)]="demanda.programa_presupuestal" class="form-control form-control-sm" disabled />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3"> ACTIVIDAD PRESUPUESTAL / OBRA / INVERSIÓN: </div>
+                        <div class="col-md-9">
+                            <input type="text" name="actv_presupuestal" [(ngModel)]="demanda.actv_presupuestal" class="form-control form-control-sm" disabled />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3"> CONCEPTO DE DEMANDA: </div>
+                        <div class="col-md-9">
+                            <textarea type="text" class="form-control form-control-sm" name="concepto_demanda" [(ngModel)]="demanda.concepto_demanda" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">1. PRIORIDAD DE LA DEMANDA:</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <textarea [(ngModel)]="demanda.prioridad_demanda" class="form-control form-control-sm" name="prioridad_demanda" [disabled]="demanda.situacion==3">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">2. OBJETO DE LA DEMANDA:</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <textarea [(ngModel)]="demanda.objetivo_demanda" class="form-control form-control-sm" name="objetivo_demanda" [disabled]="demanda.situacion==3">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12"> 3. CRITERIOS DE FOCALIZACIÓN Y PRIORIZACIÓN DE LA ACTIVIDAD </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <textarea [(ngModel)]="demanda.criterio_demanda" class="form-control form-control-sm" name="criterio_demanda" [disabled]="demanda.situacion==3">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12 text-center">
+                            <div class="pt-1 pb-1 border-bottom" style="background-color: #EDEDED;">Criterios de Focalización</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-center pr-0">
+                            <div class="pt-1 pb-1" style="background-color: #EDEDED;">Criterios</div>
+                        </div>
+                        <div class="col-md-6 text-center pl-0">
+                            <div class="pt-1 pb-1" style="background-color: #EDEDED;">Justificación</div>
+                        </div>
+                    </div>
+                    <div class="row p-0">
+                        <div class="col-md-6 pr-0" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.foca_1" class="form-control form-control-sm" name="foca_1" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                        <div class="col-md-6 pl-0" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.justificacion_1" class="form-control form-control-sm" name="justificacion_1" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row p-0">
+                        <div class="col-md-6 pr-0" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.foca_2" class="form-control form-control-sm" name="foca_2" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                        <div class="col-md-6 pl-0" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.justificacion_2" class="form-control form-control-sm" name="justificacion_2" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row p-0">
+                        <div class="col-md-6 pr-0" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.foca_3" class="form-control form-control-sm" name="foca_3" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                        <div class="col-md-6 pl-0" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.justificacion_3" class="form-control form-control-sm" name="justificacion_3" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12"> 4.BRECHA ACTUAL DE LA ACTIVIDAD</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.brecha" class="form-control form-control-sm" name="brecha" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12"> 5.INDICADORES PRINCIPALES</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12" style="font-weight: lighter;">
+                            <textarea [(ngModel)]="demanda.indicador" class="form-control form-control-sm" name="indicador" [disabled]="demanda.situacion==3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-2 align-middle"> Unidad de medida</div>
+                        <div class="col-md-4" style="font-weight: lighter;">
+                            <select [(ngModel)]="demanda.unidad_medidad" class="form-control form-control-sm" name="unidad_medidad" [disabled]="demanda.situacion==3">
+                                <option *ngFor=" let item of lista_unidad" value="{{item.nombre}}" > {{item.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-2">
+                            Escenario pesimista (con brecha de 65%)
+                        </div>
+                        <div class="col-md-1" style="font-weight: lighter;">
+                            <input type="number" [(ngModel)]="demanda.es_pesimista" class="form-control form-control-sm text-center" name="es_pesimista" [disabled]="demanda.situacion==3">
+                        </div>
+                        <div class="col-md-6" style="font-weight: lighter;">
+                            <input type="text" [(ngModel)]="demanda.observacion_1" class="form-control form-control-sm" name="observacion_1" [disabled]="demanda.situacion==3">
+                        </div>
+                        <div class="col-md-1">
+                            Presupuesto
+                        </div>
+                        <div class="col-md-2" style="font-weight: lighter;">
+                            <input type="number" [(ngModel)]="demanda.presupuesto_1" class="form-control form-control-sm text-center" name="presupuesto_1" [disabled]="demanda.situacion==3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Escenario conservador (con brecha de 55%)
+                        </div>
+                        <div class="col-md-1" style="font-weight: lighter;">
+                            <input type="number" [(ngModel)]="demanda.es_conservador" class="form-control form-control-sm text-center" name="es_conservador" [disabled]="demanda.situacion==3">
+                        </div>
+                        <div class="col-md-6" style="font-weight: lighter;">
+                            <input type="text" [(ngModel)]="demanda.observacion_2" class="form-control form-control-sm" name="observacion_2" [disabled]="demanda.situacion==3">
+                        </div>
+                        <div class="col-md-1">
+                            Presupuesto
+                        </div>
+                        <div class="col-md-2" style="font-weight: lighter;">
+                            <input type="number" [(ngModel)]="demanda.presupuesto_2" class="form-control form-control-sm text-center" name="presupuesto_2" [disabled]="demanda.situacion==3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Escenario óptimo (con brecha de 40%)
+                        </div>
+                        <div class="col-md-1" style="font-weight: lighter;">
+                            <input type="number" [(ngModel)]="demanda.es_optimo" class="form-control form-control-sm text-center" name="es_optimo" [disabled]="demanda.situacion==3">
+                        </div>
+                        <div class="col-md-6" style="font-weight: lighter;">
+                            <input type="text" [(ngModel)]="demanda.observacion_3" class="form-control form-control-sm" name="observacion_3" [disabled]="demanda.situacion==3">
+                        </div>
+                        <div class="col-md-1">
+                            <label>Presupuesto</label>
+                        </div>
+                        <div class="col-md-2" style="font-weight: lighter;">
+                            <input type="number" [(ngModel)]="demanda.presupuesto_3" class="form-control form-control-sm text-center" name="presupuesto_3" [disabled]="demanda.situacion==3">
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12"> 6.ESPECÍFICAS DE GASTOS del escenario conservador</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-1 border-bottom">
+                            Clasificador
+                        </div>
+                        <div class="col-md-9 border-bottom">
+                            Descripción
+                        </div>
+                        <div class="col-md-2 text-right border-bottom">
+                            Monto (S/.)
+                        </div>
+                    </div>
+                    <div *ngIf="lista_clasificador == null">
+                        <div class="text-center">
+                            <div _ngcontent-yme-c5="" class="progressBar">
+                                <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <h6 class="text-center mt-2">Recuperando Clasificadores...</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-1" *ngFor="let clasificador of lista_clasificador">
+                        <div class="col-md-1">{{clasificador.codigo}} </div>
+                        <div class="col-md-9">{{clasificador.descripcion}} </div>
+                        <div class="col-md-2 text-right">S/. {{clasificador.monto | thousandsPipe}}</div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-10">
+                        </div>
+                        <div class="col-md-2 text-right border-top" style="font-weight: bold;">
+                            S/. {{total | thousandsPipe}}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <form (ngSubmit)="guardarDemanda()" autocomplete="off" #form="ngForm">
+                        <button type="button" class="btn btn-primary btn-md" type="submit" [disabled]="!form.valid"
+                            *ngIf="demanda.situacion!=3">
+                            Guardar Cambios
+                        </button>
+                    </form>
+                    <form (ngSubmit)="guardarSituacion()" autocomplete="off" #form="ngForm">
+                        <button type="button" class="btn btn-success btn-md" type="submit" [disabled]="!form.valid"
+                            *ngIf="user.id_estado==5 && demanda.situacion==1">
+                            Enviar Ficha
+                        </button>
+                    </form>
+                    <form (ngSubmit)="aprobarSituacion()" autocomplete="off" #form="ngForm">
+                        <button type="button" class="btn btn-success btn-md" type="submit" [disabled]="!form.valid"
+                            *ngIf="user.id_estado==3 && demanda.situacion==2">
+                            Aprobar Ficha
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

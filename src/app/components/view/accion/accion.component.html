@@ -1,0 +1,248 @@
+<div class="row mt-3">
+    <div class="col-md-2">
+        <button class="btn btn-success btn-sm float-left" (click)="exportAsXLSX()">
+            <i class="fas fa-file-excel"></i> Exportar
+        </button>
+    </div>
+    <div class="col-md-8"></div>
+    <div class="col-md-2">
+        <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalAgregarAccionP" *ngIf="user.id_estado == 3" (click)="getElemento(null)">
+            Agregar Acción <i class="fas fa-plus-circle"></i>
+        </button>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-hover display  pb-30 dataTable">
+                <thead class="thead-dark bg-blue">
+                    <tr>
+                        <th class="text-left">Producto</th>
+                        <th class="text-left">Acción</th>
+                        <th class="text-left">Centro Costo</th>
+                        <th class="text-left">Unidad Orgánica</th>
+                        <th class="text-left">Procedimiento</th>
+                        <th class="text-left">Unidad Medida</th>
+                        <th class="text-center">MF</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left" *ngIf="user.id_estado == 3"></th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: white;">
+                    <tr *ngFor="let item of lista_acciones">
+                        <td class="text-left align-middle">{{ item.nombre_producto }}</td>
+                        <td class="text-left align-middle">
+                            <a style="color: #006DDC; cursor: pointer;"
+                            data-toggle="modal" *ngIf="user.id_estado == 3"
+                            data-target="#modalAgregarAccionP" (click)="getElemento(item)">
+                                {{ item.nombre }}
+                            </a>
+                            <a *ngIf="user.id_estado != 3">
+                                {{ item.nombre }}
+                            </a>
+                        </td>
+                        <td class="text-left align-middle">{{ item.nombre_organo }}</td>
+                        <td class="text-left align-middle">{{ item.nombre_organo_ugp }}</td>
+                        <td class="text-left align-middle">{{ item.nombre_proceso }}</td>
+                        <td class="text-left align-middle">{{ item.nombre_unidad_medida }}</td>
+                        <td class="text-center align-middle">
+                            <span *ngIf="item.flag_meta == 0">NO</span>
+                            <span *ngIf="item.flag_meta != 0">SI</span>
+                        </td>
+                        <td class="text-center align-middle">
+                            <span class="label label-{{ item.nombre_estado }}">
+                                {{ item.nombre_estado }}
+                            </span>
+                        </td>
+                        <td class="text-center align-middle" *ngIf="user.id_estado == 3 || user.id_estado  == 5">
+                            <a style="color: #006DDC; cursor: pointer;"
+                            data-toggle="modal" data-target="#modalAgregarDefinicion"
+                            (click)="getElemento(item)">
+                                Def
+                            </a>
+                        </td>
+                    </tr>
+                    <tr *ngIf="cantidad_lista == 0">
+                        <td colspan="9">
+                            <p class="text-center mt-2">No hay datos que mostrar</p>
+                        </td>
+                    </tr>
+                    <tr *ngIf="lista_acciones == null">
+                        <td colspan="9" class="text-center">
+                            <div _ngcontent-yme-c5="" class="progressBar">
+                                <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <h6 class="mt-3">
+                                    Procesando Acciones...
+                                </h6>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal de Agregar Acciones-->
+<div class="modal fade" id="modalAgregarAccionP" #modalAgregarAE tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header title-popup">
+                <h5 class="modal-title" id="exampleModalLabel">Configuración de Accion(es)</h5>
+                <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form (ngSubmit)="guardarAccion()" autocomplete="off" #form="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Producto:</label>
+                                    <select [(ngModel)]="accion.id_producto" class="form-control form-control-sm" name="id_producto">
+                                <option
+                                  *ngFor="let producto of lista_producto"
+                                  value="{{ producto.id }}">
+                                  {{ producto.nombre }}
+                                </option>
+                              </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Estado:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="accion.id_estado" name="id_estado">
+                                <option value="1">Activo</option>
+                                <option value="0">Desactivado</option>
+                                </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Unidad Medida:</label>
+                                    <select class="form-control form-control-sm" name="id_unidad_medida" [(ngModel)]="accion.id_unidad_medida" required>
+                                    <option *ngFor="let unidad_medida of lista_um" value="{{ unidad_medida.id }}">{{ unidad_medida.nombre }}</option>
+                                </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Nombre:</label>
+                                    <input class="form-control  text-justify form-control-sm" [(ngModel)]="accion.nombre" required name="nombre" #desc="ngModel" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Descripción:</label>
+                                    <textarea rows="2" class="form-control  text-justify form-control-sm" [(ngModel)]="accion.descripcion" required name="descripcion" #desc="ngModel">
+                                </textarea>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Centro de Costo:</label>
+                                    <select [(ngModel)]="accion.id_organo" class="form-control form-control-sm" (change)="getAllUGPxOrgano()" name="id_organo">
+                                <option
+                                  *ngFor="let organo of lista_organo"
+                                  value="{{ organo.id }}">
+                                  {{ organo.nombre }}
+                                </option>
+                              </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Unidad Orgánica:</label>
+                                    <select [(ngModel)]="accion.id_organo_ugp" class="form-control form-control-sm" name="id_organo_ugp">
+                                <option
+                                  *ngFor="let organo_ugp of lista_organo_ugp"
+                                  value="{{ organo_ugp.id }}">
+                                  {{ organo_ugp.nombre }}
+                                </option>
+                              </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <label>Proceso vinculado:</label>
+                            <ul class="list-group" id="list-proceso">
+                                <li [ngClass]="{
+                              'pl-1': proceso.nivel === 0,
+                              'pl-2': proceso.nivel === 1,
+                              'pl-3': proceso.nivel === 2,
+                              'pl-4': proceso.nivel === 3,
+                              'pl-5': proceso.nivel === 4,
+                              selected: proceso.id == accion.id_proceso
+                            }" (click)="selectProceso(proceso)" style="cursor: pointer;" class="list-group-item list-group-item-action p-2" *ngFor="let proceso of lista_proceso">
+                                    {{ proceso.codigo }} : {{ proceso.nombre }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" #closeModalAccionP class="btn btn-md btn-danger" data-dismiss="modal">
+                    Cancelar
+                  </button>
+                    <button type="submit" class="btn btn-md btn-primary" [disabled]="!form.valid || x_progreso">
+                    Guardar
+                  </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Modal de Definición operacional y Criterios de programación-->
+<div class="modal fade" id="modalAgregarDefinicion" #modalAgregarDefinicion tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header title-popup">
+                <h5 class="modal-title" id="exampleModalLabel">Definición operacional y Criterios de programación</h5>
+                <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form (ngSubmit)="guardarDefinicionAccion()" #ADef="ngForm">
+                <div class="modal-body">
+                    <h5>Definición</h5>
+                    <div id="tab1">
+                        <label>1. Objetivo</label>
+                        <textarea class="form-control form-control-sm" name="df1" [(ngModel)]="definicionProducto.df1" required></textarea>
+                        <label>2. Estándar de la acción</label>
+                        <textarea class="form-control form-control-sm" name="df2" [(ngModel)]="definicionProducto.df2" required></textarea>
+                        <label>3. Medio de Verificación</label>
+                        <textarea class="form-control form-control-sm" name="df3" [(ngModel)]="definicionProducto.df3" required></textarea>
+                        <label>4. Periodicidad</label>
+                        <textarea class="form-control form-control-sm" name="df4" [(ngModel)]="definicionProducto.df4" required></textarea>
+                        <label>5. Unidad de Medida</label>
+                        <textarea class="form-control form-control-sm" name="df5" [(ngModel)]="definicionProducto.df5" required></textarea>
+                        <label>6. Frecuencua de la Acción</label>
+                        <textarea class="form-control form-control-sm" name="df6" [(ngModel)]="definicionProducto.df6" required></textarea>
+                        <label>7. Donde realiza la acción?</label>
+                        <textarea class="form-control form-control-sm" name="df8" [(ngModel)]="definicionProducto.df8" required></textarea>
+                        <label>8. ¿Quien realiza la acción?</label>
+                        <textarea class="form-control form-control-sm" name="cr1" [(ngModel)]="definicionProducto.cr1" required></textarea>
+                        <label>9. Listado de Bienes y Servicios prioritario</label>
+                        <textarea class="form-control form-control-sm" name="df7" [(ngModel)]="definicionProducto.df7" required></textarea>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" #CloseModalDef class="btn btn-sm btn-danger" data-dismiss="modal">
+          Cancelar
+        </button>
+                    <button type="submit" class="btn btn-sm btn-success">
+          Guardar
+        </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

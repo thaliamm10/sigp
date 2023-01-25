@@ -1,0 +1,114 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12 text-left">
+            <span class="btn btn-sm" >
+                <span class="btn btn-sm no-border header_icon">
+                    <img src="./assets/img/icon_ruta.png" width="25"/>
+                </span>     
+                <span class="btn btn-sm no-border header_title" style="padding: 0px 5px; font-size: 24px;">
+                    Reporte de Programación Física de Acciones
+                </span> 
+            </span>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-6">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="user.anio" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-6">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="user.nombre_etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-5 col-sm-12 col-xs-12">
+            <label>UGP:</label>
+            <select [(ngModel)]="id_ugp" class="form-control form-control-sm" (change)="getAllReporte()" name="id_ugp">
+            <option
+                *ngFor="let item of lista_ugp"
+                value="{{ item.id }}">
+                {{ item.nombre }}
+            </option>
+        </select>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-5 col-sm-12 col-xs-12">
+            <label>Centro de Costo:</label>
+            <select [(ngModel)]="id_centro_costo" class="form-control form-control-sm" (change)="getAllReporte()" name="id_organo">
+            <option
+                *ngFor="let organo of lista_organo"
+                value="{{ organo.id }}">
+                {{ organo.nombre }}
+            </option>
+        </select>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-xs-12 mt-4">
+            <button class="btn btn-success btn-sm float-right" (click)="exportAsXLSX()">
+                <i class="fas fa-file-excel"></i> Exportar
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row" *ngIf="pfa == null">
+        <div class="col-md-12">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="mt-3 text-center">
+                    Procesando Consulta de Meta Física...
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2 text-center" *ngIf="pfa?.length == 0">
+        <h6 style="color: red;">
+            No se encontraron metas físicas
+        </h6>
+    </div>
+    <div class="row" *ngIf="pfa?.length > 0">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table display dataTable">
+                    <thead class="thead-dark bg-blue">
+                        <tr>
+                            <th class="text-left align-middle">UGP</th>
+                            <th class="text-left align-middle">Producto</th>
+                            <th class="text-left align-middle">Acción</th>
+                            <th class="text-left align-middle">Unidad</th>
+                            <th class="text-center align-middle">ENE</th>
+                            <th class="text-center align-middle">FEB</th>
+                            <th class="text-center align-middle">MAR</th>
+                            <th class="text-center align-middle">ABR</th>
+                            <th class="text-center align-middle">MAY</th>
+                            <th class="text-center align-middle">JUN</th>
+                            <th class="text-center align-middle">JUL</th>
+                            <th class="text-center align-middle">AGO</th>
+                            <th class="text-center align-middle">SET</th>
+                            <th class="text-center align-middle">OCT</th>
+                            <th class="text-center align-middle">NOV</th>
+                            <th class="text-center align-middle">DIC</th>
+                            <th class="text-center align-middle">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody">
+                        <tr *ngFor="let pfpdt of pfa">
+                            <td style="min-width: 180px;">{{ pfpdt.nombre_ugp }}</td>
+                            <td style="min-width: 180px;">{{ pfpdt.nombre_producto }}</td>
+                            <td style="min-width: 180px;">{{ pfpdt.nombre_accion }}</td>
+                            <td class="align-middle">{{pfpdt.nombre_unidad}}</td>
+                            <td style="width:50px !important;" 
+                                [ngStyle]="{'background-color': (item.cantidad!=0) ? '#DDEBF7':'#fff' }"
+                                *ngFor="let item of pfpdt.lista_periodo" class="text-center align-middle p-0">
+                                {{item.cantidad}}
+                            </td>
+                            <td style="width:50px !important; background-color:#fff3b4;" class="text-center align-middle">{{ pfpdt.suma }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>

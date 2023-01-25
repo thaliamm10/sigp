@@ -1,0 +1,55 @@
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-primary btn-sm" (click)="guardarTopeGenerica()">
+                Guardar Cambios
+            </button>
+        </div>
+        <div class="col-md-5"></div>
+        <div class="col-md-3" style="font-weight: bold;">
+          <button class="btn btn-warning float-right btn-sm mt-1">
+            Total: S/. {{total_presupuesto  | thousandsPipe }} <i class="fas fa-check-double"></i></button>
+        </div>  
+        <div class="col-md-2"></div>  
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="table-responsive">
+                <table class="table pb-10 dataTable">
+                    <thead class="thead-dark bg-blue">
+                        <tr>
+                            <th class="text-left">Genérica de Gasto(s)</th>
+                            <th class="text-center">OA</th>
+                            <th class="text-center">DRD</th>
+                            <th class="text-center">OTI</th>
+                            <th class="text-center">ORH</th>
+                            <th class="text-center">UFC</th>
+                            <th class="text-center">UACGD</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: white;">
+                        <tr *ngFor="let item of lista_generica">
+                            <td>{{item.codigo}}. {{item.nombre}} </td>
+                            <td *ngFor="let item of item.lista_organo" class="text-center">
+                                <input type="number" class="form-control form-control-sm w-100 text-right" [(ngModel)]="item.monto" (keypress)="validarSoloNumeros($event)" (keyup)="sumarTotal()" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" />
+                            </td>
+                            <td class="text-right align-middle" style="background-color: #FCF3CF;">{{item.monto | thousandsPipe }} </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">Total por Centro de Costo</td>
+                            <td *ngFor="let item of lista" class="text-right align-middle" style="background-color: #FCF3CF;">
+                                {{item.monto | thousandsPipe}}
+                            </td>
+                            <td class="text-right align-middle" style="font-weight: bold;">{{total_presupuesto | thousandsPipe }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <br>
+</div>

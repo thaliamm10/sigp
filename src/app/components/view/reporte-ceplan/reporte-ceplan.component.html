@@ -1,0 +1,163 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/GIFReporte.png" width="40" height="40" title="Módulo de Reportes" style="background-color: #3c97dd;" /> Plan Anual con Programación Física y Financiera
+    </h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Periodo PEI: </label>
+        </div>
+        <div class="col-md-10">
+            2020 - 2022
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Nivel de Gobierno: </label>
+        </div>
+        <div class="col-md-10">
+            Nacional
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Sector: </label>
+        </div>
+        <div class="col-md-10">
+            Ambiental
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Pliego: </label>
+        </div>
+        <div class="col-md-10">
+            331: Servicio Nacional de Meteorología e Hidrología del Perú
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Unidad Ejecutora: </label>
+        </div>
+        <div class="col-md-10">
+            474: Servicio Nacional de Meteorología e Hidrología del Perú
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Periodo: </label>
+        </div>
+        <div class="col-md-2">
+            {{user.anio}}
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-2">
+            <label class="font-weight-bold">Centro de Costo: </label>
+        </div>
+        <div class="col-md-6">
+            <select class="form-control form-control-sm form-inline w-100" [(ngModel)]="id_organo">
+                <option *ngFor="let item of listaOrgano" value="{{ item.id }}">{{item.nombre}}</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary btn-sm" (click)="capturarIdOrgano()">
+             Consultar
+            </button>
+        </div>
+        <div class="col-md-2 text-right">
+            <button class="btn btn-warning btn-sm" style="color: #fff;" *ngIf="data != []" (click)="imprimirReporte()">
+             Imprimir
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row" *ngIf="data == null">
+        <div class="col-md-12">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="mt-3 text-center">
+                    Procesando Consulta de Información...
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2 text-center" *ngIf="data?.length == 0">
+        <h6 style="color: red;">
+            No se encontraron resultados
+        </h6>
+    </div>
+    <div class="row" *ngIf="data?.length > 0">
+        <div class="col-md-12">
+            <div *ngFor="let oe of data">
+                <label style="color: #3c97dd;">
+                    {{ oe.codigo }} : {{ oe.nombre }}
+                </label>
+                <div *ngFor="let ae of oe.lista_ae; index as i">
+                    <label style="color: #3c97dd;">
+                        {{ ae.codigo }} : {{ ae.nombre }}
+                    </label>
+                    <div class="table-responsive table-border table-sm">
+                        <table class="table table-sm">
+                            <thead class="thead-dark bg-blue">
+                                <tr>
+                                    <th rowspan="2">COD</th>
+                                    <th rowspan="2">ACTIVIDAD OPERATIVA / INVERSIONES</th>
+                                    <th rowspan="2">Ubigeo</th>
+                                    <th rowspan="2">Unidad Med.</th>
+                                    <th colspan="13" class="text-center">PROGRAMACIÓN MENSUAL</th>
+                                    <th rowspan="2" class="text-center">TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center">M</th>
+                                    <th class="text-center">ENE</th>
+                                    <th class="text-center">FEB</th>
+                                    <th class="text-center">MAR</th>
+                                    <th class="text-center">ABR</th>
+                                    <th class="text-center">MAY</th>
+                                    <th class="text-center">JUN</th>
+                                    <th class="text-center">JUL</th>
+                                    <th class="text-center">AGO</th>
+                                    <th class="text-center">SET</th>
+                                    <th class="text-center">OCT</th>
+                                    <th class="text-center">NOV</th>
+                                    <th class="text-center">DIC</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody">
+                                <tr *ngFor="let ao of ae.lista_ao; index as b">
+                                    <td style="width: 77px !important;">{{ ao.codigo }}</td>
+                                    <td class="text-left" style="width: 260px !important;">
+                                        {{ ao.nombre }}
+                                    </td>
+                                    <td style="width: 50px !important;">
+                                        {{ ao.ubicacion }}
+                                    </td>
+                                    <td style="width: 120px !important;">
+                                        {{ ao.nombre_unidad }}
+                                    </td>
+                                    <td style="width: 20px !important;">
+                                        <div>F</div>
+                                        <div>P</div>
+                                    </td>
+                                    <td style="width: 100px !important;" class="text-center" *ngFor="let periodo of ao.lista_periodo; index as a">
+                                        <div>{{periodo.meta_fisica}}</div>
+                                        <div>{{periodo.monto | thousandsPipe}}</div>
+                                    </td>
+                                    <td class="text-center" style="width: 100px !important;">
+                                        <div>{{ao.meta_fisica}}</div>
+                                        <div>{{ao.monto | thousandsPipe}}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,5 @@
+#list-proceso {
+    height: 22em;
+    overflow-y: scroll;
+    cursor: pointer;
+  }

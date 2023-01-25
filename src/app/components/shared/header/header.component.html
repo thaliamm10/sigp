@@ -1,0 +1,740 @@
+<nav id="main_sigp"
+     class="navbar navbar-expand-lg navbar-dark bg-dark text-blue sticky-top justify-content-between mb-4">
+  <div>
+    <a class="navbar-brand">
+      <img src="./assets/img/logo-senamhi.svg" height="40" alt=""/>
+    </a>
+  </div>
+  <div>
+    <button class="custom-toggler navbar-toggler m-1" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent" ng-controller="HeaderController">
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 3">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown2" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Maestro
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/perfil']" [routerLinkActive]="['active']">Perfiles</a>
+          <a class="dropdown-item" [routerLink]="['/bienes']" [routerLinkActive]="['active']">Bienes y Servicios</a>
+          <a class="dropdown-item" [routerLink]="['/organo']" [routerLinkActive]="['active']">
+            Estructura Orgánica
+          </a>
+          <a class="dropdown-item" [routerLink]="['/ugp-organo']" [routerLinkActive]="['active']">
+            Unidad por Orgáno
+          </a>
+          <a class="dropdown-item" [routerLink]="['/procesos']" [routerLinkActive]="['active']">
+            MAPRO
+          </a>
+          <a class="dropdown-item" [routerLink]="['/mantenimiento-ciclo']" [routerLinkActive]="['active']">
+            Año Presupuestal
+          </a>
+          <a class="dropdown-item" [routerLink]="['/vehiculos']" [routerLinkActive]="['active']">
+            Catálogo de Vehículos
+          </a>
+          <a class="dropdown-item" [routerLink]="['/kits']" [routerLinkActive]="['active']">
+            Kits
+          </a>
+          <a class="dropdown-item" [routerLink]="['/mantenimiento-vehiculo']" [routerLinkActive]="['active']">
+            Mantenimiento Vehiculo
+          </a>
+
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown3" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Estratégico
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/home-marco-logico']" [routerLinkActive]="['active']">
+            Marco Lógico
+          </a>
+          <a class="dropdown-item" [routerLink]="['/ugp']" [routerLinkActive]="['active']">
+            UGP
+          </a>
+          <a class="dropdown-item" [routerLink]="['/objetivo-estrategico']" [routerLinkActive]="['active']">
+            PEI - Objetivo Estratégico
+          </a>
+          <a class="dropdown-item" [routerLink]="['/accion-estrategica']" [routerLinkActive]="['active']">
+            PEI - Acción Estratégica
+          </a>
+          <a class="dropdown-item" [routerLink]="['/actividad-operativa']" [routerLinkActive]="['active']">
+            POI - Actividad Operativa
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown4" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Programación
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-fisica-acciones']" [routerLinkActive]="['active']">
+            Programación Física de Acciones
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">
+            Programación de Servidores Civiles
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-acciones']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Acciones
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-gastos-plaza']" [routerLinkActive]="['active']">
+            Programación de gastos por plaza
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-meta-plaza']" [routerLinkActive]="['active']">
+            Asignacion de metas por plaza
+          </a>
+          <a class="dropdown-item" [routerLink]="['/aprobacion-asignacion']" [routerLinkActive]="['active']">
+            Aprobación de Asignación
+          </a>
+          <a class="dropdown-item" [routerLink]="['/tope-presupuesto']" [routerLinkActive]="['active']">
+            Marco Presupuestal
+          </a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown5" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Adicional
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-fisica-adicional']" [routerLinkActive]="['active']">
+            Programación Física de Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-adicional']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-local-adicional']" [routerLinkActive]="['active']">
+            Comisiones Locales Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-nacional-adicional']" [routerLinkActive]="['active']">
+            Comisiones Nacionales Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/rutas-adicional']" [routerLinkActive]="['active']">
+            Rutas Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/bandeja-adicional']" [routerLinkActive]="['active']">
+            Bandeja Adicional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/bandeja-ficha']" [routerLinkActive]="['active']">
+            Bandeja Ficha
+          </a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown6" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Financiamiento
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <!-- <a class="dropdown-item" [routerLink]="['/financiamiento-bienes']" [routerLinkActive]="['active']">
+              Financiamiento de Bienes y Servicios Anual
+          </a> -->
+          <a class="dropdown-item" [routerLink]="['/financiamiento-mensual']" [routerLinkActive]="['active']">
+            Financiamiento de Bienes y Servicios Mensual
+          </a>
+          <!-- <a class="dropdown-item" [routerLink]="['/financiamiento-canalizado']" [routerLinkActive]="['active']">
+          Financiamiento de Bienes Canalizados Anual
+          </a> -->
+          <a class="dropdown-item" [routerLink]="['/financiamiento-canalizado-mensual']"
+             [routerLinkActive]="['active']">
+            Financiamiento de Bienes Canalizados Mensual
+          </a>
+          <!--          <a class="dropdown-item" [routerLink]="['/financiamiento-personal']" [routerLinkActive]="['active']">-->
+          <!--            Financiamiento de Personal-->
+          <!--          </a>-->
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown7" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          EFP
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/main-efp-programa']" [routerLinkActive]="['active']">
+            Categoria Presupuestal
+          </a>
+          <a class="dropdown-item" [routerLink]="['/main-efp-cadena']" [routerLinkActive]="['active']">
+            Cadena Funcional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/meta-presupuestal']" [routerLinkActive]="['active']">
+            Meta Presupuestal
+          </a>
+          <!--<a class="dropdown-item" [routerLink]="['/reporte-presupuestal']" [routerLinkActive]="['active']">
+      Reporte Presupuestal
+      </a>-->
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown8" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Reportes
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/reporte-ceplan']" [routerLinkActive]="['active']">
+            Reporte CEPLAN
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-fisica-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Física Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-personal-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Personal Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-bienes']" [routerLinkActive]="['active']">
+            Reporte Programación Presupuestal Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-comision-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Comisión Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-rutas-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Rutas Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-financimiento-bienes-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Financimiento de Bienes y Servicios Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-vehiculos']" [routerLinkActive]="['active']">
+            Reporte Programación de Vehiculos
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-ugp']" [routerLinkActive]="['active']">
+            Reporte de Presupuestal de Gasto Variable por UGP
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-general']" [routerLinkActive]="['active']">
+            Reporte general
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-general-ua']" [routerLinkActive]="['active']">
+            Reporte general UA
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-general-adicional']" [routerLinkActive]="['active']">
+            Reporte general MAS DEMANDA ADICIONAL
+          </a>
+<!--          <a class="dropdown-item" [routerLink]="['/rep-metas-directivos']" [routerLinkActive]="['active']">-->
+<!--            Matriz de identificación de Metas GdR Directivos-->
+<!--          </a>-->
+<!--          <a class="dropdown-item" [routerLink]="['/rep-metas-subdirectivos']" [routerLinkActive]="['active']">-->
+<!--            Matriz de identificación de Metas GdR SubDirectivos-->
+<!--          </a>-->
+
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown9" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Comisiones y Rutas
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/comision-local']" [routerLinkActive]="['active']">
+            Comisión Local
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-nacional']" [routerLinkActive]="['active']">
+            Comisión Nacional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/rutas']" [routerLinkActive]="['active']">
+            Rutas
+          </a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 1">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown10" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Estratégico
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/home-marco-logico']" [routerLinkActive]="['active']">
+            Marco Lógico
+          </a>
+
+          <a class="dropdown-item" [routerLink]="['/kits']" [routerLinkActive]="['active']">
+            Kits
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown11" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Programación Multianual
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-fisica-acciones']" [routerLinkActive]="['active']">
+            Programación Física de Acciones
+          </a>
+          <!--          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">-->
+          <!--            Programación de Servidores Civiles-->
+          <!--          </a>-->
+          <a *ngIf="flagactivacionfrm" class="dropdown-item" [routerLink]="['/programacion-meta-plaza']"
+             [routerLinkActive]="['active']">
+            Asignación de meta por plaza
+          </a>
+
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-acciones']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Acciones
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown12" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Reportes
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/reporte-ceplan']" [routerLinkActive]="['active']">
+            Reporte CEPLAN
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-fisica-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Física por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-personal-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Personal por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-presupuestal-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Presupuestal por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-comision-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Comisión por UGP Mensual
+          </a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 4">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown13" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Estratégico
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/home-marco-logico']" [routerLinkActive]="['active']">
+            Marco Lógico
+          </a>
+          <a class="dropdown-item" [routerLink]="['/kits']" [routerLinkActive]="['active']">
+            Kits
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown14" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Programación Multianual
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-fisica-acciones']" [routerLinkActive]="['active']">
+            Programación Física de Acciones
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-acciones']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Acciones
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">
+            Programación de Servidores Civiles
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-meta-plaza']"
+             [routerLinkActive]="['active']">
+            Asignación de meta por plaza
+          </a>
+          <a class="dropdown-item" [routerLink]="['/aprobacion-asignacion']" [routerLinkActive]="['active']">
+            Aprobación de Asignación
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown15" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Adicional
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/bandeja-adicional']" [routerLinkActive]="['active']">
+            Bandeja Adicional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/bandeja-ficha']" [routerLinkActive]="['active']">
+            Bandeja Ficha
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown17" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Reportes
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/reporte-ceplan']" [routerLinkActive]="['active']">
+            Reporte CEPLAN
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-fisica-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Física por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-personal-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Personal por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-presupuestal-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Presupuestal por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-comision-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Comisión por UGP Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-rutas-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Rutas por UGP Mensual
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdow18" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Comisiones y Rutas
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/comision-local']" [routerLinkActive]="['active']">
+            Comisión Local
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-nacional']" [routerLinkActive]="['active']">
+            Comisión Nacional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/rutas']" [routerLinkActive]="['active']">
+            Rutas Programadas
+          </a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 5">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown19" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Estratégico
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/home-marco-logico']" [routerLinkActive]="['active']">
+            Marco Lógico
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown20" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Programación Multianual
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-fisica-acciones']" [routerLinkActive]="['active']">
+            Programación Física de Acciones
+          </a>
+          <!--          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">-->
+          <!--            Programación de Servidores Civiles-->
+          <!--          </a>-->
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-acciones']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Acciones
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">
+            Programación de Servidores Civiles
+          </a>
+          <a
+            class="dropdown-item" [routerLink]="['/programacion-meta-plaza']"
+            [routerLinkActive]="['active']">
+            Asignación de meta por plaza
+          </a>
+          <a class="dropdown-item" [routerLink]="['/aprobacion-asignacion']" [routerLinkActive]="['active']">
+            Aprobación de Asignación
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown21" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Adicional
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/bandeja-adicional']" [routerLinkActive]="['active']">
+            Bandeja Adicional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/bandeja-ficha']" [routerLinkActive]="['active']">
+            Bandeja Ficha
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown22" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Reportes
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/reporte-ceplan']" [routerLinkActive]="['active']">
+            Reporte CEPLAN
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-fisica-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Física Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-personal-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación Personal Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-bienes']" [routerLinkActive]="['active']">
+            Reporte Programación Presupuestal Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-comision-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Comisión Mensual
+          </a>
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-rutas-mensual']"
+             [routerLinkActive]="['active']">
+            Reporte Programación de Rutas Mensual
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown23" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Comisiones y Rutas
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/comision-local']" [routerLinkActive]="['active']">
+            Comisión Local
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-nacional']" [routerLinkActive]="['active']">
+            Comisión Nacional
+          </a>
+          <a class="dropdown-item" [routerLink]="['/rutas']" [routerLinkActive]="['active']">
+            Rutas
+          </a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 6">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown24" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Estratégico
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/home-marco-logico']" [routerLinkActive]="['active']">
+            Marco Lógico
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown28" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Programación Multianual
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">
+            Programación de Servidores Civiles
+          </a>
+        </div>
+        <a *ngIf="flagactivacionfrm" class="dropdown-item" [routerLink]="['/programacion-meta-plaza']"
+           [routerLinkActive]="['active']">
+          Asignación de meta por plaza
+        </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 7">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown25" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Estratégico
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/home-marco-logico']" [routerLinkActive]="['active']">
+            Marco Lógico
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Programación Multianual
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <!--          <a class="dropdown-item" [routerLink]="['/programacion-fisica-acciones']" [routerLinkActive]="['active']">-->
+          <!--            Programación Física de Acciones-->
+          <!--          </a>-->
+          <!--          <a class="dropdown-item" [routerLink]="['/programacion-asignacion']" [routerLinkActive]="['active']">-->
+          <!--            Programación de Servidores Civiles-->
+          <!--          </a>-->
+          <!--          <a  class="dropdown-item" [routerLink]="['/programacion-meta-plaza']" [routerLinkActive]="['active']">-->
+          <!--            Asignación de meta por plaza-->
+          <!--          </a>-->
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-acciones']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Acciones
+          </a>
+          <!--          <a class="dropdown-item" [routerLink]="['/aprobacion-asignacion']" [routerLinkActive]="['active']">-->
+          <!--            Aprobación de Asignación-->
+          <!--          </a>-->
+        </div>
+      </li>
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown26" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Reportes
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <!--          <a class="dropdown-item" [routerLink]="['/reporte-ceplan']" [routerLinkActive]="['active']">-->
+          <!--            Reporte CEPLAN-->
+          <!--          </a>-->
+          <!--          <a class="dropdown-item" [routerLink]="['/reporte-programacion-fisica-mensual']"-->
+          <!--             [routerLinkActive]="['active']">-->
+          <!--            Reporte Programación Física Mensual-->
+          <!--          </a>-->
+          <!--          <a class="dropdown-item" [routerLink]="['/reporte-programacion-personal-mensual']"-->
+          <!--             [routerLinkActive]="['active']">-->
+          <!--            Reporte Programación Personal Mensual-->
+          <!--          </a>-->
+          <!--          <a class="dropdown-item" [routerLink]="['/reporte-programacion-presupuestal-mensual']"-->
+          <!--             [routerLinkActive]="['active']">-->
+          <!--            Reporte Programación Presupuestal Mensual-->
+          <!--          </a>-->
+          <!-- <a class="dropdown-item" [routerLink]="['/reporte-programacion-comision-mensual']" [routerLinkActive]="['active']">
+              Reporte Programación de Comisión por UGP Mensual
+          </a> -->
+          <a class="dropdown-item" [routerLink]="['/reporte-programacion-bienes']" [routerLinkActive]="['active']">
+            Reporte Programamación Bienes Canalizados
+          </a>
+        </div>
+      </li>
+      <!-- <li class="nav-item dropdown" [routerLinkActive]="['active']">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Comisiones
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" [routerLink]="['/comision-local']" [routerLinkActive]="['active']">
+                  Comisión Local
+              </a>
+              <a class="dropdown-item" [routerLink]="['/comision-nacional']" [routerLinkActive]="['active']">
+                  Comisión Nacional
+              </a>
+              <a class="dropdown-item" [routerLink]="['/comision-internacional']" [routerLinkActive]="['active']">
+                  Comisión Internacional
+              </a>
+          </div>
+      </li> -->
+      <!-- <li class="nav-item dropdown" [routerLinkActive]="['active']">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Rutas
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" [routerLink]="['/rutas']" [routerLinkActive]="['active']">
+                  Rutas
+              </a>
+
+          </div>
+      </li> -->
+    </ul>
+    <ul class="navbar-nav mr-auto text-white" *ngIf="username.id_estado == 8">
+      <li class="nav-item dropdown" [routerLinkActive]="['active']">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown27" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Adicional
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/programacion-fisica-adicional']" [routerLinkActive]="['active']">
+            Programación Física de Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/programacion-presupuesto-adicional']"
+             [routerLinkActive]="['active']">
+            Programación Presupuestal de Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-local-adicional']" [routerLinkActive]="['active']">
+            Comisiones Locales Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/comision-nacional-adicional']" [routerLinkActive]="['active']">
+            Comisiones Nacionales Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/rutas-adicional']" [routerLinkActive]="['active']">
+            Rutas Adicionales
+          </a>
+          <a class="dropdown-item" [routerLink]="['/bandeja-adicional']" [routerLinkActive]="['active']">
+            Bandeja de Pedidos
+          </a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-users-cog mr-2 .d-none .d-sm-none .d-md-block" style="font-size: 20px"></i>
+          <span class="d-none d-block d-sm-block d-md-none"> <i class="fas fa-users-cog mr-2"
+                                                                style="font-size: 20px"></i></span>{{ username.username }}
+          ({{username.anio}})
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item"
+             style="font-size: 12px; font-weight: bold;">{{ username.nombre_estado | uppercase}}</a>
+          <!-- <a class="dropdown-item" style="font-size: 12px;">{{ username.cargo }}</a> -->
+          <a class="dropdown-item" style="font-size: 12px;">{{ username.dependencia }}</a>
+          <a class="dropdown-item" style="font-size: 12px;">{{ username.unidad }}</a>
+          <a class="dropdown-item" style="color: #3c97dd;" data-toggle="modal" data-target="#modalEditarPass">Cambiar
+            Contraseña</a>
+          <a class="dropdown-item" style="color: red;" (click)="cerrarSesion()">Cerrar Sesión</a>
+
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</nav>
+
+<div class="modal fade" id="modalEditarPass" #modalEditar tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header title-popup">
+        <h5 class="modal-title" id="exampleModalLabel">Cambiar Clave</h5>
+        <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form (ngSubmit)="editarPass()" autocomplete="off" #form="ngForm">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <label>Nueva Contraseña</label>
+              <input type="password" class="form-control form-control-sm" name="clave" maxlength="8"
+                     [(ngModel)]="username.clave" required/>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Repetir Nueva Contraseña</label>
+              <input type="password" class="form-control form-control-sm" name="clave2" maxlength="8"
+                     [(ngModel)]="username.clave2" required/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" #closeModalPass class="btn btn-md btn-danger" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-md btn-primary" [disabled]="!form.valid">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

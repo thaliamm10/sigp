@@ -1,0 +1,61 @@
+
+  .navbar {
+    padding: 0px;
+    background-color: white !important;
+    border-bottom: 3px solid;
+    border-bottom-color: #0070D2;
+    margin-top: 5px;
+  }
+  
+  .active {
+    background-color: #E5F0FA;
+    border-top: 1px solid;
+    border-top-color: #0070D2;
+  }
+
+  li:hover,
+  li:focus,
+  .dropdown-item:focus,
+  .dropdown-item:hover {
+    background-color: #E5F0FA;
+    text-decoration: none;
+    transition: all 0.3s;    
+  }
+  
+  .dropdown-menu {
+    background-color: white;
+    background-clip: padding-box;
+    border: 1px solid;
+    border-color: #E8E8E8;
+  }
+  
+  li {
+    padding: 0.6em;
+  }
+
+  .custom-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 112, 210, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+  }
+
+  .custom-toggler.navbar-toggler {
+    border-color: rgb(0, 112, 210, 0.5);
+  } 
+  
+  .navbar-dark .navbar-nav .nav-link,
+  .dropdown-item {
+    color: black;
+    font-size: 14px;
+  }
+  
+  @media (max-width: 600px) {
+    li:hover,
+    li:focus,
+    .dropdown-item:focus,
+    .dropdown-item:hover {
+      background-color: #558fdb;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+  }
+  

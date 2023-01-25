@@ -1,0 +1,371 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <h4><img src="./assets/img/portafolio.png" width="40" height="40" title="Meta Presupuestal"/> Meta Presupuestal</h4>
+  <hr/>
+  <div class="row">
+    <!--<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12">
+    </div>-->
+    <div class="col-md-1">
+      <label>Periodo:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="anio"
+             style="background-color: #EDEDED;"/>
+    </div>
+    <!-- FINAL - Se comento periodo  -->
+    <div class="col-md-2">
+      <label>Etapa:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa"
+             style="background-color: #EDEDED;"/>
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+      <button *ngIf="flagbtn" class="btn btn-success btn-sm float-right" (click)="exportAsXLSX()"
+              style="margin-top: 16%;">
+        Exportar Tabla <i class="fas fa-file-excel"></i>
+      </button>
+      <button *ngIf="!flagbtn" class="btn btn-success btn-sm float-right" type="button" style="margin-top: 16%;"
+              (click)="exportAsXLSX()"
+              disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </span>
+        Descargando...
+      </button>
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+      <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalAgregarMeta"
+              (click)="getElemento(null)" style="margin-top: 16%;">
+        Agregar Meta <i class="fas fa-plus-circle"></i>
+      </button>
+    </div>
+  </div>
+  <!-- <div class="row">
+      <div class="col-md-6">
+      </div>
+      <div class="col-md-6">
+          <h5>
+              <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalAgregarMeta" (click)="getElemento (null)">
+              Agregar Meta Presupuestal <i class="fas fa-plus-circle"></i>
+              </button>
+          </h5>
+      </div>
+  </div> -->
+  <br>
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <div class="table table-hover display  pb-30 dataTable">
+          <table class="table table-sm">
+            <thead class="thead-dark">
+            <tr class="align-middle">
+              <th class="text-left">Secuencia</th>
+              <th class="text-left">Sec_func</th>
+              <th class="text-left">Categoria Presupuestal</th>
+              <th class="text-left">Cadena Funcional</th>
+              <th class="text-left">Ubigeo</th>
+              <th class="text-center">Estado</th>
+              <th class="text-center">Medida</th>
+            </tr>
+            </thead>
+            <tbody class="tbody-web">
+            <tr *ngFor="let item of lista_meta | paginate: { id: 'pag_meta', itemsPerPage: 20, currentPage: p }">
+              <td class="text-center align-middle">
+                <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalAgregarMeta"
+                   (click)="getElemento(item)">
+                  0000{{ item.id }}
+                </a>
+              </td>
+              <td class="text-left">
+                {{ item.sec_func }}
+              </td>
+              <td class="text-left">
+                {{ item.nombre_categoria }} <br> {{ item.nombre_programa }}
+                <br> {{ item.nombre_producto }} <br> {{ item.nombre_actividad }}
+              </td>
+              <td class="text-left">
+                {{ item.nombre_funcion }} <br> {{ item.nombre_division }}
+                <br> {{ item.nombre_grupo }} <br> {{ item.nombre_finalidad }}
+              </td>
+              <td class="text-left align-middle">
+                {{ item.nombre_departamento }} <br> {{ item.nombre_provincia }} <br> {{ item.nombre_distrito }}
+              </td>
+              <td class="text-center align-middle">
+                                    <span class="label label-{{ item.nombre_estado }}">
+                                        {{ item.nombre_estado }}
+                                    </span>
+              </td>
+              <td class="text-center align-middle">
+                {{ item.nombre_unidad }}
+              </td>
+            </tr>
+            <tr *ngIf="cantidad_lista == 0">
+              <td colspan="6">
+                <p class="text-center mt-2">No hay datos que mostrar</p>
+              </td>
+            </tr>
+            <tr *ngIf="lista_meta == null">
+              <td colspan="6" class="text-center">
+                <div _ngcontent-yme-c5="" class="progressBar">
+                  <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75"
+                         class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         style="width: 100%"></div>
+                  </div>
+                  <h6 class="mt-3">
+                    Procesando Consulta de Actividad Operativa...
+                  </h6>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 text-center" *ngIf="cantidad_lista != 0">
+      <pagination-controls id="pag_meta" class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior"
+                           nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+  </div>
+  <!--  INICIO DEL MODAL(AGREGAR META)   -->
+  <div class="modal fade" #modalAgregarMeta id="modalAgregarMeta" tabindex="-1" role="dialog"
+       aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header title-popup">
+          <h5 class="modal-title" id="exampleModalLabel">Configurar Meta Presupuestal</h5>
+          <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <br>
+        <div class="modal-body">
+          <div class="row p-1">
+            <div class="col-md-12" style="margin: 10px;">
+              <div class="form-inline">
+                <label class="card-text">Sec_func: </label>  <input type="text" [(ngModel)]="sec_func" class="form-control form-control-sm" >
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Categoría</h5>
+                  <p class="card-text">Categoría Presupuestal: </p>
+                  <select [(ngModel)]="id_categoria" (change)="getAllPrograma()" class="form-control form-control-sm"
+                          name="id_categoria">
+                    <option *ngFor=" let listC of lista_categoria"
+                            value="{{listC.id}}"> {{listC.codigo}} - {{listC.nombre}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">Programa Presupuestal: </p>
+                  <select [(ngModel)]="id_programa" (change)="getAllProducto()" class="form-control form-control-sm"
+                          name="id_programa">
+                    <option *ngFor=" let listC of lista_programa" (change)="getAllPrograma()"
+                            value="{{listC.id}}"> {{listC.codigo}} - {{listC.nombre}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">Producto Presupuestal: </p>
+                  <select [(ngModel)]="id_producto" (change)="getAllActividad()" class="form-control form-control-sm"
+                          name="id_producto">
+                    <option *ngFor=" let listC of lista_producto" value="{{listC.id}}">{{listC.codigo}}
+                      - {{listC.nombre}} </option>
+                  </select>
+                  <br>
+                  <p class="card-text">Actividad Presupuestal: </p>
+                  <select [(ngModel)]="id_actividad" class="form-control form-control-sm" name="id_actividad">
+                    <option *ngFor=" let listC of lista_actividad" value="{{listC.id}}"> {{listC.codigo}}
+                      - {{listC.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Cadena Funcional</h5>
+                  <p class="card-text">Función: </p>
+                  <select [(ngModel)]="id_funcion" (change)="getAllDivision()" class="form-control form-control-sm"
+                          name="id_funcion">
+                    <option *ngFor=" let listC of lista_funcion" value="{{listC.id}}"> {{listC.codigo}}
+                      - {{listC.descripcion}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">División: </p>
+                  <select [(ngModel)]="id_division_funcional" (change)="getAllGrupo()"
+                          class="form-control form-control-sm" name="id_division_funcional">
+                    <option *ngFor=" let listC of lista_division" value="{{listC.id}}"> {{listC.codigo}}
+                      - {{listC.descripcion}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">Grupo: </p>
+                  <select [(ngModel)]="id_grupo_funcional" (change)="getAllFinal()" class="form-control form-control-sm"
+                          name="id_grupo_funcional">
+                    <option *ngFor=" let listC of lista_grupo" value="{{listC.id}}">{{listC.codigo}}
+                      - {{listC.descripcion}} </option>
+                  </select>
+                  <br>
+                  <p class="card-text">Finalidad: </p>
+                  <select [(ngModel)]="id_finalidad" class="form-control form-control-sm" name="id_finalidad">
+                    <option *ngFor=" let listC of lista_final" value="{{listC.id}}"> {{listC.codigo}}
+                      - {{listC.descripcion}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Ubigeo</h5>
+                  <p class="card-text">Departamento: </p>
+                  <select [(ngModel)]="id_departamento" (change)="getAllProv()" class="form-control form-control-sm"
+                          name="id_departamento">
+                    <option *ngFor=" let item of lista_dep"
+                            value="{{item.CODI_DEPA_DPT}}"> {{item.NOMB_DPTO_DPT}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">Provincia: </p>
+                  <select [(ngModel)]="id_provincia" (change)="getAllDis()" class="form-control form-control-sm"
+                          name="id_provincia">
+                    <option *ngFor=" let item of lista_prov"
+                            value="{{item.CODI_PROV_TPR}}"> {{item.NOMB_PROV_TPR}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">Distrito: </p>
+                  <select [(ngModel)]="id_distrito" class="form-control form-control-sm" name="id_distrito">
+                    <option *ngFor=" let item of lista_dis"
+                            value="{{item.CODI_DIST_TDI}}"> {{item.NOMB_DIST_TDI}}</option>
+                  </select>
+                  <br>
+                  <p class="card-text">Unidad: </p>
+                  <select [(ngModel)]="id_unidad" class="form-control form-control-sm" name="id_unidad">
+                    <option *ngFor=" let item of lista_unidad" value="{{item.id}}"> {{item.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">ACTIVIDADES OPERATIVAS</h5>
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-12"
+                           *ngIf="lista_ao != null">
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="filtro_ao"
+                               placeholder="Filtrar por nombre o código"
+                               [(ngModel)]="filtro_ao"/>
+                        <br>
+                      </div>
+                      <div class="col-5">
+                        <div class="card text-white">
+                          <div class="card-header bg-primary">Lista de actividades relacionadas</div>
+                          <div class="card-body">
+                            <div
+                              *ngIf="lista1.length>0"
+                              class="table table-sm table-responsive">
+                              <table class="table">
+                                <tbody class="tbody">
+                                <tr
+                                  *ngFor="let item of lista1
+                                  | paginate: { id: 'pag_ao', itemsPerPage: 10, currentPage: p1 }"
+                                  [ngClass]="{ selected: item.flag == 0 || item.flag == false }"
+                                  (click)="selectAO2(item)"
+                                >
+                                  <td class="text-left">
+                                    {{ item.codigo }}: {{item.descripcion}}
+                                  </td>
+                                  <!--      | aofilter: filtro_ao-->
+                                </tr>
+                                </tbody>
+                              </table>
+
+
+                            </div>
+                            <div class="col-md-12 text-center" *ngIf="lista1.length>0">
+                              <pagination-controls
+                                id="pag_ao"
+                                class="my-pagination"
+                                (pageChange)="p1 = $event"
+                                previousLabel="Anterior"
+                                nextLabel="Siguiente">
+                              </pagination-controls>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--                                         <div *ngIf="lista_ao == null" _ngcontent-yme-c5="" class="progressBar">-->
+                        <!--                                           <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">-->
+                        <!--                                             <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%">-->
+                        <!--                                             </div>-->
+                        <!--                                           </div>-->
+                        <!--                                         </div>-->
+
+                      </div>
+                      <div class="col-2 text-center" style="padding-top: 200px;">
+                        <button type="button" class="btn btn-outline-warning" (click)="derecha()">
+                          <i class="fas fa-angle-double-right"></i>
+                        </button>
+                        <br><br>
+                        <button type="button" class="btn btn-outline-warning" (click)="izquierda()">
+                          <i class="fas fa-angle-double-left"></i>
+                        </button>
+                      </div>
+                      <div class="col-5">
+                        <div class="card text-white">
+                          <div class="card-header  bg-primary">Lista de actividades disponibles</div>
+                          <div class="card-body">
+                            <div class="col-md-12">
+                              <div *ngIf="lista2.length>0" class="table table-sm table-responsive">
+                                <table class="table">
+                                  <tbody class="tbody">
+                                  <tr
+                                    *ngFor="let item of lista2
+                                    | aofilter: filtro_ao
+                                    | paginate: { id: 'pag_ao2', itemsPerPage: 10, currentPage: p2 }"
+                                    [ngClass]="{ selected: item.flag == 1 || item.flag == true }"
+                                    (click)="selectAO(item)">
+                                    <td class="text-left">
+                                      {{ item.codigo }}: {{item.descripcion}}
+                                    </td>
+                                  </tr>
+                                  <!--                                  | aofilter: filtro_ao2-->
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div class="col-md-12 text-center" *ngIf="lista2 != null">
+                                <pagination-controls
+                                  id="pag_ao2"
+                                  class="my-pagination"
+                                  (pageChange)="p2 = $event"
+                                  previousLabel="Anterior"
+                                  nextLabel="Siguiente">
+                                </pagination-controls>
+                              </div>
+                              <br>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <form id="formId" (ngSubmit)="guardarAO()" autocomplete="off" #form="ngForm">
+            <div class="modal-footer">
+              <button #closeModalMeta type="button" class="btn btn-danger btn-md" data-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-primary btn-md" type="submit" [disabled]="!form.valid ">
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

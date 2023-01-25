@@ -1,0 +1,147 @@
+<div class="row mt-3">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
+        <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalAgregarMedios" *ngIf="user.id_estado == 3" (click)="getElemento(null)">
+          Agregar Medios de Verificación <i class="fas fa-plus-circle"></i>
+      </button>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-hover display  pb-30 dataTable">
+                <thead class="thead-dark bg-blue">
+                    <tr>
+                        <th class="text-left">Código</th>
+                        <th class="text-left">Acción</th>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Estado</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: white;">
+                    <tr *ngFor="let item of lista_medios">
+                        <td class="text-left">
+                            {{item.codigo}}
+                        </td>
+                        <td class="text-left">
+                            <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" *ngIf="user.id_estado == 3" data-target="#modalAgregarMedios" (click)="getElemento(item)">
+                          {{ item.nombre_accion }}
+                          </a>
+                            <a *ngIf="user.id_estado !=3">
+                              {{ item.nombre }}
+                          </a>
+                        </td>
+                        <td class="text-left">
+                            {{item.nombre}}
+                        </td>
+                        <td class="text-center align-middle">
+                            <span class="label label-{{ item.nombre_estado }}">
+                      {{ item.nombre_estado }}
+                  </span>
+                        </td>
+
+                    </tr>
+                    <tr *ngIf="cantidad_lista == 0">
+                        <td colspan="7">
+                            <p class="text-center mt-2">No hay datos que mostrar</p>
+                        </td>
+                    </tr>
+                    <tr *ngIf="cantidad_lista == null">
+                        <td colspan="7" class="text-center">
+                            <div _ngcontent-yme-c5="" class="progressBar">
+                                <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <h6 class="mt-3">
+                                    Procesando Productos...
+                                </h6>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Modal de Medios de verificacion-->
+<div class="modal fade" id="modalAgregarMedios" #modalAgregarMedios tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-g modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header title-popup">
+                <h5 class="modal-title" id="exampleModalLabel">Configuración de Medios de Verificación</h5>
+                <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form (ngSubmit)="guardarMedios()" autocomplete="off" #form="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Producto:</label>
+                                    <select [(ngModel)]="id_producto" class="form-control form-control-sm" name="id_producto" (change)="getAllAccionesxProducto()">>
+                            <option   *ngFor="let item_producto of lista_producto"
+                            value="{{ item_producto.id }}">
+                            {{ item_producto.nombre }}
+                            </option>
+                          </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label>Acción:</label>
+                                    <select [(ngModel)]="medios.id_accion" class="form-control form-control-sm" name="id_accion">
+                            <option   *ngFor="let item_accion of lista_acciones"
+                            value="{{ item_accion.id }}">
+                            {{ item_accion.nombre }}
+                            </option>
+                          </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Nombre:</label>
+                                    <input class="form-control  text-justify form-control-sm" [(ngModel)]="medios.nombre" required name="nombre" #desc="ngModel" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Descripción:</label>
+                                    <textarea rows="2" class="form-control  text-justify form-control-sm" [(ngModel)]="medios.descripcion" required name="descripcion" #desc="ngModel">
+                            </textarea>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Estado:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="medios.id_estado" name="id_estado">
+                          <option value="1">Activo</option>
+                          <option value="0">Desactivado</option>
+                          </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Código</label>
+                                    <input class="form-control  text-justify form-control-sm" [(ngModel)]="medios.codigo" required name="codigo" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" #closeModalMedios class="btn btn-md btn-danger" data-dismiss="modal">
+                  Cancelar                    
+                </button>
+                    <button type="submit" class="btn btn-md btn-primary" [disabled]="!form.valid ">
+                  Guardar
+                </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

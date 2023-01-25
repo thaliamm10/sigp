@@ -1,0 +1,429 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+            <h4>
+                <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #3c97dd;" /> Programación Presupuestal de Acciones
+            </h4>
+        </div>
+        <div class="col-md-12 col-lg-6 col-xl-6 col-sm-12 col-xs-12 text-right">
+            <button class="btn btn-sm" style="border: none; color: #000; background-color:#EDEDED;">
+                UGP: S/. {{total_ugp_marco | thousandsPipe }} 
+            </button>
+            <button class="btn btn-sm ml-1" style="border: none; color: #000; background-color:#EDEDED;">
+                Genérica: S/. {{total_generica_marco | thousandsPipe }} 
+            </button>
+            <button class="btn float-right btn-sm ml-1" style="border: none; color: #fff;" 
+            [ngStyle]="{'background-color': (total_ugp_ejecutado > total_ugp_marco) ? '#ed5269': '#3bc472' }" 
+            data-toggle="modal" data-target="#modalMarcoPresupuestal">
+                       Disponible: S/. {{total_ugp_saldo | thousandsPipe }} 
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <!-- INICIO - Se comento periodo  -->
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <!-- FINAL - Se comento periodo  -->
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-4">
+            <label>UGP:</label>
+            <select *ngIf="lista_ugp != null" [(ngModel)]="id_ugp" class="form-control form-control-sm" name="id_ugp" (change)="getAllProducto()">
+            <option
+                *ngFor="let item_ugp of lista_ugp"
+                value="{{ item_ugp.id }}">
+                {{ item_ugp.nombre }} (S/. {{ item_ugp.monto_ejecutado | thousandsPipe }})
+            </option>
+            </select>
+            <div *ngIf="lista_ugp == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <label>Producto:</label>
+            <select *ngIf="lista_producto != null" [(ngModel)]="id_producto" class="form-control form-control-sm" name="id_producto" (change)="getAllAccionesxProducto()">
+        <option
+            *ngFor="let item_producto of lista_producto"
+            value="{{ item_producto.id }}">
+            {{ item_producto.nombre }} (S/. {{ item_producto.monto_ejecutado | thousandsPipe }})
+        </option>
+        </select>
+            <div *ngIf="lista_producto == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-7">
+            <label>Acciones del Producto:</label>
+            <select *ngIf="lista_accion_producto != null" [(ngModel)]="id_accion" class="form-control form-control-sm" name="id_accion" (change)="getChangeAcciones()">
+        <option
+            *ngFor="let item_accion of lista_accion_producto"
+            value="{{ item_accion.id }}">
+            {{ item_accion.nombre }} (S/. {{ item_accion.presupuesto | thousandsPipe }})
+        </option>
+        </select>
+            <div *ngIf="lista_accion_producto == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-2">
+            <label></label>
+            <button class="btn btn-primary float-right btn-sm mt-4" data-toggle="modal" data-target="#modalAgregarBienes" *ngIf="cantidad_lista_pfa != 0">
+            Vincular Bienes <i class="fas fa-plus-circle"></i>
+        </button>
+        </div>
+    </div>
+    <br>
+    <div class="row" *ngFor="let pfpdt of pfa">
+        <div class="col-md-12">
+            <h6>{{ pfpdt.nombre_accion }} &nbsp;&nbsp;
+                <i class="fas fa-info-circle" style="font-size: 1.23em; cursor: pointer;" title="¿Cómo programar está acción?" data-toggle="modal" (click)="getDefinicion(pfpdt)" data-target="#modalDefinicion"></i>
+            </h6>
+            <div class="table-responsive p-2">
+                <table class="table dataTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-left align-middle" style="width: 170px;">Centro de Costo</th>
+                            <th class="text-left align-middle" style="width: 150px;">Unidad Medida</th>
+                            <th class="text-center align-middle">ENE</th>
+                            <th class="text-center align-middle">FEB</th>
+                            <th class="text-center align-middle">MAR</th>
+                            <th class="text-center align-middle">ABR</th>
+                            <th class="text-center align-middle">MAY</th>
+                            <th class="text-center align-middle">JUN</th>
+                            <th class="text-center align-middle">JUL</th>
+                            <th class="text-center align-middle">AGO</th>
+                            <th class="text-center align-middle">SET</th>
+                            <th class="text-center align-middle">OCT</th>
+                            <th class="text-center align-middle">NOV</th>
+                            <th class="text-center align-middle">DIC</th>
+                            <th class="text-center align-middle">TOTAL</th>
+                            <!-- <th></th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white; width:700px !important">
+                        <tr>
+                            <td class="text-left align-middle">
+                                {{ pfpdt.nombre_unidad_organo }}
+                            </td>
+                            <td class="text-left align-middle">
+                                {{ pfpdt.nombre_unidad_medida }}
+                            </td>
+                            <td style="width:90px !important; text-align: -webkit-center !important" *ngFor="let item of pfpdt.lista_periodo" class="text-center align-middle p-0">
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">{{item.cantidad}}</span>
+                            </td>
+                            <td style="width:90px !important" class="text-center align-middle">
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">{{ pfpdt.suma }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h6>Presupuesto Programado: S/. {{ suma_total | thousandsPipe }}</h6>
+            <div class="table-responsive p-2">
+                <table class="table table-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-left align-middle">Bienes/Servicio</th>
+                            <th class="text-left align-middle">UM</th>
+                            <th class="text-left align-middle">Clasificador</th>
+                            <th class="text-center align-middle">ENE</th>
+                            <th class="text-center align-middle">FEB</th>
+                            <th class="text-center align-middle">MAR</th>
+                            <th class="text-center align-middle">ABR</th>
+                            <th class="text-center align-middle">MAY</th>
+                            <th class="text-center align-middle">JUN</th>
+                            <th class="text-center align-middle">JUL</th>
+                            <th class="text-center align-middle">AGO</th>
+                            <th class="text-center align-middle">SET</th>
+                            <th class="text-center align-middle">OCT</th>
+                            <th class="text-center align-middle">NOV</th>
+                            <th class="text-center align-middle">DIC</th>
+                            <th class="text-center align-middle">TOTAL</th>
+                            <!-- <th></th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white; width:700px !important">
+                        <tr *ngIf="bienes_ppa == null">
+                            <td colspan="16" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <h6 class="mt-3">
+                                        Procesando Consulta de Programación...
+                                    </h6>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="cantidad_lista == 0">
+                            <td colspan="15">No hay datos para mostrar</td>
+                        </tr>
+                        <tr [ngStyle]="{'background-color': (item.canalizado==0) ? '#FEF9E7':'#FFFFFF' }" *ngFor="let item of bienes_ppa; index as i">
+                            <td class="text-left align-middle">
+                                {{ item.nombre_bienes }}
+                            </td>
+                            <td class="text-left align-middle">
+                                {{ item.nombre_unidad }}
+                            </td>
+                            <td class="text-left align-middle">
+                                {{ item.codigo_clasificador }}
+                            </td>
+                            <td style="width:107px !important; text-align: -webkit-center !important" *ngFor="let periodo of item.lista_periodo" class="text-center align-middle p-0">
+                                <input type="number" class="form-control form-control-sm w-120 text-center" [(ngModel)]="periodo.cantidad" (keypress)="validarSoloNumeros($event)" max="99" min="0" step="1" (keyup)="sumarTotal(i)" *ngIf="periodo.meta_fisica != 0 && item.canalizado == 1"
+                                    [ngClass]="{ 'form-control-plaintext': condicion == true }" />
+                                <span class="form-control form-control-sm w-60 text-center" style="background-color:#F0F0F0; font-size: 12px;" *ngIf="periodo.meta_fisica == 0 || item.canalizado == 0" [ngStyle]="{'background-color': (periodo.meta_fisica != 0  || item.canalizado == 0) ? '#FFFFFF': '#F0F0F0' }">
+                                    {{periodo.cantidad}}
+                                </span>
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">S/.{{periodo.monto | thousandsPipe }}</span>
+                            </td>
+                            <td class=" align-middle text-align: -webkit-center !important">
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">{{ item.suma | thousandsPipe }}</span>
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">S/.{{ item.monto | thousandsPipe }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12" style="text-align: -webkit-right">
+            <button class="btn btn-primary btn-md" (click)="guardarPPAccion()" *ngIf="cantidad_lista != 0">
+        Guardar Programación
+      </button>
+        </div>
+    </div>
+    <br>
+    <!-- INICIO MODAL AGREGAR Bienes-->
+    <div class="modal fade" id="modalAgregarBienes" #modalAgregarBienes tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">Vinculación de Bienes</h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Filtrar Bienes:</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="Nombre o Código" [(ngModel)]="term" />
+                        </div>
+                    </div>
+                    <br>
+                    <div *ngIf="lista_bienes == null" _ngcontent-yme-c5="" class="progressBar">
+                        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <p class="mt-3 text-center">
+                            Procesando Consulta de Bienes...
+                        </p>
+                    </div>
+                    <h6 class="text-left mt-2" style="color: red;" *ngIf="lista_bienes?.length == 0">
+                        No tiene bienes.
+                    </h6>
+                    <div class="row" *ngIf="lista_bienes?.length > 0">
+                        <div class="col-md-12">
+                            <div class="table table-sm table-responsive">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="w-50">Bienes</th>
+                                            <th class="text-center">Código</th>
+                                            <th class="text-center">UM</th>
+                                            <th class="text-center">Precio</th>
+                                            <th class="text-center">Clasificador</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="tbody">
+                                        <tr *ngFor="let bienes of lista_bienes | bienesfilter: term | paginate: { itemsPerPage: 10, currentPage: p }" (click)="select(bienes)" [ngClass]="{ selected: bienes.flag }">
+                                            <td class="text-left" style="min-width: 350px;">{{ bienes.nombre }}</td>
+                                            <td class="text-center">{{ bienes.codigo }}</td>
+                                            <td class="text-center">{{ bienes.nombre_unidad_medida }}</td>
+                                            <td class="text-right" style="min-width: 100px;">{{ bienes.precio | currency: "S/. " }}</td>
+                                            <td class="text-center">{{ bienes.nombre_clasificador }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center" *ngIf="lista_bienes != null">
+                            <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                            </pagination-controls>
+                        </div>
+                    </div>
+                </div>
+                <form (ngSubmit)="vincularBienes()" #dependencia="ngForm">
+                    <div class="modal-footer">
+                        <button #closeModalBienes type="button" [disabled]="lista_bienes?.length <= 0" class="btn btn-md btn-danger" data-dismiss="modal">
+                        Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-md btn-primary" [disabled]="!x_progreso_bienes && lista_bienes?.length <= 0">
+                        Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR Bienes-->
+
+    <!--Modal de Definición operacional y Criterios de programación-->
+    <div class="modal fade" id="modalDefinicion" #modalDefinicion tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">{{nombre_accion}}</h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Definición</h5>
+                    <div id="tab1">
+                        <label>1. Definición de la intervención (Acción)</label>
+                        <textarea class="form-control form-control-sm" name="df1" readonly [(ngModel)]="definicionProducto.df1" required></textarea>
+                        <br>
+                        <label>2. Unidad de Medida</label>
+                        <textarea class="form-control form-control-sm" name="df2" readonly [(ngModel)]="definicionProducto.df2" required></textarea>
+                        <br>
+                        <label>3. Meta</label>
+                        <textarea class="form-control form-control-sm" name="df3" readonly [(ngModel)]="definicionProducto.df3" required></textarea>
+                        <br>
+                        <label>4. Procedimiento realizado para la ejecución de la acción</label>
+                        <textarea class="form-control form-control-sm" name="df4" readonly [(ngModel)]="definicionProducto.df4" required></textarea>
+                        <br>
+                        <label>5. Despliegue de tareas para la intervención</label>
+                        <textarea class="form-control form-control-sm" name="df5" readonly [(ngModel)]="definicionProducto.df5" required></textarea>
+                        <br>
+                        <label>6. Frecuencua de la Acción</label>
+                        <textarea class="form-control form-control-sm" name="df6" readonly [(ngModel)]="definicionProducto.df6" required></textarea>
+                        <br>
+                        <label>7. Donde realiza la acción?</label>
+                        <textarea class="form-control form-control-sm" name="df7" readonly [(ngModel)]="definicionProducto.df7" required></textarea>
+                        <br>
+                        <label>8. ¿Quien realiza la acción?</label>
+                        <textarea class="form-control form-control-sm" name="df8" readonly [(ngModel)]="definicionProducto.df8" required></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INICIO MODAL Marco Presupuestal-->
+    <div class="modal fade" id="modalMarcoPresupuestal" #modalMarcoPresupuestal tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">Marco Presupuestal</h5>
+                    <button #closeModalMarco type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p style="font-weight: bold;">UGP: </p>
+                        </div>
+                        <div class="col-md-10">
+                            {{ nombre_ugp | uppercase }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p style="font-weight: bold;">Responsable: </p>
+                        </div>
+                        <div class="col-md-10">
+                            {{ nombre_responsable }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table table-sm table-responsive">
+                                <table class="table">
+                                    <tbody class="tbody2">
+                                        <tr style="background-color: #E1F5FE;">
+                                            <td class="text-left font-weight-bold">Presupuesto por UGP:</td>
+                                            <td class="text-right font-weight-bold">S/. {{ total_ugp_marco | thousandsPipe }}</td>
+                                        </tr>
+                                        <tr style="background-color: #E1F5FE;">
+                                            <td class="text-left font-weight-bold"> Total Ejecutado ({{ porcentaje | thousandsPipe }}%):</td>
+                                            <td class="text-right font-weight-bold">S/. {{ total_ugp_ejecutado | thousandsPipe}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left pl-3">Gastos Variable:</td>
+                                            <td class="text-right">
+                                                S/. {{total_bienes_ejecutado | thousandsPipe }}
+                                            </td>
+                                        </tr>
+                                        <!-- <tr *ngIf="user.id_estado==3"> 
+                                            <td class="text-left pl-3">Bienes Canalizados:</td>
+                                            <td class="text-right">
+                                                S/. {{ bienes_canalizado | thousandsPipe}}
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="text-left pl-3">Comisiones de Servicio:</td>
+                                            <td class="text-right">S/. {{comision_ejecutado | thousandsPipe }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left pl-3">Rutas de Servicio:</td>
+                                            <td class="text-right">S/. {{rutas_ejecutado | thousandsPipe }}</td>
+                                        </tr>
+                                        <tr style="background-color: #FEF9E7;">
+                                            <td class="text-left font-weight-bold">Saldo UGP:</td>
+                                            <td class="text-right font-weight-bold" [ngStyle]="{'color': (total_ugp_ejecutado > total_ugp_marco) ? 'red': '#3c97dd' }">S/. {{total_ugp_saldo | thousandsPipe }}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <table class="table">
+                                    <tr>
+                                        <td class="text-left font-weight-bold"> Total Bienes Canalizados:</td>
+                                        <td class="text-right font-weight-bold">S/. {{ bienes_canalizado | thousandsPipe}}</td>
+                                    </tr>
+                                    <tr *ngFor="let item of lista_marco_canalizado">
+                                        <td class="text-left pl-3">
+                                            <!--<a style="color: #006DDC; cursor: pointer;" (click)="getAllBienesCanalizados()">
+                                            {{ item.nombre_corto_organo}}
+                                            </a>-->
+                                            {{ item.nombre_corto_organo}}
+                                        </td>
+                                        <td class="text-right">S/. {{ item.ugp_ejecutado | thousandsPipe}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR Bienes-->
+
+</div>

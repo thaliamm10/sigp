@@ -1,0 +1,169 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <h4>
+      <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #3c97dd;" /> Aprobación de Asignación
+  </h4>
+  <hr />
+  <div class="row">
+    <div class="col-md-2">
+        <label>Periodo:</label>
+        <select
+        [(ngModel)]="id_anio"
+        class="form-control form-control-sm"
+        name="id_anio"
+        (change)="select_anio()">
+        <option
+            *ngFor="let ciclo of lista_ciclo"
+            value="{{ ciclo.id }}">
+            {{ ciclo.anio }}
+        </option>
+        </select>
+    </div>
+    <div class="col-md-8">
+        <label>Puestos:</label>
+        <input type="text" class="form-control form-control-sm w-100" [(ngModel)]="term"
+          placeholder="Buscar puesto..." />
+    </div>
+  </div>
+  <br>
+
+  <div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+          <table id="tbienes" class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th class="w-10">CÓDIGO</th>
+                <th class="w-20">PUESTO</th>
+                <th class="w-20">DEPENDENCIA</th>
+                <th class="w-20">UNIDAD</th>
+                <th class="w-30">CARGO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of listaUsuarios | plazafilter: term" (click)="select(user)"
+                [ngClass]="{ selected: user.estado == true }" style="background-color: white">
+                <td class="w-10"><i class="fas fa-caret-right"></i> {{ user.CODIGO_PLAZA }}</td>
+                <td class="w-20">
+                  
+                  {{ user.NOMBRE }}  {{ user.A_PATERNO }}  {{ user.A_MATERNO }}
+                </td>
+                <td class="w-20">{{ user.DEPENDENCIA }}</td>
+                <td class="w-20">{{ user.UNIDAD }}</td>
+                <td class="w-30">{{ user.CARGO }}</td>
+              </tr>
+              <tr *ngIf="listaUsuarios == null">
+                  <td colspan="5" class="text-center">
+                    <div _ngcontent-yme-c5="" class="progressBar">                    
+                        <div _ngcontent-yme-c5=""
+                            class="progress mt-3 text-right"
+                            style="height: 20px; margin: 0 auto" >
+                            <div
+                            _ngcontent-yme-c5=""
+                            aria-valuemax="100"
+                            aria-valuemin="0"
+                            aria-valuenow="75"
+                            class="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar"
+                            style="width: 100%"
+                            ></div>
+                        </div>
+                        <h6 class="mt-3">
+                            Procesando Consulta de Puestos...
+                        </h6>
+                    </div>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div>
+  <br>  
+  <div class="row" *ngIf="result != null">
+    <div class="col-md-12">
+      <h6>Puesto: {{ personal_seleccionado }}</h6>        
+    </div>
+  </div>
+  <br>
+  <div class="row" *ngIf="result != null">
+    <div class="col-md-12">
+      <div class="row" *ngFor="let item of result.lista_accion; index as i">
+        <div class="col-md-12">
+          <div class="row">
+              <div class="col-md-12">
+                <label style="color: #3c97dd; font-weight: bold;">{{ result.lista_accion[i].nombre_accion }}</label>                
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 table-responsive">
+                <table class="table table-sm">
+                  <thead class="thead-dark" style="font-size: 12px;">
+                    <tr>
+                      <th class="text-center" style="width:60px">ENE</th>
+                      <th class="text-center" style="width:60px">FEB</th>
+                      <th class="text-center" style="width:60px">MAR</th>
+                      <th class="text-center" style="width:60px">ABR</th>
+                      <th class="text-center" style="width:60px">MAY</th>
+                      <th class="text-center" style="width:60px">JUN</th>
+                      <th class="text-center" style="width:60px">JUL</th>
+                      <th class="text-center" style="width:60px">AGO</th>
+                      <th class="text-center" style="width:60px">SET</th>
+                      <th class="text-center" style="width:60px">OCT</th>
+                      <th class="text-center" style="width:60px">NOV</th>
+                      <th class="text-center" style="width:60px">DIC</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngFor="let item2 of result.lista_accion[i].lista_periodo; index as a"
+                      style="width:90px; text-align: center;" 
+                      [ngStyle]="{'background-color': (result.lista_accion[i].lista_periodo[a].porcentaje != 0) ? '#E5F0FA': '#FFFFFF' }">
+                        {{result.lista_accion[i].lista_periodo[a].porcentaje}}%     
+                      </td>
+                      <td class="width-control align-middle">
+                        <i class="fas fa-trash ml-3"></i>
+                      </td>
+                    </tr>
+                  </tbody>                    
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 table-responsive">
+          <table class="table table-sm">
+              <tr>
+                <td colspan="13"><label>Total Asignación:</label></td>
+              </tr>
+              <tr>
+                <td style="width:90px; text-align: center;" 
+                  [ngStyle]="{'background-color': (result.lista_totales[c].total != 0) ? '#E5F0FA': '#FFFFFF' }"
+                  *ngFor="let item_totales of result.lista_totales; index as c">
+                  {{result.lista_totales[c].total}}%
+                </td>
+                <td class="width-control"></td>
+              </tr>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col-md-8"></div>
+          <div class="col-md-2 text-right mb-4">
+            <button class="btn btn-sm btn-primary"
+              (click)="guardarAprobacion()"> Aprobar Asignación
+            </button>
+          </div>
+          <div class="col-md-2 text-right mb-4">
+            <button class="btn btn-sm btn-warning" style="color:#fff;"
+              (click)="devolverAprobacion()"> Devolver Asignación
+            </button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="row"></div>
+</div>

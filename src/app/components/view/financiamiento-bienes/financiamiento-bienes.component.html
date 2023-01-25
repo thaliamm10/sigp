@@ -1,0 +1,106 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <h4>
+                <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Financiamiento de Bienes y Servicios
+            </h4>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 text-right">
+            <span *ngFor="let item of lista_tope_ugp"
+                class="btn btn-sm mt-2 ml-1" style="border: none; background-color:#EDEDED; padding: 3px 5px;">
+                <span class="btn btn-sm no-border" style="padding: 0px 5px;">{{ item.nombre_fuente }} </span>     
+                <span class="btn btn-sm no-border" style="min-width: 70px; padding: 0px 5px; color: #188ef4; background-color:#fff;">{{ item.tope | thousandsPipe }} </span>                
+                <span class="btn btn-sm no-border" style="min-width: 70px; color: #000; padding: 0px 5px; background-color:#FCF3CF;">{{item.financiado_anual | thousandsPipe }}</span>
+                <span class="btn btn-sm no-border" style="padding: 0px 5px; background-color:#fff;"
+                [ngStyle]="{'color': (item.financiado > item.tope) ? '#ed5269': '#10bc55' }">{{ item.saldo | thousandsPipe }} </span>     
+            </span>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="user.anio" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-5">
+            <label>UGP</label>
+            <select class="form-control form-control-sm" [(ngModel)]="id_ugp" (change)="getAllBienesxUGP()">
+            <option *ngFor="let item_ugp of ugp" value="{{ item_ugp.id }}">{{item_ugp.nombre}}</option>
+            </select>
+        </div>
+        <div class="col-md-4 float-right">
+            <button class="btn btn-success btn-sm mt-4" (click)="exportAsXLSX()">
+            <i class="fas fa-file-excel"></i> Exportar
+        </button>&nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm mt-4" (click)="Todos(listaBienes)">
+            Guardar Todo
+        </button> &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm mt-4" (click)="TodosRO()">
+            Asignar a Todos R.O.
+        </button>
+        </div>
+    </div>
+    <br>
+    <h6>Presupuesto Programado: S/. {{ total_financiamiento | thousandsPipe }}</h6>
+    <div *ngIf="lista_bienes == null" _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+        </div>
+        <p class="mt-3 text-center">
+            Procesando Consulta de Financiamiento...
+        </p>
+    </div>
+    <h6 class="text-left mt-2" style="color: red;" *ngIf="lista_bienes?.length == 0">
+        No tiene bienes programados.
+    </h6>
+    <div class="row" *ngIf="lista_bienes?.length > 0">
+        <div class="col-md-12">
+            <div class="table-reponsive">
+                <table class="table table-hover display  pb-30 dataTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center">Clasificador</th>
+                            <th class="text-left">Bien y Servicio</th>
+                            <th class="text-center" style="width:120px;">Monto</th>
+                            <th class="text-center" style="width:80px;">% R.D.R.</th>
+                            <th class="text-center" style="width:120px;">Monto R.D.R.</th>
+                            <th class="text-center" style="width:80px;">% R.O.</th>
+                            <th class="text-center" style="width:120px;">Monto R.O.</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody">
+                        <tr *ngFor="let bien of lista_bienes">
+                            <td class="text-center">{{ bien.codigo_clasificador }}</td>
+                            <td class="text-left">
+                                {{ bien.nombre_bienes }}
+                            </td>
+                            <td class="text-right">
+                                {{ bien.monto | currency: "S/. " }}
+                            </td>
+                            <td class="text-center">
+                                {{ bien.rdr | number:'1.1-2'}} %
+                            </td>
+                            <td class="text-right">
+                                <input type="number" class="form-control form-control-sm w-120 text-right" [(ngModel)]="bien.monto_rdr" 
+                                (keypress)="validarSoloNumeros($event)" (keyup)="calcular(bien,1)"/>
+                            </td>
+                            <td class="text-center">
+                                {{ bien.ro | number:'1.1-2' }} %
+                            </td>
+                            <td class="text-right">
+                                <input type="number" class="form-control form-control-sm w-120 text-right" [(ngModel)]="bien.monto_ro" 
+                                (keypress)="validarSoloNumeros($event)" (keyup)="calcular(bien,2)" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

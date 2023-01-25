@@ -1,0 +1,421 @@
+<app-header></app-header>
+
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>
+                <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #3c97dd;" /> Programación Presupuestal de Adicionales
+            </h4>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+            <button class="btn btn-warning float-right btn-sm" data-toggle="modal" data-target="#modalMarcoPresupuestal">
+                       Total UGP: S/. {{total_ugp_ejecutado | thousandsPipe }}</button>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-4">
+            <label>UGP:</label>
+            <select *ngIf="lista_ugp != null" [(ngModel)]="id_ugp" class="form-control form-control-sm" name="id_ugp" (change)="getAllProducto()">
+            <option
+                *ngFor="let item_ugp of lista_ugp"
+                value="{{ item_ugp.id }}">
+                {{ item_ugp.nombre }} (S/. {{ item_ugp.monto_ejecutado | thousandsPipe }})
+            </option>
+            </select>
+            <div *ngIf="lista_ugp == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <label>Producto:</label>
+            <select *ngIf="lista_producto != null" [(ngModel)]="id_producto" class="form-control form-control-sm" name="id_producto" (change)="getAllAccionesxProducto()">
+            <option
+                *ngFor="let item_producto of lista_producto"
+                value="{{ item_producto.id }}">
+                {{ item_producto.nombre }} (S/. {{ item_producto.monto_ejecutado | thousandsPipe }})
+            </option>
+            </select>
+            <div *ngIf="lista_producto == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-7">
+            <label>Acciones del Producto:</label>
+            <select *ngIf="lista_accion_producto != null" [(ngModel)]="id_accion" class="form-control form-control-sm" name="id_accion" (change)="getChangeAcciones()">
+        <option
+            *ngFor="let item_accion of lista_accion_producto"
+            value="{{ item_accion.id }}">
+            {{ item_accion.nombre }} (S/. {{ item_accion.presupuesto | thousandsPipe }})
+        </option>
+        </select>
+            <div *ngIf="lista_accion_producto == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-2">
+            <label></label>
+            <button class="btn btn-primary float-right btn-sm mt-4" data-toggle="modal" data-target="#modalAgregarBienes" *ngIf="cantidad_lista_pfa != 0">
+            Vincular Bienes <i class="fas fa-plus-circle"></i>
+        </button>
+        </div>
+    </div>
+    <br>
+    <h6>Meta Física Adicional: </h6>
+    <div *ngIf="pfa == null" _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+        </div>
+        <p class="mt-3 text-center">
+            Procesando Consulta de Meta Física...
+        </p>
+    </div>
+    <div class="row" *ngIf="pfa1?.length > 0">
+        <div class="col-md-12" *ngFor="let pfpdt of pfa; let i = index">            
+            <div class="table-responsive p-2">
+                <table class="table dataTable">
+                    <thead class="thead-dark bg-blue">
+                        <tr>
+                            <th class="text-left align-middle" style="width: 170px;">Centro de Costo</th>
+                            <th class="text-left align-middle" style="width: 150px;">Unidad Medida</th>
+                            <th class="text-left align-middle" style="width: 150px;">Meta Física</th>
+                            <th class="text-center align-middle">ENE</th>
+                            <th class="text-center align-middle">FEB</th>
+                            <th class="text-center align-middle">MAR</th>
+                            <th class="text-center align-middle">ABR</th>
+                            <th class="text-center align-middle">MAY</th>
+                            <th class="text-center align-middle">JUN</th>
+                            <th class="text-center align-middle">JUL</th>
+                            <th class="text-center align-middle">AGO</th>
+                            <th class="text-center align-middle">SET</th>
+                            <th class="text-center align-middle">OCT</th>
+                            <th class="text-center align-middle">NOV</th>
+                            <th class="text-center align-middle">DIC</th>
+                            <th class="text-center align-middle">TOTAL</th>
+                            <!-- <th></th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="width:700px !important">
+                        <tr style="background-color:#E5E7E9;">
+                            <td rowspan="2" class="text-left align-middle">
+                                {{ pfpdt.nombre_unidad_organo }}
+                            </td>
+                            <td rowspan="2" class="text-left align-middle">
+                                {{ pfpdt.nombre_unidad_medida }}
+                            </td>
+                            <td class="text-left align-middle">
+                                PROGRAMADA
+                            </td>
+                            <td style="width:80px !important; text-align: -webkit-center !important" *ngFor="let item of pfa1[i].lista_periodo" class="text-center align-middle p-0">
+                                {{item.cantidad}}
+                            </td>
+                            <td style="width:80px !important" class="text-center align-middle">{{ pfa1[i].suma }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left align-middle">
+                                ADICIONAL
+                            </td>
+                            <td [ngStyle]="{'background-color': (item.cantidad>0) ? '#fff3b4':'#fff' }"  style="width:80px !important; text-align: -webkit-center !important" *ngFor="let item of pfpdt.lista_periodo" class="text-center align-middle p-0">
+                                {{item.cantidad}}
+                            </td>
+                            <td style="width:80px !important" class="text-center align-middle">{{ pfpdt.suma }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <h6>Presupuesto Adicional Programado: S/. {{ suma_total | thousandsPipe }}</h6>
+    <div *ngIf="bienes_ppa == null" _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+        </div>
+        <p class="mt-3 text-center">
+            Procesando Consulta de Programación...
+        </p>
+    </div>
+    <h6 class="text-left mt-2" style="color: red;" *ngIf="bienes_ppa?.length == 0">
+        No tiene bienes programados.
+    </h6>
+    <div class="row" *ngIf="bienes_ppa?.length > 0">
+        <div class="col-md-12">            
+            <div class="table-responsive p-2">
+                <table class="table table-sm">
+                    <thead class="thead-dark bg-blue">
+                        <tr>
+                            <th class="text-left align-middle" style="width: 300px;">Bienes/Servicio</th>
+                            <!-- <th class="text-left align-middle" style="width: 100px;">UM</th>
+                            <th class="text-left align-middle" style="width: 100px;">Clasificador</th> -->
+                            <th class="text-left align-middle" style="width: 150;">Condición</th>
+                            <th class="text-center align-middle">ENE</th>
+                            <th class="text-center align-middle">FEB</th>
+                            <th class="text-center align-middle">MAR</th>
+                            <th class="text-center align-middle">ABR</th>
+                            <th class="text-center align-middle">MAY</th>
+                            <th class="text-center align-middle">JUN</th>
+                            <th class="text-center align-middle">JUL</th>
+                            <th class="text-center align-middle">AGO</th>
+                            <th class="text-center align-middle">SET</th>
+                            <th class="text-center align-middle">OCT</th>
+                            <th class="text-center align-middle">NOV</th>
+                            <th class="text-center align-middle">DIC</th>
+                            <th class="text-center align-middle">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white; width:700px !important">
+                        <tr *ngFor="let item of bienes_ppa; index as i">
+                            <td class="text-left align-middle">                                
+                                <span style="display: block; width: 100%; padding: .35rem .0rem;">{{ item.nombre_bienes }}</span>
+                                <span style="display: block; width: 100%; padding: .35rem .0rem;">MEDIDA: {{ item.nombre_unidad }}</span>
+                                <span style="display: block; width: 100%; padding: .35rem .0rem;">CLASIF: {{ item.codigo_clasificador }}</span>
+                            </td>
+                            <!-- <td class="text-left align-middle">
+                                {{ item.nombre_unidad }}
+                            </td>
+                            <td class="text-left align-middle">
+                                
+                            </td> -->
+                            <td> 
+                                <span style="display: block; width: 100%; padding: .65rem .0rem;; font-size: .875rem;">PROGRAMADA</span>
+                                <span style="display: block; width: 100%; padding: .65rem .0rem;; font-size: .875rem;"></span>
+                                <span style="display: block; width: 100%; padding: .65rem .0rem;; font-size: .875rem;">ADICIONAL</span>
+                                <span style="display: block; width: 100%; padding: .65rem .0rem;; font-size: .875rem;"></span>
+                            </td>
+                            <td *ngFor="let periodo of item.lista_periodo; index as j" class="text-center align-middle p-0">
+                                <!-- lista programada -->
+                                <input type="number" class="form-control form-control-sm no-border text-center" style="min-width:70px !important;" [(ngModel)]="periodo.cantidad" disabled />
+                                <span class="form-control form-control-sm no-border text-center" style="background-color:#beefff;">S/.{{ periodo.monto | thousandsPipe }}</span>
+                                <!-- <input type="text" class="form-control form-control-sm w-120 text-center" [ngModel]="periodo.monto  | thousandsPipe" disabled (ngModelChange)="item.value=$event" /> -->
+                                <!-- lista de adicional -->
+                                <input type="number" class="form-control form-control-sm no-border text-center" [(ngModel)]="item.lista_periodo_adicional[j].cantidad" 
+                                    (keypress)="validarSoloNumeros($event)" [disabled]="item.lista_periodo_adicional[j].meta_fisica==0" (keyup)="sumarTotal(i)"
+                                    [ngStyle]="{'background-color': (item.lista_periodo_adicional[j].meta_fisica!=0) ? '#fff3b4':'#fff' }"/>
+                                <span class="form-control form-control-sm no-border text-center" style="background-color:#fff;">S/.{{ item.lista_periodo_adicional[j].monto | thousandsPipe }}</span>
+                            </td>
+                            <td class=" align-middle text-align: -webkit-center !important">
+                                <input type="text" class="form-control form-control-sm no-border text-center" style="min-width:70px !important;" 
+                                [ngModel]="item.suma_pp" (ngModelChange)="item.suma_pp=$event" disabled />
+                                <input type="text" class="form-control form-control-sm no-border text-center" style="min-width:70px !important; background-color:#beefff;" 
+                                [ngModel]="item.monto_pp | thousandsPipe" (ngModelChange)="item.monto_pp=$event" disabled />
+                                <input type="text" class="form-control form-control-sm no-border text-center" style="min-width:70px !important; background-color:#fff3b4;" 
+                                [ngModel]="item.suma" (ngModelChange)="item.suma=$event" disabled />
+                                <input type="text" class="form-control form-control-sm no-border text-center" style="min-width:70px !important; background-color:#fff;" 
+                                [ngModel]="item.monto | thousandsPipe" (ngModelChange)="item.monto=$event" disabled />
+                                <!-- <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">{{ item.suma_pp | thousandsPipe }}</span>
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">S/.{{ item.monto_pp | thousandsPipe }}</span>
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">{{ item.suma | thousandsPipe }}</span>
+                                <span class="form-control form-control-sm w-120 text-center" style="background-color:#F0F0F0;">S/.{{ item.monto | thousandsPipe }}</span> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12" style="text-align: -webkit-right">
+            <button class="btn btn-primary btn-md" (click)="guardarPPAccion()" *ngIf="bienes_ppa?.length > 0">
+                Guardar Programación
+            </button>
+        </div>
+    </div>
+    <br>
+    <!-- INICIO MODAL AGREGAR Bienes-->
+    <div class="modal fade" id="modalAgregarBienes" #modalAgregarBienes tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">Vinculación de Bienes</h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                <span aria-hidden="true">&times;</span>
+            </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Filtrar Bienes:</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="Nombre o Código" [(ngModel)]="term" />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table table-sm table-responsive">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="w-50">Bienes</th>
+                                            <th class="text-center">Código</th>
+                                            <th class="text-center">UM</th>
+                                            <th class="text-center">Precio</th>
+                                            <th class="text-center">Clasificador</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="tbody">
+                                        <tr *ngFor="let bienes of lista_bienes | bienesfilter: term | paginate: { itemsPerPage: 10, currentPage: p }" (click)="select(bienes)" [ngClass]="{ selected: bienes.flag }">
+                                            <td class="w-50">{{ bienes.nombre }}</td>
+                                            <td class="text-center">{{ bienes.codigo }}</td>
+                                            <td class="text-center">{{ bienes.nombre_unidad_medida }}</td>
+                                            <td class="text-center">{{ bienes.precio | currency: "S/. " }}</td>
+                                            <td class="text-center">{{ bienes.nombre_clasificador }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center" *ngIf="lista_bienes != null">
+                            <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                            </pagination-controls>
+                        </div>
+                    </div>
+                </div>
+                <form (ngSubmit)="vincularBienes()" #dependencia="ngForm">
+                    <div class="modal-footer">
+                        <button #closeModalBienes type="button" class="btn btn-md btn-danger" data-dismiss="modal">
+                        Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-md btn-primary" [disabled]="!x_progreso">
+                        Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR Bienes-->
+
+    <!--Modal de Definición operacional y Criterios de programación-->
+    <div class="modal fade" id="modalDefinicion" #modalDefinicion tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">{{nombre_accion}}</h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Definición</h5>
+                    <div id="tab1">
+                        <label>1. Definición de la intervención (Acción)</label>
+                        <textarea class="form-control form-control-sm" name="df1" readonly [(ngModel)]="definicionProducto.df1" required></textarea>
+                        <br>
+                        <label>2. Unidad de Medida</label>
+                        <textarea class="form-control form-control-sm" name="df2" readonly [(ngModel)]="definicionProducto.df2" required></textarea>
+                        <br>
+                        <label>3. Meta</label>
+                        <textarea class="form-control form-control-sm" name="df3" readonly [(ngModel)]="definicionProducto.df3" required></textarea>
+                        <br>
+                        <label>4. Procedimiento realizado para la ejecución de la acción</label>
+                        <textarea class="form-control form-control-sm" name="df4" readonly [(ngModel)]="definicionProducto.df4" required></textarea>
+                        <br>
+                        <label>5. Despliegue de tareas para la intervención</label>
+                        <textarea class="form-control form-control-sm" name="df5" readonly [(ngModel)]="definicionProducto.df5" required></textarea>
+                        <br>
+                        <label>6. Frecuencua de la Acción</label>
+                        <textarea class="form-control form-control-sm" name="df6" readonly [(ngModel)]="definicionProducto.df6" required></textarea>
+                        <br>
+                        <label>7. Donde realiza la acción?</label>
+                        <textarea class="form-control form-control-sm" name="df7" readonly [(ngModel)]="definicionProducto.df7" required></textarea>
+                        <br>
+                        <label>8. ¿Quien realiza la acción?</label>
+                        <textarea class="form-control form-control-sm" name="df8" readonly [(ngModel)]="definicionProducto.df8" required></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INICIO MODAL Marco Presupuestal-->
+    <div class="modal fade" id="modalMarcoPresupuestal" #modalMarcoPresupuestal tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLabel">Total de Demanda Adicional</h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p style="font-weight: bold;">UGP: </p>
+                        </div>
+                        <div class="col-md-10">
+                            {{ nombre_ugp | uppercase }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p style="font-weight: bold;">Responsable: </p>
+                        </div>
+                        <div class="col-md-10">
+                            {{ nombre_responsable }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table table-sm table-responsive">
+                                <table class="table">
+                                    <tbody class="tbody2">
+                                        <tr style="background-color: #E1F5FE;">
+                                            <td class="text-left font-weight-bold"> Total Ejecutado:</td>
+                                            <td class="text-right font-weight-bold">S/. {{ total_ejecuatado | thousandsPipe}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left pl-3">Gastos Variable:</td>
+                                            <td class="text-right">
+                                                S/. {{total_bienes_ejecutado | thousandsPipe }}
+                                            </td>
+                                        </tr>
+                                        <!-- <tr *ngIf="user.id_estado==3"> 
+                                            <td class="text-left pl-3">Bienes Canalizados:</td>
+                                            <td class="text-right">
+                                                S/. {{ bienes_canalizado | thousandsPipe}}
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="text-left pl-3">Comisiones de Servicio:</td>
+                                            <td class="text-right">S/. {{comision_ejecutado | thousandsPipe }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left pl-3">Rutas de Servicio:</td>
+                                            <td class="text-right">S/. {{rutas_ejecutado | thousandsPipe }}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR Bienes-->
+
+</div>

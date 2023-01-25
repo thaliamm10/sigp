@@ -1,0 +1,252 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #3c97dd;" /> Programación de Puestos
+    </h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-2">
+            <label>Periodo:</label>
+            <select [(ngModel)]="id_anio" class="form-control form-control-sm" name="id_anio">
+        <option
+            *ngFor="let ciclo of lista_ciclo"
+            value="{{ ciclo.anio }}">
+            {{ ciclo.anio }}
+        </option>
+        </select>
+        </div>
+        <div class="col-md-6">
+            <label>Plazas:</label>
+            <input type="text" class="form-control w-100" [(ngModel)]="term" placeholder="Buscar plaza..." />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success float-right btn-md mt-4" (click)="exportAsXLSX()">
+          <i class="fas fa-file-excel"></i> Exportar
+      </button>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary float-right btn-md mt-4" data-toggle="modal" data-target="#modalAgregarPlaza" (click)="getPlaza(null);">
+        Agregar Plaza
+      </button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="tbienes" class="table table-hover display pb-30 dataTable">
+                    <thead class="thead-dark bg-blue">
+                        <tr>
+                            <th class="text-center align-middle">CÓDIGO</th>
+                            <th class="text-left align-middle">TÍTULO</th>
+                            <th class="text-left align-middle">DEPENDENCIA</th>
+                            <th class="text-left align-middle">UNIDAD</th>
+                            <th class="text-left align-middle">CARGO</th>
+                            <th class="text-center align-middle">ESTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: white">
+                        <tr *ngIf="listaUsuarios == null">
+                            <td colspan="5" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <h6 class="mt-3">
+                                        Procesando Consulta de Puestos...
+                                    </h6>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let user of listaUsuarios | plazafilter: term" (click)="select(user)" [ngClass]="{ selected: user.estado == true }">
+                            <td class="text-center align-middle">
+                                <a (click)="getPlaza(user);" style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalAgregarPlaza">
+                    {{ user.CODIGO_PLAZA }}
+                </a>
+                            </td>
+                            <td class="text-left align-middle">{{ user.NOMBRE }} {{ user.A_PATERNO }} {{ user.A_MATERNO }}</td>
+                            <td class="text-left align-middle">{{ user.DEPENDENCIA }}</td>
+                            <td class="text-left align-middle">{{ user.UNIDAD }}</td>
+                            <td class="text-left align-middle">{{ user.CARGO }}</td>
+                            <td class="text-center align-middle">
+                                <span class="label label-{{ user.NOMBRE_ESTADO }}">
+                      {{ user.NOMBRE_ESTADO }}
+                  </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row" *ngIf="id_plaza != 0">
+        <div class="col-md-12">
+            <h6>Puesto: {{ personal_seleccionado }}</h6>
+        </div>
+    </div>
+    <div class="row" *ngIf="id_plaza != 0">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead class="thead-dark">
+                        <th class="text-center">CONCEPTO</th>
+                        <th class="text-center" style="width:60px">ENE</th>
+                        <th class="text-center" style="width:60px">FEB</th>
+                        <th class="text-center" style="width:60px">MAR</th>
+                        <th class="text-center" style="width:60px">ABR</th>
+                        <th class="text-center" style="width:60px">MAY</th>
+                        <th class="text-center" style="width:60px">JUN</th>
+                        <th class="text-center" style="width:60px">JUL</th>
+                        <th class="text-center" style="width:60px">AGO</th>
+                        <th class="text-center" style="width:60px">SET</th>
+                        <th class="text-center" style="width:60px">OCT</th>
+                        <th class="text-center" style="width:60px">NOV</th>
+                        <th class="text-center" style="width:60px">DIC</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="arregloFinal == null">
+                            <td colspan="13" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <h6 class="mt-3">
+                                        Procesando Consulta de Remuneración...
+                                    </h6>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let plaza_item of plaza.lista_remuneracion; index as i" [ngClass]="{ invisible: plaza_item.descripcion == ' '}">
+                            <td style="background-color: white; color: #0e3b70;">
+                                {{ plaza_item.DESCRIPCION }}
+                            </td>
+                            <td *ngFor="let elemento of plaza_item.lista_periodo" class="p-0">
+                                <input type="number" class="form-control form-control-sm w-100 text-center" style="width: 60px" value="0" [(ngModel)]="elemento.monto" [ngClass]="{ 'form-control-plaintext': condicion == true }" readonly/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+
+<div class="modal fade" #modalAgregarPlaza id="modalAgregarPlaza" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header title-popup">
+                <h5 class="modal-title" id="exampleModalLabel">Configurar Plaza</h5>
+                <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+        <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <form id="formId" (ngSubmit)="guardarPlaza()" autocomplete="off" #form="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Nombre:</label>
+                                    <input type="text" class="form-control form-control-sm" name="NOMBRE" [(ngModel)]="plaza_nueva.NOMBRE" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Apellido Paterno:</label>
+                                    <input type="text" class="form-control form-control-sm" name="A_PATERNO" [(ngModel)]="plaza_nueva.A_PATERNO" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Apellido Materno:</label>
+                                    <input type="text" class="form-control form-control-sm" name="A_MATERNO" [(ngModel)]="plaza_nueva.A_MATERNO" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Código:</label>
+                                    <input type="text" class="form-control form-control-sm" name="CODIGO_PLAZA" [(ngModel)]="plaza_nueva.CODIGO_PLAZA" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>DNI:</label>
+                                    <input type="text" class="form-control form-control-sm" name="DNI" [(ngModel)]="plaza_nueva.DNI" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Estado:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="plaza_nueva.ID_ESTADO" name="ID_ESTADO">
+                                      <option value="1">Activo</option>
+                                      <option value="0">Desactivado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Dependencia:</label>
+                                    <select [(ngModel)]="plaza_nueva.ID_DEPENDENCIA" (change)="getAllUGPxOrgano()" class="form-control form-control-sm" name="ID_DEPENDENCIA">
+                                      <option
+                                        *ngFor="let item1 of lista_organo"
+                                        value="{{ item1.id }}">
+                                        {{ item1.nombre }}
+                                      </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Unidad:</label>
+                                    <select [(ngModel)]="plaza_nueva.UNIDAD" class="form-control form-control-sm" name="UNIDAD">
+                                      <option
+                                        *ngFor="let item2 of lista_organo_ugp"
+                                        value="{{ item2.nombre }}">
+                                        {{ item2.nombre }}
+                                      </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <label>Cargo:</label>
+                                    <input type="text" class="form-control form-control-sm" name="CARGO" [(ngModel)]="plaza_nueva.CARGO" required/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Tipo Contrato:</label>
+                                    <select [(ngModel)]="plaza_nueva.ID_TIPO_CONTRATO" class="form-control form-control-sm" name="ID_TIPO_CONTRATO">
+                                        <option value="4">CAS</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row" *ngIf="plaza_nueva.ID == 0">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6">
+                                    <table class="table table-hover table-sm">
+                                        <thead>
+                                            <th>Concepto</th>
+                                            <th>Monto (S/.)</th>
+                                        </thead>
+                                        <tr *ngFor="let concepto of lista_concepto">
+                                            <td>{{concepto.nombre}}</td>
+                                            <td>
+                                                <input class="form-control form-control-sm w-100 text-right" name="{{concepto.id_clasificador}}" [(ngModel)]="concepto.monto" (keypress)="validarSoloNumeros($event)" [ngClass]="{ 'form-control-plaintext': condicion == true }" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button #closeModalPlaza type="button" class="btn btn-danger btn-md" data-dismiss="modal">
+            Cancelar
+          </button>
+                    <button type="button" class="btn btn-primary btn-md" type="submit" [disabled]="!form.valid">
+            Guardar
+          </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="container text-center">
+    <div class="row mt-3"></div>
+    <div class="row mt-5">
+        <div class="col-lg-4 col-xl-4 col-md-12 col-sm-12 col-xs-12">
+            <div class="card align-middle w-100 h-100">
+                <img src="./assets/img/logo-senamhi.svg" style="height: 100px;" class="card-img-top  mt-3" />
+                <h5 class="text-center mt-3">
+                    Sistema Integrado de Gestión de Procesos
+                </h5>
+                <div class="card-body">
+                    <form class="form-group">
+                        <input type="text" class="form-control mb-3" name="txtUsuario" [(ngModel)]="txtUsuario" placeholder="Usuario" required maxlength="20" />
+                        <input type="password" class="form-control mb-3" name="txtContrasena" [(ngModel)]="txtContrasenia" placeholder="Contraseña" maxlength="20" />
+                        <select [(ngModel)]="id_ciclo" class="form-control form-control-sm mb-3" name="id_ciclo">
+                            <option
+                                *ngFor="let ciclo of lista_ciclo"
+                                value="{{ ciclo.id }}">
+                                {{ ciclo.anio }}
+                            </option>
+                        </select>
+                        <select [(ngModel)]="id_etapa" class="form-control form-control-sm mb-3" name="id_etapa">
+                            <option
+                                *ngFor="let etapa of lista_etapa"
+                                value="{{ etapa.id }}">
+                                {{ etapa.nombre }}
+                            </option>
+                        </select>
+                        <button [disabled]="ingreso == true" class="btn btn-sm btn-success w-100" (click)="validacion(txtUsuario, txtContrasenia, id_ciclo)">
+                    Ingresar
+                    </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 col-xl-8 d-none d-lg-block d-xl-block">
+            <img class="rounded img-fluid" src="./assets/img/senamhi.jpg" />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <hr />
+            <p class="text-center">
+                Copyright © Senamhi 2019. Desarrollado por: CDI Project
+            </p>
+        </div>
+    </div>
+</div>

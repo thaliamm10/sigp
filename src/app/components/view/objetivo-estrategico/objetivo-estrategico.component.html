@@ -1,0 +1,469 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <h4>
+    <img src="./assets/img/portafolio.png" width="40" height="40" title="Módulo Estratégico" /> PEI - Objetivo Estratégico
+  </h4>
+  <hr />
+  <div class="row">
+    <div class="col-md-6">
+      <input type="text" class="form-control form-control-sm"
+             placeholder="Nombre o Código" [(ngModel)]="filtro_nombre"/>
+    </div>
+    <div class="col-md-6">
+      <button
+        class="btn btn-primary btn-sm float-right"
+        data-toggle="modal"
+        data-target="#modalAddObjetivo"
+        (click)="getElemento(null)">
+        Crear objetivo Estratégico <i class="fas fa-plus-circle"></i>
+      </button>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-hover display  pb-30 dataTable">
+          <thead class="thead-dark bg-blue">
+          <tr>
+            <th class="text-left align-middle" rowspan="2">Código OE</th>
+            <th class="text-left align-middle" rowspan="2">Descripción OE</th>
+            <th class="text-center align-middle" rowspan="2">Estado</th>
+            <th class="text-left align-middle" rowspan="2">Indicador</th>
+            <th class="text-left align-middle" rowspan="2">Responsable</th>
+            <th class="text-left" colspan="2">Linea Base</th>
+            <th class="text-left" colspan="2">Valor Actual</th>
+
+            <th class="text-center align-middle" [attr.colspan]='lista_logro?.length'>Logros Esperados</th>
+          </tr>
+          <tr>
+            <th class="text-center align-middle">Año</th>
+            <th class="text-center align-middle">Valor</th>
+            <th class="text-center align-middle">Año</th>
+            <th class="text-center align-middle">Valor</th>
+            <ng-container *ngFor="let lis of lista_logro">
+              <th class="text-center align-middle">{{lis.LOGRO_ANIO}}</th>
+            </ng-container>
+<!--            <th class="text-center align-middle">2020</th>-->
+<!--            <th class="text-center align-middle">2021</th>-->
+<!--            <th class="text-center align-middle">2022</th>-->
+          </tr>
+          </thead>
+          <tbody style="background-color: white;">
+          <tr *ngIf="listaObjEstrategico == []">
+            <td colspan="12">
+              <p class="text-center">No hay datos que mostrar</p>
+              <p></p>
+            </td>
+          </tr>
+          <tr *ngIf="listaObjEstrategico == null">
+            <td colspan="12" class="text-center">
+              <div _ngcontent-yme-c5="" class="progressBar">
+                <div
+                  _ngcontent-yme-c5=""
+                  class="progress mt-3 text-right"
+                  style="height: 20px; margin: 0 auto"
+                >
+                  <div
+                    _ngcontent-yme-c5=""
+                    aria-valuemax="100"
+                    aria-valuemin="0"
+                    aria-valuenow="75"
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar"
+                    style="width: 100%"
+                  ></div>
+                </div>
+                <h6 class="mt-3">
+                  Procesando Objetivo(s) Estratégico(s)...
+                </h6>
+              </div>
+            </td>
+          </tr>
+          <tr
+            *ngFor="
+                let objetivo of listaObjEstrategico | descriptionfilter: filtro_nombre
+                  | paginate: { itemsPerPage: 10, currentPage: p }
+              "
+          >
+            <td class="text-left align-middle">{{ objetivo.codigo }}</td>
+            <td class="text-left align-middle">
+              <a style="color: #006DDC; cursor: pointer;"
+                 data-toggle="modal"
+                 data-target="#modalAddObjetivo"
+                 (click)="getElemento(objetivo)">
+                {{ objetivo.descripcion }}
+              </a>
+            </td>
+            <td class="text-center align-middle">
+                  <span class="label label-{{ objetivo.nombre_estado }}">
+                      {{ objetivo.nombre_estado }}
+                  </span>
+            </td>
+            <td class="text-left">{{ objetivo.nombre_indicador }}</td>
+            <td class="text-left">{{ objetivo.nombre_organo }}</td>
+            <td class="text-center align-middle">
+              {{ objetivo.anio_base }}
+            </td>
+            <td class="text-center align-middle">
+                  <span class="label label-Valores">
+                  {{ objetivo.valor_base }}%
+                  </span>
+            </td>
+            <td class="text-cente align-middle">
+              {{ objetivo.anio_actual }}
+            </td>
+            <td class="text-center align-middle">
+                  <span class="label label-Valores">
+                      {{ objetivo.valor_actual }}%
+                  </span>
+            </td>
+            <td *ngFor="let logro of objetivo.lista_logros"
+                class="text-center align-middle mb-2" style="cursor: pointer;"
+                data-toggle="modal"
+                data-target="#modalAddLogro"
+                (click)="getLogroOE(objetivo)">
+              <span class="label label-logros" title="{{ logro.LOGRO_ANIO }}" >{{ logro.LOGRO_VALOR }}%</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-12 text-center">
+      <pagination-controls
+        class="my-pagination"
+        (pageChange)="p = $event"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+      >
+      </pagination-controls>
+    </div>
+    <!-- INICIO DEL MODAL (AGREGAR OBJETIVO ESTRATEGICO) -->
+    <div
+      class="modal fade"
+      #modalAddObjetivo
+      id="modalAddObjetivo"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="ModalLabel"
+      aria-hidden="true"
+      data-backdrop="static"
+      data-keyboard="false"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">
+              Configuración de Objetivo Estratégico
+            </h5>
+          </div>
+          <form (ngSubmit)="guardarObjetivoEstrategico()" autocomplete="off" #_Cobjetivo="ngForm">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Apertura:</label>
+                  <select class="form-control form-control-sm" name="id_apertura" [(ngModel)]="objEstrategico.id_apertura" required>
+                    <option *ngFor="let item_apertura of lista_apertura" value="{{ item_apertura.id }}">{{ item_apertura.nombre }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label>Creador:</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    name="nombre_usuario"
+                    disabled ="true"
+                    [(ngModel)]="objEstrategico.nombre_usuario"
+                  />
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-2">
+                  <label>Código:</label>
+                  <input
+                    type="text"
+                    name="codigo"
+                    [(ngModel)]="objEstrategico.codigo"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+                <div class="col-md-2">
+                  <label>Estado</label>
+                  <select
+                    class="form-control form-control-sm"
+                    [(ngModel)]="objEstrategico.id_estado"
+                    name="id_estado"
+                  >
+                    <option value="1">Activo</option>
+                    <option value="0">Desactivado</option>
+                  </select>
+                </div>
+                <div class="col-md-8">
+                  <label>Responsable del Indicador:</label>
+                  <select
+                    [(ngModel)]="objEstrategico.id_organo"
+                    class="form-control form-control-sm"
+                    name="id_organo"
+                  >
+                    <option
+                      *ngFor="let item_organo of lista_organo"
+                      value="{{ item_organo.id }}">{{ item_organo.nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12">
+                  <label>Descripción:</label>
+                  <textarea
+                    [(ngModel)]="objEstrategico.descripcion"
+                    name="descripcion"
+                    class="form-control form-control-sm"
+                    required
+                  >
+                  </textarea>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12">
+                  <label>Nombre del Indicador:</label>
+                  <textarea
+                    [(ngModel)]="objEstrategico.nombre_indicador"
+                    name="nombre_indicador"
+                    class="form-control form-control-sm"
+                    required
+                  >
+                    </textarea>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12">
+                  <label>Justificación:</label>
+                  <textarea
+                    [(ngModel)]="objEstrategico.justificacion"
+                    name="justificacion"
+                    class="form-control form-control-sm"
+                    required
+                  >
+                    </textarea>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12">
+                  <label>Limitación:</label>
+                  <textarea
+                    [(ngModel)]="objEstrategico.limitacion"
+                    name="limitacion"
+                    class="form-control form-control-sm"
+                    required
+                  >
+                    </textarea>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12">
+                  <label>Método de Cálculo:</label>
+                  <textarea
+                    [(ngModel)]="objEstrategico.metodo_calculo"
+                    name="metodo_calculo"
+                    class="form-control form-control-sm"
+                    required
+                  >
+                    </textarea>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-6">
+                  <label>Parámetro de Medición:</label>
+                  <input
+                    [(ngModel)]="objEstrategico.parametro_medicion"
+                    name="parametro_medicion"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+                <div class="col-6">
+                  <label>Sentido Esperado:</label>
+                  <input
+                    [(ngModel)]="objEstrategico.sentido_esperado"
+                    name="sentido_esperado"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12">
+                  <label>Fuente de Datos:</label>
+                  <textarea
+                    [(ngModel)]="objEstrategico.fuentes_datos"
+                    name="fuentes_datos"
+                    class="form-control form-control-sm"
+                    required
+                  >
+                    </textarea>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-3">
+                  <label>Año Base:</label>
+                  <input
+                    [(ngModel)]="objEstrategico.anio_base"
+                    name="anio_base"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+                <div class="col-3">
+                  <label>Valor Base (%):</label>
+                  <input
+                    [(ngModel)]="objEstrategico.valor_base"
+                    name="valor_base"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+                <div class="col-3">
+                  <label>Año Actual:</label>
+                  <input
+                    [(ngModel)]="objEstrategico.anio_actual"
+                    name="anio_actual"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+                <div class="col-3">
+                  <label>Valor Actual (%):</label>
+                  <input
+                    [(ngModel)]="objEstrategico.valor_actual"
+                    name="valor_actual"
+                    class="form-control form-control-sm"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                #closeModalOE
+                class="btn btn-sm btn-danger"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-success"
+                [disabled]="!_Cobjetivo.valid"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- FIN DEL MODAL-->
+    <!-- INICIO DEL MODAL (AGREGAR OBJETIVO ESTRATEGICO) -->
+    <div
+      class="modal fade"
+      #modalAddLogro
+      id="modalAddLogro"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="ModalLabel"
+      aria-hidden="true"
+      data-backdrop="static"
+      data-keyboard="false"
+    >
+      <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">
+              Configuración de Logros
+            </h5>
+          </div>
+          <form (ngSubmit)="guardarLogrosOE()" autocomplete="off">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-8">
+                  <label>Objetivo:</label>
+                  <textarea
+                    type="text"
+                    class="form-control form-control-sm"
+                    name="descripcion"
+                    disabled ="true"
+                    [(ngModel)]="objEstrategico.descripcion"
+                  > </textarea>
+                  <br>
+                  <label>Indicador:</label>
+                  <textarea
+                    type="text"
+                    class="form-control form-control-sm"
+                    name="nombre_indicador"
+                    disabled ="true"
+                    [(ngModel)]="objEstrategico.nombre_indicador"
+                  > </textarea>
+                </div>
+                <div class="col-md-4">
+                  <label>Logros:</label>
+                  <table class="table table-hover table-sm">
+                    <thead class="thead-dark bg-blue">
+                    <tr>
+                      <th class="text-left">Año</th>
+                      <th class="text-left">Valor (%)</th>
+                    </tr>
+                    </thead>
+                    <tbody style="background-color: white;">
+                    <tr *ngFor="let logro of lista_logro">
+                      <td class="text-left align-middle">{{ logro.LOGRO_ANIO }}</td>
+                      <td class="text-left align-middle">
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          name="{{logro.ID_CICLO}}"
+                          [(ngModel)]="logro.LOGRO_VALOR"
+                        />
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                #closeModalLogro
+                class="btn btn-sm btn-danger"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-success"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- FIN DEL MODAL-->
+  </div>
+</div>

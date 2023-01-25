@@ -1,0 +1,156 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+      <h4>
+        <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Financiamiento de Bienes y Servicios Mensual
+      </h4>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 text-right">
+            <span *ngFor="let item of lista_tope_ugp"
+                  class="btn btn-sm mt-2 ml-1" style="border: none; background-color:#EDEDED; padding: 3px 5px;">
+                <span class="btn btn-sm no-border" style="padding: 0px 5px;">{{ item.nombre_fuente }} </span>
+                <span class="btn btn-sm no-border" style="min-width: 70px; padding: 0px 5px; color: #188ef4; background-color:#fff;">{{ item.tope | thousandsPipe }} </span>
+                <span class="btn btn-sm no-border" style="min-width: 70px; color: #000; padding: 0px 5px; background-color:#FCF3CF;">{{item.financiado | thousandsPipe }}</span>
+                <span class="btn btn-sm no-border" style="padding: 0px 5px; background-color:#fff;"
+                      [ngStyle]="{'color': (item.financiado > item.tope) ? '#ed5269': '#10bc55' }">{{ item.saldo | thousandsPipe }} </span>
+            </span>
+    </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col-md-1">
+      <label>Periodo:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+    </div>
+    <div class="col-md-2">
+      <label>Etapa:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+    </div>
+    <div class="col-md-6">
+      <label>UGP: </label>
+      <select *ngIf="lista_ugp != null" [(ngModel)]="id_ugp" class="form-control form-control-sm" name="id_ugp" (change)="getUgp()">
+        <option
+          *ngFor="let item_ugp of lista_ugp"
+          value="{{ item_ugp.id }}">
+          {{ item_ugp.nombre }}
+        </option>
+      </select>
+      <div *ngIf="lista_ugp == null" _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr/>
+  <h6>Presupuesto Programado: S/. {{ total_financiamiento | thousandsPipe }}</h6>
+  <div *ngIf="lista_bienes == null" _ngcontent-yme-c5="" class="progressBar">
+    <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+      <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+    </div>
+    <p class="mt-3 text-center">
+      Procesando Consulta de Financiamiento...
+    </p>
+  </div>
+  <h6 class="text-left mt-2" style="color: red;" *ngIf="lista_bienes?.length == 0">
+    No tiene bienes programados.
+  </h6>
+  <div class="row" *ngIf="lista_bienes?.length > 0">
+    <div class="col-md-12">
+      <div class="table-responsive p-2">
+        <table class="table table-sm">
+          <thead class="thead-dark bg-blue">
+          <tr>
+            <th class="text-left align-middle" style="width: 250px;">Bienes/Servicio</th>
+            <th class="text-left align-middle" style="width: 120px;">Programado</th>
+            <th class="text-center align-middle" style="width: 120px;">Tipo</th>
+            <th class="text-center align-middle">ENE</th>
+            <th class="text-center align-middle">FEB</th>
+            <th class="text-center align-middle">MAR</th>
+            <th class="text-center align-middle">ABR</th>
+            <th class="text-center align-middle">MAY</th>
+            <th class="text-center align-middle">JUN</th>
+            <th class="text-center align-middle">JUL</th>
+            <th class="text-center align-middle">AGO</th>
+            <th class="text-center align-middle">SET</th>
+            <th class="text-center align-middle">OCT</th>
+            <th class="text-center align-middle">NOV</th>
+            <th class="text-center align-middle">DIC</th>
+            <th class="text-center align-middle">TOTAL</th>
+          </tr>
+          </thead>
+          <tbody class="tbody" style="background-color: white; width:700px !important">
+          <tr *ngFor="let bienes of lista_bienes; index as i">
+            <td class="text-left align-middle">
+              <span style="display: block; width: 100%; padding: .25rem .0rem;">{{ bienes.nombre_bienes }}</span>
+              <span style="display: block; width: 100%; padding: .25rem .0rem; color: gray;">Clasificador: {{ bienes.codigo_clasificador }}</span>
+              <span style="display: block; width: 100%; padding: .25rem .0rem; color: gray;">Acción: {{ bienes.nombre_accion }}</span>
+            </td>
+            <td class="text-left align-middle" style="min-width: 100px;">
+                                <span class="form-control form-control-sm no-border text-center font-span"
+                                      style="background-color:#FCF3CF;">S/. {{ bienes.monto_programado | thousandsPipe}}</span>
+              <span class="form-control form-control-sm no-border text-center font-span"
+                    style="background-color:#beefff;">P. U.</span>
+              <span class="form-control form-control-sm no-border text-center font-span"
+                    style="background-color:#beefff;">S/. {{ bienes.precio_bienes | thousandsPipe}}</span>
+            </td>
+            <td class="text-left align-middle">
+              <div class="text-right">Cantidad RO</div>
+              <div class="text-right mt-2">Monto RO</div>
+              <div class="text-right mt-2">Cantidad RDR</div>
+              <div class="text-right mt-2">Monto RDR</div>
+              <div class="text-right mt-2">TOTAL</div>
+            </td>
+            <td class="text-center align-middle p-0" *ngFor="let periodo of bienes.lista_periodo; index as j">
+              <input type="number" class="form-control form-control-sm no-border text-center"
+                     [(ngModel)]="periodo.cantidad_ro"
+                     (keypress)="validarSoloNumeros($event)" (keyup)="change(i, j, 'cantidad_ro')"
+                     [ngStyle]="{'color': (bienes.monto > bienes.monto_programado) ? '#ed5269' : '#000000' }"/>
+              <input type="number" class="form-control form-control-sm no-border text-center"
+                     [(ngModel)]="periodo.monto_ro"
+                     (keypress)="validarSoloNumeros($event)" (keyup)="change(i, j, 'monto_ro')"
+                     [ngStyle]="{'color': (bienes.monto > bienes.monto_programado) ? '#ed5269' : '#000000' }" disabled/>
+              <input type="number" class="form-control form-control-sm no-border text-center"
+                     [(ngModel)]="periodo.cantidad_rdr" style="min-width:70px !important;"
+                     (keypress)="validarSoloNumeros($event)" (keyup)="change(i, j, 'cantidad_drd')"
+                     [ngStyle]="{'color': (bienes.monto > bienes.monto_programado) ? '#ed5269' : '#000000' }"/>
+              <input type="number" class="form-control form-control-sm no-border text-center"
+                     [(ngModel)]="periodo.monto_rdr" style="min-width:70px !important;"
+                     (keypress)="validarSoloNumeros($event)" (keyup)="change(i, j, 'monto_drd')"
+                     [ngStyle]="{'color': (bienes.monto > bienes.monto_programado) ? '#ed5269' : '#000000' }" disabled/>
+              <span class="form-control form-control-sm no-border text-center font-span"
+                    style="background-color:#beefff;">{{ periodo.monto | thousandsPipe }}</span>
+            </td>
+            <td class="align-middle text-align -webkit-center !important">
+              <input type="text" class="form-control form-control-sm no-border text-center" disabled
+                     style="background-color: #FCF3CF; min-width:70px !important;"
+                     [ngModel]="bienes.cantidad_ro | thousandsPipe" (ngModelChange)="bienes.cantidad_ro=$event"/>
+              <input type="text" class="form-control form-control-sm no-border text-center" disabled
+                     style="background-color: #FCF3CF; min-width:70px !important;"
+                     [ngModel]="bienes.ro | thousandsPipe" (ngModelChange)="bienes.ro=$event"/>
+              <input type="text" class="form-control form-control-sm no-border text-center" disabled
+                     style="background-color: #FCF3CF; min-width:70px !important;"
+                     [ngModel]="bienes.cantidad_rdr | thousandsPipe" (ngModelChange)="bienes.cantidad_rdr=$event"/>
+              <input type="text" class="form-control form-control-sm no-border text-center" disabled
+                     style="background-color: #FCF3CF; min-width:70px !important;"
+                     [ngModel]="bienes.rdr | thousandsPipe" (ngModelChange)="bienes.rdr=$event"/>
+              <span class="form-control form-control-sm no-border text-center font-span"
+                    style="background-color:#beefff;">{{ bienes.monto | thousandsPipe }}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-12" style="text-align: -webkit-right">
+      <button class="btn btn-primary btn-md" (click)="guardarFinanMensual(listaBienes)" *ngIf="cantidad_lista != 0">
+        Guardar Programación
+      </button>
+    </div>
+  </div>
+  <br>
+</div>

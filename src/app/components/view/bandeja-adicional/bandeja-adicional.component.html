@@ -1,0 +1,426 @@
+<app-header>
+</app-header>
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+      <h3>
+        <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Bandeja de Pedido Adicional
+      </h3>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-md-6">
+      <input type="text" class="form-control form-control-sm"
+             placeholder="Buscador" [(ngModel)]="term"/>
+    </div>
+  </div>
+  <div *ngIf="lista_bandeja == null" _ngcontent-yme-c5="" class="progressBar">
+    <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+      <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+    </div>
+    <h6 class="mt-2 text-center">
+      Procesando Consulta de Bandeja...
+    </h6>
+  </div>
+  <h6 class="text-left mt-2" style="color: red;" *ngIf="lista_bandeja?.length == 0">
+    No tiene pedidos adicionales.
+  </h6>
+  <div class="row mt-2" *ngIf="lista_bandeja?.length > 0">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table display pb-30 dataTable">
+          <thead class="thead-dark">
+          <tr>
+            <th class="text-left">Organo</th>
+            <th class="text-left">UGP</th>
+            <th class="text-center">Bienes</th>
+            <th class="text-center">Comisiones</th>
+            <th class="text-center">Rutas</th>
+            <th class="text-center">Total</th>
+            <th class="text-left">Situación</th>
+            <th class="text-center">Fecha Última Revisión</th>
+            <th class="text-left">Comentario Revisión</th>
+            <th class="text-center">Log</th>
+          </tr>
+          </thead>
+          <tbody class="tbody" style="background-color: white;">
+          <tr [ngStyle]="{'background-color': (item.estado==3 || item.estado==4) ? '#FEF9E7':'#FFFFFF' }"
+              *ngFor="let item of lista_bandeja | pedidofilter: term | paginate : {id:'pag_pedido', itemsPerPage: 10 , currentPage: p}">
+            <td class="text-left align-middle"> {{item.nombre_organo}} </td>
+            <td class="text-left align-middle" style="max-width: 300px !important;">
+              <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalAgregarDemanda" (click)="getElemento(item)">
+                {{item.nombre_ugp}}
+              </a>
+            </td>
+            <td class="text-right align-middle" style="min-width: 120px !important;"> S/. {{item.suma_bienes | thousandsPipe }}</td>
+            <td class="text-right align-middle" style="min-width: 120px !important;"> S/. {{item.suma_comision | thousandsPipe }}</td>
+            <td class="text-right align-middle" style="min-width: 120px !important;"> S/. {{item.suma_rutas | thousandsPipe }}</td>
+            <td class="text-right align-middle" style="min-width: 120px !important; font-weight: bold !important;"> S/. {{item.suma | thousandsPipe }}</td>
+            <td class="text-left align-middle"> {{item.nombre_situacion}}</td>
+            <td class="text-center align-middle"> {{item.fecha_registro}}</td>
+            <td class="text-left align-middle" style="max-width: 300px !important;"> {{item.comentario}}</td>
+            <td class="text-center align-middle">
+                                <span style="width:20px !important; cursor: pointer;"
+                                      data-toggle="modal" data-target="#modalBitacora" (click)="getBitacora(item)">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-12 text-center" *ngIf="lista_bandeja != null">
+      <pagination-controls id="pag_pedido" class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+  </div>
+  <br>
+  <!-- DEMANDA -->
+  <div class="modal fade" #modalAgregarDemanda id="modalAgregarDemanda" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header title-popup">
+          <h5 class="modal-title" id="exampleModalLabel">Solicitud de Pedido Adicional</h5>
+          <button type="button" #CloseModalDemanada class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <label>UGP:</label>
+              <input type="text" name="nombre_ugp" [(ngModel)]="pedido.nombre_ugp" class="form-control form-control-sm" disabled />
+            </div>
+            <div class="col-md-2">
+              <label>Centro de Costo:</label>
+              <input type="text" name="nombre_organo" [(ngModel)]="pedido.nombre_organo" class="form-control form-control-sm" disabled />
+            </div>
+            <div class="col-md-2">
+              <label>Estado</label>
+              <select class="form-control form-control-sm" [(ngModel)]="pedido.flag_aprobado" name="flag_aprobado" [disabled]="!x_habilitar_control">
+                <option value="1">Aprobado</option>
+                <option value="0">Observado</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Comentario:</label>
+              <textarea type="text" class="form-control form-control-sm" name="comentario" [(ngModel)]="pedido.comentario"></textarea>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#tab_bienes" role="tab" data-toggle="tab">
+                    Bienes: S/. {{ suma_bienes | thousandsPipe}}
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#tab_comision" role="tab" data-toggle="tab">
+                    Comisión: S/. {{ suma_comision | thousandsPipe}}
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#tab_rutas" role="tab" data-toggle="tab">
+                    Rutas: S/. {{ suma_rutas | thousandsPipe}}
+                  </a>
+                </li>
+              </ul>
+              <br>
+              <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="tab_bienes">
+                  <div *ngIf="bienes_ppa == null">
+                    <div colspan="6" class="text-center">
+                      <div _ngcontent-yme-c5="" class="progressBar">
+                        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <h6 class="text-center mt-2">Recuperando Bienes...</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive" *ngIf="bienes_ppa != null">
+                    <button class="btn btn-success" (click)="exportAsXLSXBienes()">
+                      <i class="fas fa-file-excel"></i> Exportar
+                    </button>&nbsp;&nbsp;
+                    <table class="table display pb-30 dataTable">
+                      <thead class="bg-blue thead-dark">
+                      <tr>
+                        <th class="text-left">Bienes</th>
+                        <th class="text-left">Producto</th>
+                        <th class="text-left">Acción</th>
+                        <th class="text-center">Precio</th>
+                        <th class="text-center">Unidades</th>
+                        <th class="text-center">Monto</th>
+                      </tr>
+                      </thead>
+                      <tbody class="tbody" style="background-color: white;">
+                      <tr [ngStyle]="{'background-color': (item.estado==3) ? '#FEF9E7':'#FFFFFF' }"
+                          *ngFor="let item of bienes_ppa | paginate : {id: 'pag_bienes', itemsPerPage: 10 , currentPage: p1}">
+                        <td class="text-left" style="min-width: 270px !important;">
+                          <span style="display: block; width: 100%; padding: .25rem .0rem;">{{ item.nombre }}</span>
+                          <span style="display: block; width: 100%; padding: .25rem .0rem; color: gray;">Clasificador: {{ item.nombre_clasificador }}</span>
+                        </td>
+                        <td class="text-left" style="max-width: 500px !important;">
+                          {{item.nombre_producto}}
+                        </td>
+                        <td class="text-left" style="max-width: 500px !important;">
+                          {{item.nombre_accion}}
+                        </td>
+                        <td class="text-center" style="min-width: 100px !important;"> S/. {{item.precio }}</td>
+                        <td class="text-center"> {{item.cantidad}}</td>
+                        <td class="text-right" style="min-width:100px !important;"> S/. {{item.costo | thousandsPipe }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <div class="col-md-12 text-center" *ngIf="bienes_ppa?.length >= 10">
+                      <pagination-controls id="pag_bienes" class="my-pagination" (pageChange)="p1 = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                      </pagination-controls>
+                    </div>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab_comision">
+                  <div *ngIf="lista_comision == null">
+                    <div colspan="6" class="text-center">
+                      <div _ngcontent-yme-c5="" class="progressBar">
+                        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <h6 class="text-center mt-2">Recuperando Comisiones...</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive" *ngIf="lista_comision != null">
+                    <button class="btn btn-success" (click)="exportAsXLSXComision()">
+                      <i class="fas fa-file-excel"></i> Exportar
+                    </button>&nbsp;&nbsp;
+                    <table class="table display pb-30 dataTable">
+                      <thead class="bg-blue thead-dark">
+                      <tr>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-left">Producto</th>
+                        <th class="text-left">Acción</th>
+                        <th class="text-left">Información</th>
+                        <th class="text-left">Costos</th>
+                        <th class="text-center">Monto</th>
+                      </tr>
+                      </thead>
+                      <tbody class="tbody" style="background-color: white;">
+                      <tr [ngStyle]="{'background-color': (item.estado==3) ? '#FEF9E7':'#FFFFFF' }"
+                          *ngFor="let item of lista_comision | paginate : {id: 'pag_comision', itemsPerPage: 10 , currentPage: p2}">
+                        <td class="text-center">
+                          {{ item.generado }}
+                        </td>
+                        <td class="text-center">
+                          {{ item.nombre_tipo_comision }}
+                        </td>
+                        <td class="text-left" style="max-width: 500px !important;">
+                          {{item.nombre_producto}}
+                        </td>
+                        <td class="text-left" style="max-width: 500px !important;">
+                          {{item.nombre_accion}}
+                        </td>
+                        <td class="text-left align-middle" style="min-width: 120px !important;">
+                          <i class="far fa-calendar-check"></i> {{ item.fecha_salida }} <br>
+                          <i class="far fa-calendar-check"></i> {{ item.fecha_retorno }} <br>
+                          <i class="far fa-clock"></i> {{ item.nombre_tipo_viatico }} <br>
+                          <i class="fas fa-user-friends"></i> {{ item.cantidad_persona }}
+                        </td>
+                        <td class="text-left align-middle" style="min-width: 160px !important;">
+                          <div class="table p-0">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Víatico </span>
+                                <span class="no-border float-right">{{ item.monto_viatico | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Pasaje </span>
+                                <span class="no-border float-right">{{ item.monto_pasaje | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Combustible </span>
+                                <span class="no-border float-right">{{ item.monto_combustible | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Diversos </span>
+                                <span class="no-border float-right">{{ item.monto_almuerzo | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="text-right align-middle" style="min-width: 100px !important;">
+                          S/. {{ item.suma | thousandsPipe}}
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <div class="col-md-12 text-center" *ngIf="lista_comision?.length >= 10">
+                      <pagination-controls id="pag_comision" class="my-pagination" (pageChange)="p2 = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                      </pagination-controls>
+                    </div>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab_rutas">
+                  <div *ngIf="lista_rutas == null">
+                    <div colspan="6" class="text-center">
+                      <div _ngcontent-yme-c5="" class="progressBar">
+                        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <h6 class="text-center mt-2">Recuperando Rutas...</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive" *ngIf="lista_rutas != null">
+                    <button class="btn btn-success" (click)="exportAsXLSXRutas()">
+                      <i class="fas fa-file-excel"></i> Exportar
+                    </button>&nbsp;&nbsp;
+                    <table class="table display pb-30 dataTable">
+                      <thead class="bg-blue thead-dark">
+                      <tr>
+                        <th class="text-center">Código</th>
+                        <th class="text-left">Producto</th>
+                        <th class="text-left">Acción</th>
+                        <th class="text-center">Origen</th>
+                        <th class="text-left">Información</th>
+                        <th class="text-left">Costos</th>
+                        <th class="text-center">Monto</th>
+                      </tr>
+                      </thead>
+                      <tbody class="tbody" style="background-color: white;">
+                      <tr [ngStyle]="{'background-color': (item.estado==3) ? '#FEF9E7':'#FFFFFF' }"
+                          *ngFor="let item of lista_rutas | paginate : {id: 'pag_rutas', itemsPerPage: 10 , currentPage: p3}">
+                        <td class="text-center">
+                          {{ item.generado }}
+                        </td>
+                        <td class="text-left" style="max-width: 500px !important;">
+                          {{item.nombre_producto}}
+                        </td>
+                        <td class="text-left" style="max-width: 500px !important;">
+                          {{item.nombre_accion}}
+                        </td>
+                        <td class="text-left align-top" style="min-width: 120px !important;">
+                          {{ item.nombre_departamento }}<br> {{ item.nombre_provincia }}<br> {{ item.nombre_distrito }}
+                        </td>
+                        <td class="text-left align-top" style="min-width: 120px !important;">
+                          <i class="far fa-calendar-check"></i> {{ item.fecha_salida }} <br>
+                          <i class="far fa-clock"></i> {{ item.hora_salida }} <br>
+                          <i class="fas fa-user-friends"></i> {{ item.cantidad_persona }}
+                        </td>
+                        <td class="text-left align-top" style="min-width: 160px !important;">
+                          <div class="table p-0">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Viatico </span>
+                                <span class="no-border float-right">{{ item.monto_viatico | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Pasaje </span>
+                                <span class="no-border float-right">{{ item.monto_peaje | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span class="no-border">Combustible </span>
+                                <span class="no-border float-right">{{ item.monto_combustible | thousandsPipe}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="text-right align-middle" style="min-width: 100px !important;">
+                          S/. {{ item.suma | thousandsPipe}}
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <div class="col-md-12 text-center" *ngIf="lista_rutas?.length >= 10">
+                      <pagination-controls id="pag_rutas" class="my-pagination" (pageChange)="p3 = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                      </pagination-controls>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <form (ngSubmit)="guardarDemanda()" autocomplete="off" #form="ngForm">
+            <button type="button" class="btn btn-primary btn-md" type="submit"
+                    [disabled]="!x_habilitar_control">
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- final -->
+
+  <div class="modal fade" #modalBitacora id="modalBitacora" tabindex="-1" role="dialog" aria-labelledby="modalBitacora" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header title-popup">
+          <h5 class="modal-title" id="modalBitacora">Bitacora de mensajes</h5>
+          <button type="button" #modalBitacora class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div *ngIf="bitacora == null">
+                <div colspan="6" class="text-center">
+                  <div _ngcontent-yme-c5="" class="progressBar">
+                    <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                      <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                    </div>
+                    <h6 class="text-center mt-2">Recuperando Mensajes...</h6>
+                  </div>
+                </div>
+              </div>
+              <h6 class="text-left mt-2" style="color: red;" *ngIf="bitacora?.length == 0">
+                No se tienen mensajes registrados
+                .
+              </h6>
+              <div class="table-responsive" *ngIf="bitacora?.length > 0">
+                <table class="table display pb-30 dataTable">
+                  <thead class="thead-dark2">
+                  <tr>
+                    <th class="text-center">Fecha</th>
+                    <th class="text-left">Mensaje</th>
+                    <th class="text-left">Responsable</th>
+                  </tr>
+                  </thead>
+                  <tbody class="tbody" style="background-color: white;">
+                  <tr *ngFor="let item of bitacora">
+                    <td class="text-center" style="min-width: 140px !important;"> {{item.fecha_registro}}</td>
+                    <td class="text-left"> {{item.comentario }}</td>
+                    <td class="text-left" style="min-width: 250px !important;"> {{item.usuario }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- final -->
+</div>

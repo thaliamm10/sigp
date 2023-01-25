@@ -1,0 +1,153 @@
+<div class="row mt-3">
+    <div class="col-md-12">
+        <h5>
+            <button
+            class="btn btn-primary btn-sm float-right" 
+            data-toggle="modal"
+            *ngIf="user.id_estado == 3"
+            data-target="#modalAgregarPersonal">
+            Agregar Usuario(s) <i class="fas fa-plus-circle"></i>
+          </button>
+        </h5>
+        <div class="table-responsive">
+        <table class="table table-hover display  pb-30 dataTable">
+            <thead class="thead-dark bg-blue">
+            <tr>
+                <th class="text-left">Código</th>
+                <th class="text-left">Personal</th>
+                <th class="text-left">Cargo/Plaza</th>
+                <th class="text-left">Depedencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+                *ngFor="let item_asignado of listaAsignados"
+            >
+                <td class="text-left">{{ item_asignado.id_personal }}</td>
+                <td class="text-left">
+                  {{ item_asignado.nombre_personal }} {{ item_asignado.paterno_personal }} {{ item_asignado.materno_personal }}
+                </td>
+                <td class="text-left">{{ item_asignado.nombre_cargo }}</td>
+                <td class="text-left">{{ item_asignado.nombre_dependencia }}</td>
+            </tr>
+            <tr *ngIf="cantidad_lista == 0">
+              <td colspan="4">
+                <p class="text-center mt-2">No hay datos que mostrar</p>
+              </td>
+            </tr>
+            <tr *ngIf="listaAsignados == null">
+                <td colspan="4" class="text-center">
+                  <div _ngcontent-yme-c5="" class="progressBar">                    
+                    <div
+                      _ngcontent-yme-c5=""
+                      class="progress mt-3 text-right"
+                      style="height: 20px; margin: 0 auto">
+                      <div
+                        _ngcontent-yme-c5=""
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="75"
+                        class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar"
+                        style="width: 100%"
+                      ></div>
+                    </div>
+                    <h6 class="mt-3">
+                        Procesando Asignados...
+                    </h6>
+                  </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<!--  INICIO DEL MODAL(AGREGAR PROCESO)   -->
+<div
+  class="modal fade"
+  #modalAgregarPersonal
+  id="modalAgregarPersonal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header title-popup">
+        <h5 class="modal-title" id="exampleModalLabel">Vincular Personal a UGP</h5>
+        <button
+          type="button"
+          class="close"
+          style="color: white;"
+          data-dismiss="modal"
+          aria-label="Close"
+        >        
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+                <input type="text" class="form-control form-control-sm"
+                  placeholder="Nombre o Código" [(ngModel)]="filtro_nombre"/>
+                  <br>
+                <div class="table-responsive">
+                    <ul *ngIf="listaUsuarios != null" class="list-group" id="list-personal">
+                        <li
+                          [ngClass]="{ selected: usuario.flag == 1 }"
+                          (click)="select(usuario)"
+                          class="list-group-item list-group-item-action p-2"
+                          *ngFor="let usuario of listaUsuarios | personalfilter: filtro_nombre"
+                        >
+                        {{ usuario.nombre }} {{ usuario.aPaterno }} {{ usuario.aMaterno }} ({{ usuario.codigo }})
+                        <br>{{ usuario.cargo }} - {{ usuario.dependencia }}
+                        </li>
+                    </ul>
+                    <div *ngIf="listaUsuarios == null" _ngcontent-yme-c5="" class="progressBar">                    
+                        <div
+                          _ngcontent-yme-c5=""
+                          class="progress mt-3 text-right"
+                          style="height: 20px; margin: 0 auto">
+                          <div
+                            _ngcontent-yme-c5=""
+                            aria-valuemax="100"
+                            aria-valuemin="0"
+                            aria-valuenow="75"
+                            class="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar"
+                            style="width: 100%"
+                          ></div>
+                        </div>
+                    </div>
+                  </div>   
+            </div>
+          </div>
+          
+        </div>
+        <form id="formId" (ngSubmit)="guardarUsuariosxUGP()" autocomplete="off" #form="ngForm">
+        <div class="modal-footer">
+          <button
+            #closeModalUsuario
+            type="button"
+            class="btn btn-danger btn-md"
+            data-dismiss="modal"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary btn-md"
+            type="submit"
+            [disabled]="!form.valid || x_progreso"
+          >
+            Guardar
+          </button>
+        </div>
+        </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-primary btn-sm" (click)="guardarTopeIntegral()">
+                Guardar Cambios
+            </button>
+        </div>
+        <div class="col-md-5"></div>
+        <div class="col-md-3" style="font-weight: bold;">
+            <button class="btn btn-warning float-right btn-sm mt-1">
+            Total: S/. {{total_presupuesto  | thousandsPipe }} <i class="fas fa-check-double"></i></button>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="row" *ngIf="lista_tope_integral != null">
+                <div class="col-md-12">
+                    <div class="row" *ngFor="let item of lista_tope_integral; index as n">
+                        <div class="col-md-12">
+                            <hr/>
+                            <div class="row">
+                                <div class="col-md-6 pt-1 pb-1" style="background-color:#E2EFDA; font-weight: bold;">
+                                    {{ item.nombre_ugp | uppercase}}
+                                </div>
+                                <div class="col-md-2 text-right pt-1 pb-1" style="background-color:#E2EFDA; font-weight: bold;">
+                                    S/. {{item.tope | thousandsPipe}}
+                                </div>
+                            </div>
+                            <div class="row mt-1 pl-1" *ngFor="let generica of item.lista_generica; index as g">
+                                <div class="col-md-8">
+                                    <div class="row mb-2">
+                                        <div class="col-md-9 pt-1 pb-1" style="background-color:#DDEBF7;">{{ generica.codigo }} {{ generica.nombre }}</div>
+                                        <div class="col-md-3 text-right pt-1 pb-1" style="background-color:#DDEBF7;">
+                                            S/. {{generica.tope | thousandsPipe}}
+                                        </div>
+                                    </div>                               
+                                    <div class="row pl-2 mt-1" *ngFor="let fuente of generica.lista_fuente; index as f">
+                                        <div class="col-md-9 align-middle">{{ fuente.codigo }} {{ fuente.nombre }}</div>
+                                        <div class="col-md-3 align-middle">
+                                            <input type="number" class="form-control form-control-sm w-100 text-right" style="margin-left: 15px;"
+                                             [(ngModel)]="fuente.monto" (keypress)="validarSoloNumeros($event)" (keyup)="sumarTotal(n,g)" />
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+
+                            <!-- <div class="row mt-1 ml-2">
+                                <div class="col-md-5 mt-2">TOTAL:</div>
+                                <div class="col-md-2">
+                                    <input type="text" disabled class="form-control form-control-sm w-100 text-right" [ngModel]="item.tope | thousandsPipe" />
+                                    
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div> -->
+                            <!-- [ngModel]="cc.tope | thousandsPipe"
+                                    (ngModelChange)="item.value=$event" -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="lista_tope_integral == null">
+                <div class="col-md-12">
+                    <div _ngcontent-yme-c5="" class="progressBar">
+                        <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                        </div>
+                        <h6 class="text-center mt-2">Recuperando Información...</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <br> <br>
+</div>

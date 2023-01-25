@@ -1,0 +1,195 @@
+<br>
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col-8">
+        <h6>Se encontraron: {{ cantidad_lista }} registro(s)</h6>      
+    </div>
+    <div class="col-2">
+    </div>
+    <div class="col-2">
+        <h5>
+            <button
+                class="btn btn-primary btn-sm float-right"
+                data-toggle="modal"
+                data-target="#modalAgregarPrograma"
+                (click)="getElemento(null)"
+                >
+                Agregar División F.  <i class="fas fa-plus-circle"></i>
+            </button>
+        </h5>
+    </div>      
+</div>
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-hover display  pb-30 dataTable">
+          <thead class="thead-dark bg-blue">
+            <tr>
+              <th class="text-center">Codigo</th>
+              <th class="text-left">Nombre</th>
+              <th class="text-left">Función</th>
+              <th class="text-center">Registro</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody style="background-color: white;">            
+            <tr *ngIf="lista_division == null">
+              <td colspan="6" class="text-center">
+                <div _ngcontent-yme-c5="" class="progressBar">                    
+                  <div
+                    _ngcontent-yme-c5=""
+                    class="progress mt-3 text-right"
+                    style="height: 20px; margin: 0 auto">
+                    <div
+                      _ngcontent-yme-c5=""
+                      aria-valuemax="100"
+                      aria-valuemin="0"
+                      aria-valuenow="75"
+                      class="progress-bar progress-bar-striped progress-bar-animated"
+                      role="progressbar"
+                      style="width: 100%"
+                    ></div>
+                  </div>
+                  <h6 class="mt-3">
+                      Procesando Consulta...
+                  </h6>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="lista_division == []">
+                <td colspan="6">
+                    <p class="text-center">No hay datos que mostrar</p>
+                    <p></p>
+                </td>
+            </tr>
+            <tr *ngFor="let item of lista_division">
+              <td class="text-center">{{ item.codigo }}</td>
+              <td class="text-left">{{ item.descripcion }}</td>
+              <td class="text-left">{{ item.desc_funcion }}</td>
+              <td class="text-center align-middle">{{ item.fecha_registro }}</td>
+              <td class="text-left  align-middle">
+                <div data-toggle="modal" title="Editar" style="cursor: pointer;"
+                    data-target="#modalAgregarPrograma" (click)="getElemento(item)" >
+                    <i class="far fa-edit mr-3"></i>&nbsp;<a>Editar</a>
+                </div>                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="modalAgregarPrograma"
+      #modalAgregarPrograma
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="ModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">División Funcional</h5>
+          </div>
+          <div class="modal-body">
+            <form autocomplete="off" #Form_modal="ngForm">
+              <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Función:</label>
+                        <select class="form-control form-control-sm" name="id_funcion" [(ngModel)]="division.id_funcion" required>
+                            <option *ngFor="let item_funcion of lista_funcion" value="{{ item_funcion.id }}">
+                                {{ item_funcion.codigo }} - {{ item_funcion.descripcion }}</option>
+                            </select> 
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Codigo:</label>
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            name="codigo"
+                            maxlength="4"
+                            required
+                            [(ngModel)]="division.codigo"
+                        /> 
+                    </div>
+                    <div class="col-md-9">
+                        <label>Creador:</label>
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            name="nombre_usuario"
+                            disabled ="true"
+                            [(ngModel)]="division.nombre_usuario"
+                        /> 
+                    </div>
+                </div>
+                <br>
+                <div class="row">                    
+                    <div class="col-md-12">
+                        <label>Nombre:</label>
+                        <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        name="nombre"
+                        [(ngModel)]="division.descripcion"
+                    /> 
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Estado:</label>
+                        <select
+                            class="form-control form-control-sm"
+                            [(ngModel)]="division.estado"
+                            name="estado"
+                        >
+                        <option value="1">Activo</option>
+                        <option value="2">Desactivado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Fecha Registro:</label>
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            disabled = "true"
+                            name="fecha_registro"
+                            [(ngModel)]="division.fecha_registro"
+                        /> 
+                    </div>
+                </div>       
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+            #closeModal
+              type="button"
+              class="btn btn-sm btn-danger"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button" [disabled]="!Form_modal.valid"
+              class="btn btn-sm btn-success"
+              (click)="guardar()"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN DEL MODAL-->
+  </div>
+</div>
+

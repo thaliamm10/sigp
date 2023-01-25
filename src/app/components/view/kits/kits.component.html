@@ -1,0 +1,280 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Catálogo de Kits
+    </h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <h5>
+                <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalkit" (click)="getElemento(null)"> 
+                Registro de Equipamiento <i class="fas fa-plus-circle"></i>
+                </button>
+            </h5>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover display pb-30 dataTable">
+                    <thead class="bg-blue thead-dark">
+                        <tr>
+                            <th class="text-left">Dependencia</th>
+                            <th class="text-left">Tipo de Estación </th>
+                            <th class="text-left">Mantenimientos</th>
+                            <th class="text-center">Estado</th>
+                            <!-- <th class="text-center"> #Bienes</th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white;">
+                        <tr *ngIf="lista_kits == null">
+                            <td colspan="10" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <label _ngcontent-yme-c5="" class="text-center">Procesando Kits...</label
+                                    >
+                                </div>
+                            </td>
+                            </tr>
+                            <tr *ngIf="lista_kits == []">
+                            <td colspan="10">
+                                No hay datos que mostrar
+                            </td>
+                            </tr>
+                            <tr *ngFor="let item of lista_kits | paginate: { itemsPerPage: 10, currentPage: p }">
+                            <td class="text-left align-middle">
+                                <a style="color: #006DDC; cursor: pointer;"
+                                data-toggle="modal"
+                                data-target="#modalkit"
+                                (click)="getElemento(item)">
+                                {{ item.nombre_organo }}
+                                </a>                  
+                            </td>
+                            <td class="text-left align-middle">
+                                    {{ item.nombre_categoria }}
+                                </td>
+                                <td class="text-left align-middle">
+                                    {{ item.nombre_mantenimiento }}
+                                </td>  
+                                <td class="text-center align-middle">
+                                        <span class="label label-{{ item.nombre_estado }}">
+                              {{ item.nombre_estado }}
+                          </span>
+                                    </td>   
+                          
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <div class="col-12 text-center" *ngIf="lista_kits != null">
+      <pagination-controls
+        class="my-pagination"
+        (pageChange)="p = $event"
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+      >
+      </pagination-controls>
+    </div>
+  </div>
+  
+<!-- INICIO MODAL AGREGAR COMISION-->
+  <div class="modal fade"
+    id="modalkit"
+    #modalkit
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="ModalLabel"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header title-popup">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            Programación de Kits
+          </h5>
+          <button
+            type="button"
+            class="close"
+            style="color: white;"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form (ngSubmit)="guardarKits()" #dependencia="ngForm" autocomplete="off">
+          <div class="modal-body">
+            <div class="row">
+                    <div class="col-md-7"> 
+                <div class="row">
+                        <div class="col-md-10"> 
+                    <label>Centro de Costo:</label>
+                                    <select [(ngModel)]="id_organo" class="form-control form-control-sm" name="id_organo" [disabled]="user.id_estado!=3">
+                    <option *ngFor="let organo of lista_organo"
+                        value="{{ organo.id }}">
+                        {{ organo.nombre }}
+                    </option>
+                    </select>
+                                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Estación:</label>
+                    <select [(ngModel)]="kit.id_categoria" class="form-control form-control-sm" name="id_categoria">
+                        <option *ngFor="let item of lista_categoria" value={{item.id}}>{{item.abreviatura}} - {{item.nombre_categoria}} </option>
+                        </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Estado</label>
+                    <select class="form-control form-control-sm" [(ngModel)]="kit.id_estado" name="id_estado">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+            </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-5">
+            <h6>Seleccione sus Mantenimientos</h6>
+            <ul class="list-group" id="list-mantenimiento">
+                <li [ngClass]="{
+          selected: proceso.id == kit.id_mantenimiento
+        }" (click)="select(proceso)" style="cursor: pointer;" class="list-group-item list-group-item-action p-2" *ngFor="let proceso of lista_mantenimiento">
+                    {{ proceso.nombre_mantenimiento }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <h6 class="pl-3">Total en Bienes: S/. {{ suma_total_bienes }}</h6>
+        <div class="col-md-12">
+            <!-- aqui copia la tabla  -->
+            <div class="table-responsive">
+                <table id="tbienes" class="table table-hover display pb-30 dataTable">
+                    <colgroup>
+                        <col width="80%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-left">Bienes</th>
+                            <th class="text-center w-30">Cantidad</th>
+                            <th class="text-center">Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: white">
+                        <tr *ngIf="lista_bienes == null">
+                            <td colspan="3" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <label _ngcontent-yme-c5="" class="text-center">Procesando bienes...</label
+                                            >
+                                        </div>
+                                    </td>
+                                    </tr>
+                        <tr *ngFor="let bienes of lista_bienes | paginate: { itemsPerPage: 10, currentPage: p }; index as i">
+                            <td class="text-left">{{ bienes.nombre }}</td>
+                            <td class="text-right w-30">
+                                <input type="text" class="form-control form-control-sm" style="text-align: center;" name="{{ bienes.id}}" [(ngModel)]="bienes.monto" (keyup)="sumar_costo(i)" />
+                            </td>
+                            <td class="text-center">S/. {{ bienes.costo }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <br>
+</div>
+
+<div class="modal-footer">
+    <button #closeModalKit type="button" class="btn btn-md btn-danger" data-dismiss="modal"> Cancelar
+            </button>
+    <button type="submit" class="btn btn-md btn-primary">
+            Guardar
+            </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- FINAL DEL MODAL KIT -->
+
+<!-- INICIO MODAL BIENES -->
+<!-- <div class="modal fade" id="modalAddBienes" #modalAddBienes tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header title-popup">
+                <h5 class="modal-title" id="exampleModalLabel">Vinculación de Bienes</h5>
+                <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Filtrar Bienes:</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="Nombre o Código" [(ngModel)]="term" />
+                                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table table-sm table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="w-50">Bienes</th>
+                                    <th class="text-center">Código</th>
+                                    <th class="text-center">UM</th>
+                                    <th class="text-center">Precio</th>
+                                    <th class="text-center">Clasificador</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let bienes of lista_bienes | bienesfilter: term | paginate: { itemsPerPage: 10, currentPage: p }" (click)="select(bienes)" [ngClass]="{ selected: bienes.flag == 1 }">
+                                    <td class="w-50">{{ bienes.nombre }}</td>
+                                    <td class="text-center">{{ bienes.codigo }}</td>
+                                    <td class="text-center">{{ bienes.nombre_unidad_medida }}</td>
+                                    <td class="text-center">{{ bienes.precio | currency: "S/. " }}</td>
+                                    <td class="text-center">{{ bienes.nombre_clasificador }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center" *ngIf="lista_bienes != null">
+                    <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                    </pagination-controls>
+                </div>
+            </div>
+        </div>
+        <form (ngSubmit)="vincularBienes()" #dependencia="ngForm">
+            <div class="modal-footer">
+                <button #closeModalBienes type="button" class="btn btn-md btn-danger" data-dismiss="modal">
+              Cancelar
+            </button>
+                <button type="submit" class="btn btn-md btn-primary" [disabled]="!x_progreso">
+              Guardar
+            </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div> -->
+<!-- FINAL MODAL BIENES -->
+</div>

@@ -1,0 +1,50 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h3>
+                <img src="./assets/img/portafolio.png" width="40" height="40" style="background-color: #7F8DE1;" /> Marco Presupuestal ({{ user.anio }})
+            </h3>
+        </div>
+    </div>
+    <hr />
+    <div class="row m-1">
+        <div class="col-md-12 mt-2 p-0">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#tope-ugp" role="tab" data-toggle="tab">Tope por Centro de Costo</a>
+                </li>
+                <!--<li class="nav-item">
+                    <a class="nav-link" href="#tope-generica" role="tab" data-toggle="tab">Tope por Genérica de Gastos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tope-fuente" role="tab" data-toggle="tab">Tope por Fuente de Financiamiento</a>
+                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="#tope-integral" role="tab" data-toggle="tab">Tope Fuente - Genérica</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tope-canalizadora" role="tab" data-toggle="tab">Tope por Área Canalizadora</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="tope-ugp">
+                    <app-tope-ugp></app-tope-ugp>
+                </div>
+                <!--<div role="tabpanel" class="tab-pane fade" id="tope-generica">
+                    <app-tope-generica></app-tope-generica>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tope-fuente">
+                    <app-tope-fuente></app-tope-fuente>
+                </div>-->
+                <div role="tabpanel" class="tab-pane fade" id="tope-integral">
+                    <app-tope-integral></app-tope-integral>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tope-canalizadora">
+                    <app-tope-canalizadora></app-tope-canalizadora>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

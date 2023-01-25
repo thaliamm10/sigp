@@ -1,0 +1,252 @@
+<app-header></app-header>
+
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1;" /> Catalogo de Vehículos
+    </h4>
+    <hr />
+    <div class="row">
+        <div class="col-sm-12 col-md-2">
+            <select [(ngModel)]="filtro_estado" name="filtro_estado" class="form-control form-control-sm">
+          <option value="" selected>Todos</option>
+          <option value="1" >Activo</option>
+          <option value="0">Inactivo</option>
+        </select>
+        </div>
+        <div class="col-sm-12 col-md-10">
+            <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalAddVehiculos" (click)="getElemento(null)">
+                Registrar Vehículos <i class="fas fa-plus-circle"></i>
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+            <h6>Se encontraron: {{ cantidad_lista }} registros</h6>
+        </div>
+        <div class="col-md-4">            
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover display pb-30 dataTable">
+                    <thead class="thead-dark bg-blue">
+                        <tr>
+                            <th class="text-left align-middle" rowspan="2">Tipo de Vehiculo</th>
+                            <th class="text-left align-middle" rowspan="2">Placa</th>
+                            <th class="text-left align-middle" rowspan="2">Descripción</th>
+                            <th class="text-left align-middle" rowspan="2">Marca</th>
+                            <th class="text-left align-middle" rowspan="2">Rendimiento</th>                            
+                            <th class="text-left align-middle" rowspan="2">Numero de orden</th>
+                            <th class="text-left align-middle" rowspan="2">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white;">
+                        <tr *ngIf="lista_vehiculos == null">
+                            <td colspan="7" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <label _ngcontent-yme-c5="" class="text-center">Procesando Vehículos...</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="lista_vehiculos == []">
+                            <td colspan="7">No hay datos que mostrar</td>
+                        </tr>
+                        <tr *ngFor="let _vehiculos of lista_vehiculos | paginate: { itemsPerPage: 10, currentPage: p }">
+                            <td class="text-left align-middle">
+                                <a style="color: #006DDC; cursor: pointer;" 
+                                data-toggle="modal" data-target="#modalAddVehiculos" 
+                                (click)="getElemento(_vehiculos)">
+                                {{ _vehiculos.nombre_vehiculo }}
+                                </a>
+                            </td>
+                            <td class="text-left align-middle">{{ _vehiculos.placa }}</td>
+                            <td class="text-left align-middle">{{ _vehiculos.descripcion }}</td>
+                            <td class="text-left align-middle">{{ _vehiculos.marca }}</td>
+                            <td class="text-left align-middle">
+                                <a style="color: #006DDC; cursor: pointer;" 
+                                data-toggle="modal" data-target="#modalAddVehiculos" 
+                                (click)="getElemento(_vehiculos)">
+                                {{ _vehiculos.id_rendimiento }}
+                                </a>
+                            </td>                            
+                            <td class="text-left align-middle">{{ _vehiculos.numero_orden }}</td>
+                            <td class="text-left align-middle"> <span class="label label-{{ _vehiculos.nombre_estado }}">{{ _vehiculos.nombre_estado }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
+        </div>
+        <!-- INICIO DEL MODAL (AGREGAR VEHICULO) -->
+        <div class="modal fade" #modalAddVehiculos id="modalAddVehiculos" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header title-popup">
+                        <h5 class="modal-title" id="exampleModalLabel">Configurar Vehículo</h5>
+                        <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">        
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form (ngSubmit)="guardarvehiculos()" autocomplete="off" #_Cobjetivo="ngForm">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label>Placa:</label>
+                                    <input type="text" name="placa" [(ngModel)]="objvehiculos.placa" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Marca:</label>
+                                    <input type="text" name="marca" [(ngModel)]="objvehiculos.marca" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Chasis:</label>
+                                    <input type="text" name="chasis" [(ngModel)]="objvehiculos.chasis" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Kilometraje:</label>
+                                    <input type="text" name="kilometraje" [(ngModel)]="objvehiculos.kilometraje" class="form-control form-control-sm" required />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Descripción:</label>
+                                    <input type="text" name="descripcion" [(ngModel)]="objvehiculos.descripcion" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Centro de Costo:</label>
+                                    <select [(ngModel)]="objvehiculos.id_organo" class="form-control form-control-sm" name="id_organo">
+                                        <option *ngFor="let organo of lista_organo" value="{{ organo.id }}">
+                                            {{ organo.nombre }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>                            
+                            <br>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Número de Orden:</label>
+                                    <input type="text" name="numero_orden" [(ngModel)]="objvehiculos.numero_orden" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Proveedor:</label>
+                                    <input type="text" name="proveedor" [(ngModel)]="objvehiculos.proveedor" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Codigo Patrimonial:</label>
+                                    <input type="text" name="codigo_patrimonial" [(ngModel)]="objvehiculos.codigo_patrimonial" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Estado:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="objvehiculos.estado" name="estado">
+                                <option value="1">Activo</option>
+                                <option value="0">Desactivado</option>
+                              </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label>Peso Bruto:</label>
+                                    <input type="text" name="peso_bruto" [(ngModel)]="objvehiculos.peso_bruto" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Peso Neto:</label>
+                                    <input type="text" name="peso_neto" [(ngModel)]="objvehiculos.peso_neto" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Asientos:</label>
+                                    <input type="text" name="asientos" [(ngModel)]="objvehiculos.asientos" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Año de Fab:</label>
+                                    <input type="text" name="anio_fabricacion" [(ngModel)]="objvehiculos.anio_fabricacion" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label># Cilindros:</label>
+                                    <input type="text" name="cantidad_cilindro" [(ngModel)]="objvehiculos.cantidad_cilindro" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Año de Compra:</label>
+                                    <input type="text" name="anio_compra" [(ngModel)]="objvehiculos.anio_compra" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Fecha de Compra:</label>
+                                    <input type="text" name="fecha_compra" [(ngModel)]="objvehiculos.fecha_compra" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Rendimiento:</label>
+                                    <input type="text" name="id_rendimiento" [(ngModel)]="objvehiculos.id_rendimiento" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Tipo de Vehículos:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="objvehiculos.id_tipo_vehiculo" name="id_tipo_vehiculo">
+                                        <option value="0">Seleccionar Vehiculo</option>
+                                        <option value="1">Camioneta</option>
+                                        <option value="2">Automovil</option>
+                                        <option value="3">Moto</option>
+                                        <option value="4">Minivan</option>
+                                        <option value="5">Camion</option>
+                                        <option value="5">Fluvial</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Tipo de Combustible:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="objvehiculos.id_tipo_combustible" name="id_tipo_combustible">
+                                        <option value="3815">DIESEL</option>
+                                        <option value="3816">Gasolina 90</option>
+                                        <option value="3817">Gasolina 95</option>
+                                        <option value="3818">Gasolina 97</option>
+                                        <option value="3819">Gasolina 98</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">     
+                                <div class="col-md-3">
+                                    <label>Valor de Compra:</label>
+                                    <input type="text" name="valor_compra" [(ngModel)]="objvehiculos.valor_compra" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Modelo:</label>
+                                    <input type="text" name="modelo" [(ngModel)]="objvehiculos.modelo" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Color:</label>
+                                    <input type="text" name="color" [(ngModel)]="objvehiculos.color" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Responsable:</label>
+                                    <input type="text" name="responsable" [(ngModel)]="objvehiculos.responsable" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" #closeModalVehiculos class="btn btn-sm btn-danger" data-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-success" [disabled]="!_Cobjetivo.valid">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- FIN DEL MODAL-->
+    </div>
+</div>

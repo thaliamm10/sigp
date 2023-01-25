@@ -1,0 +1,261 @@
+<app-header></app-header>
+<div class="container">
+  <br>
+  <h4>
+    <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro"
+         style="background-color: #3c97dd;"/> Programación de Asignación de Puestos
+  </h4>
+  <hr/>
+  <div class="row">
+    <div class="col-md-1">
+      <label>Periodo:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="anio"
+             style="background-color: #EDEDED;"/>
+    </div>
+    <div class="col-md-2">
+      <label>Etapa:</label>
+      <input type="text" class="form-control form-control" disabled [(ngModel)]="user.nombre_etapa"
+             style="background-color: #EDEDED;"/>
+    </div>
+    <div class="col-md-4">
+      <label>Plazas:</label>
+      <input type="text" class="form-control form-control" [(ngModel)]="term" placeholder="Buscar plaza..."/>
+    </div>
+  </div>
+  <br>
+  <div *ngIf="listaUsuarios == null">
+    <div class="text-center">
+      <div _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-4 text-right" style="height: 20px; margin: 0 auto">
+          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75"
+               class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+               style="width: 100%"></div>
+        </div>
+        <h6 class="text-center mt-2">Recuperando Personal...</h6>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="listaUsuarios?.length == 0">
+    <h6>
+      No hay datos que mostrar
+    </h6>
+  </div>
+  <div class="row" *ngIf="listaUsuarios?.length > 0">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-hover display pb-30 dataTable">
+          <thead class="thead-dark">
+          <tr>
+            <th class="text-left" [mdbTableSort]="listaUsuarios" sortBy="CODIGO_PLAZA">CÓDIGO
+              <mdb-icon fas icon="sort"></mdb-icon>
+            </th>
+            <th class="text-left">PUESTO</th>
+            <th class="text-left" [mdbTableSort]="listaUsuarios" sortBy="DEPENDENCIA">DEPENDENCIA
+              <mdb-icon fas icon="sort"></mdb-icon>
+            </th>
+            <th class="text-left" [mdbTableSort]="listaUsuarios" sortBy="UNIDAD">UNIDAD
+              <mdb-icon fas icon="sort"></mdb-icon>
+            </th>
+            <th class="text-left" [mdbTableSort]="listaUsuarios" sortBy="CARGO">CARGO
+              <mdb-icon fas icon="sort"></mdb-icon>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr  *ngFor="let user of listaUsuarios | plazafilter: term | paginate: { itemsPerPage: 5, currentPage: p }"
+               (click)="select(user)" [ngClass]="{ selected: user.estado == true }" style="background-color: white">
+            <td style="width: 100px !important;">
+              <i class="fas fa-caret-right"></i> {{ user.CODIGO_PLAZA }}
+            </td>
+            <td class="w-20">
+              {{ user.NOMBRE }} {{ user.A_PATERNO }} {{ user.A_MATERNO }}
+            </td>
+            <td>{{ user.DEPENDENCIA }}</td>
+            <td>{{ user.UNIDAD }}</td>
+            <td>{{ user.CARGO }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-12 text-center" *ngIf="listaUsuarios?.length > 5">
+      <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior"
+                           nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+  </div>
+  <br>
+  <div class="row" *ngIf="id_plaza != 0">
+    <div class="col-md-9">
+      <h5 style="font-weight: bold;">Puesto: {{ personal_seleccionado }}</h5>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalAgregarAsignacion">
+        Asignar Nueva Acción <i class="fas fa-plus-circle"></i>
+      </button>
+    </div>
+  </div>
+  <div *ngIf="result == null">
+    <div class="text-center">
+      <div _ngcontent-yme-c5="" class="progressBar">
+        <div _ngcontent-yme-c5="" class="progress mt-4 text-right" style="height: 20px; margin: 0 auto">
+          <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75"
+               class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+               style="width: 100%"></div>
+        </div>
+        <h6 class="text-center mt-2">Recuperando Asignación de Personal...</h6>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="result?.lista_accion?.length == 0">
+    <h6 *ngIf="id_plaza != 0" style="color:red;">
+      El personal no tiene asignación(es)
+    </h6>
+  </div>
+  <div class="row" *ngIf="result?.lista_accion?.length > 0">
+    <div class="col-md-12">
+      <div class="row mt-2">
+        <div class="col-md-12 table-responsive">
+          <table class="table table-sm">
+            <thead class="thead-dark" style="font-size: 12px;">
+            <tr>
+              <th class="text-left">Acción</th>
+              <th class="text-center">ENE</th>
+              <th class="text-center">FEB</th>
+              <th class="text-center">MAR</th>
+              <th class="text-center">ABR</th>
+              <th class="text-center">MAY</th>
+              <th class="text-center">JUN</th>
+              <th class="text-center">JUL</th>
+              <th class="text-center">AGO</th>
+              <th class="text-center">SET</th>
+              <th class="text-center">OCT</th>
+              <th class="text-center">NOV</th>
+              <th class="text-center">DIC</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of result.lista_accion; index as i">
+              <td class="text-left" style="min-width:60px">{{ result.lista_accion[i].nombre_accion }}</td>
+              <td *ngFor="let item2 of result.lista_accion[i].lista_periodo; index as a" style="width:60px !important;"
+                  class="text-center align-middle p-0">
+                <input type="number" (keyup)="sumarTotal(i,a)"
+                       *ngIf="result.lista_accion[i].flag!=1 && result.lista_accion[i].lista_periodo[a].meta_fisica != 0"
+                       [(ngModel)]="result.lista_accion[i].lista_periodo[a].porcentaje"
+                       class="form-control form-control-sm text-center"
+                       [ngStyle]="{'background-color': (result.lista_accion[i].lista_periodo[a].meta_fisica != 0) ? '#FFFFFF': '#E5E8E8' }"
+                       maxlength="3"/>
+                <span class="form-control form-control-sm w-60 text-center"
+                      style="background-color:#F0F0F0; font-size: 12px;"
+                      *ngIf="result.lista_accion[i].flag!=1 && result.lista_accion[i].lista_periodo[a].meta_fisica == 0"
+                      [ngStyle]="{'background-color': (result.lista_accion[i].lista_periodo[a].meta_fisica != 0) ? '#FFFFFF': '#E5E8E8' }">
+                                    {{result.lista_accion[i].lista_periodo[a].porcentaje}}
+                                    </span>
+                <span class="form-control form-control-sm w-60 text-center" style="background-color:#F0F0F0;"
+                      *ngIf="result.lista_accion[i].flag==1">
+                                    {{result.lista_accion[i].lista_periodo[a].porcentaje}}%
+                                    </span>
+              </td>
+              <td class="align-middle" style="width:20px !important;">
+                <i *ngIf="result.lista_accion[i].flag!=1" class="fas fa-trash ml-3"
+                   (click)="eliminarAccion(result.lista_accion[i].id_accion)">
+                </i>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-left">Total Asignación:</td>
+              <td style="width:60px; text-align: center;"
+                  [ngStyle]="{'background-color': (result.lista_totales[c].total != 0) ? '#FFE65D': '#FFFFFF' }"
+                  *ngFor="let item_totales of result.lista_totales; index as c">
+                {{result.lista_totales[c].total}}%
+              </td>
+              <td class="width-control"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-right mb-4">
+          <button class="btn btn-sm btn-primary" (click)="guardarAsignacion()"> Guardar Asignación
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br><br>
+</div>
+<!--Modal de Agregar Acciones-->
+<div class="modal fade" id="modalAgregarAsignacion" #modalAgregarAsignacion tabindex="-1" role="dialog"
+     aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header title-popup">
+        <h5 class="modal-title" id="exampleModalLabel">Vincular Acción</h5>
+        <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4">
+            <h6>UGP:</h6>
+            <div class="contenedor-list">
+              <div class="progressBar text-center" *ngIf="listaUGP == null">
+                <div class="progress mt-5 text-right w-50" style="height: 10px; margin: 0 auto">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                       aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+                <label class="text-center">Cargando...</label>
+              </div>
+              <ul class="list-group" id="list_dropdownlist">
+                <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let item_ugp of listaUGP"
+                    (click)="capturarIdUGP(item_ugp)" [ngClass]="{ selected: id_ugp == item_ugp.id }">
+                  <i class="fas fa-caret-right"></i> {{ item_ugp.nombre }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h6>Producto(s):</h6>
+            <div class="contenedor-list">
+              <div class="progressBar text-center" *ngIf="listaUGP == null && id_ugp == null">
+                <div class="progress mt-5 text-right w-50" style="height: 10px; margin: 0 auto">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                       aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+                <label class="text-center">Cargando...</label>
+              </div>
+              <ul class="list-group" id="list_dropdownlist">
+                <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let producto of listaProductos"
+                    (click)="capturarIdProducto(producto)" [ngClass]="{ selected: id_producto == producto.id }">
+                  <i class="fas fa-caret-right"></i> {{ producto.nombre }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h6>Acción(es) del producto:</h6>
+            <div class="contenedor-list">
+              <ul class="list-group" id="list_dropdownlist">
+                <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let accion of acciones"
+                    (click)="capturarIdAccion(accion)" [ngClass]="{ selected: id_accion == accion.id }">
+                  <i class="fas fa-caret-right"></i> {{ accion.nombre }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" style="text-align: -webkit-right">
+            <button class="btn btn-primary btn-md" (click)="vincularAccion()" [disabled]="id_accion == -1"
+                    *ngIf="id_accion != -1">
+              Vincular
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

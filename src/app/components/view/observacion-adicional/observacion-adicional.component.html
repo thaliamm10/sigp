@@ -1,0 +1,16 @@
+<div class="modal-header title-popup">
+    <h5 class="modal-title" id="ModalObs">Observaciones</h5>
+</div>
+<form (ngSubmit)="cerrarSesion()" autocomplete="off" #form="ngForm">
+    <div class="modal-body ">
+        <label>Observación: </label>
+        <textarea [(ngModel)]="demanda.observacion" name="observacion" class="form-control form-control-sm">                 </textarea>
+    </div>
+    <div class="modal-footer" *ngFor="let item of lista_bandeja">
+        <!-- (click)="bsModalRef.hide()" -->
+        <button type="button" class="btn btn-danger">Cerrar</button>
+        <button class="btn btn-primary btn-md" type="submit">
+                        Guardar
+                      </button>
+    </div>
+</form>

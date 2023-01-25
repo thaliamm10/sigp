@@ -1,0 +1,216 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/GIFMaestro.png" width="40" height="40" title="Módulo Maestro" style="background-color: #7F8DE1" /> Mantenimiento Vehículo
+    </h4>
+    <hr/>
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <h5>
+                <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modalmantenimiento" (click)="getElemento(null)">
+            Agregar Mantenimiento <i class="fas fa-plus-circle"></i>
+        </button>
+            </h5>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover display pb-30 dataTable">
+                    <thead class="bg-blue thead-dark">
+                        <tr>
+                            <th class="text-left">Placa</th>
+                            <th class="text-center">KM</th>
+                            <th class="text-center">Mantenimiento</th>
+                            <th class="text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="background-color: white;">
+                        <tr *ngIf="lista_mantenimiento == null">
+                            <td colspan="4" class="text-center">
+                                <div _ngcontent-yme-c5="" class="progressBar">
+                                    <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                        <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                    <label _ngcontent-yme-c5="" class="text-center">Procesando mantenimientos...</label
+                                >
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="lista_mantenimiento == []">
+                        <td colspan="4">
+                            No hay datos que mostrar
+                        </td>
+                    </tr>
+                    <tr *ngFor="let item of lista_mantenimiento | paginate : { itemsPerPage: 10 , currentPage: p}">
+                        <td class="text-left align-middle">
+                            <a style="color: #006DDC; cursor: pointer;"
+                            data-toggle="modal" 
+                            data-target="#modalmantenimiento"
+                            (click)="getElemento(item)">
+                        {{item.nombre_vehiculo}}
+                        </a>
+                        </td>
+                        <td class="text-center">  {{item.km}}            </td>
+                        <td class="text-center"> {{item.nombre_bienes}}</td>
+                        <td class="text-center align-middle">
+                                <span class="label label-{{ item.nombre_estado }}">
+                                    {{ item.nombre_estado }}
+                                </span>   </td> 
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 text-center" *ngIf="lista_mantenimiento != null">
+                <pagination-controls
+                  class="my-pagination"
+                  (pageChange)="p = $event"
+                  previousLabel="Anterior"
+                  nextLabel="Siguiente"
+                >
+                </pagination-controls>
+              </div>
+    </div>
+
+
+    <!-- INICIO MODAL  -->
+    <div class="modal fade"
+    id="modalmantenimiento"
+    #modalmantenimiento
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="ModalLabel"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header title-popup">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            Programación de Rutas
+          </h5>
+          <button
+            type="button"
+            class="close"
+            style="color: white;"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form (ngSubmit)="guardarMantenimiento()" #dependencia="ngForm">
+                <div class="modal-body">
+                  <br>
+                  <div class="row">
+                      <div class="col-md-9">
+                          <label>Mantenimiento:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="mantenimiento.id_bienes" name="id_bienes">
+                                    <option *ngFor="let _bienes of lista_bienes" value="{{_bienes.id}}">{{ _bienes.nombre}}</option>
+                                </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Estado:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="mantenimiento.estado" name="estado">
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Vehiculo</label>
+                    <select class="form-control form-control-sm" [(ngModel)]="mantenimiento.id_vehiculo" name="id_vehiculo">
+                    <option *ngFor="let _vehiculo of lista_vehiculo" value="{{_vehiculo.id}}">{{ _vehiculo.placa}} / {{_vehiculo.nombre_corto_organo}}</option>
+                </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Kilometraje</label>
+                    <input [(ngModel)]="mantenimiento.km" name="km" class="form-control form-control-sm">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button #closeModalMante type="button" class="btn btn-md btn-danger" data-dismiss="modal"> Cancelar
+                  </button>
+            <button type="submit" class="btn btn-md btn-primary">
+                    Guardar
+                  </button>
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+<!-- <div class="modal fade"
+    id="modalmantenimiento"
+    #modalmantenimiento
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="ModalLabel"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header title-popup">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+           Progamación de mantenimiento
+          </h5>
+          <button
+            type="button"
+            class="close"
+            style="color: white;"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <form (ngSubmit)="guardarMantenimiento()" #dependencia="ngForm">
+                        <div class="modal-body">
+                          <br>
+                          <div class="row">
+                              <div class="col-md-9">
+                                  <label>Mantenimiento:</label>
+                                    <select [(ngModel)]="mantenimiento.id_bienes" class="form-control form-control-sm" name="id_bienes"></select>
+                                    <option *ngFor="let _bienes of lista_bienes" value="{{_bienes.id}}">{{ _bienes.nombre}}</option>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Estado:</label>
+                                    <select class="form-control form-control-sm" [(ngModel)]="mantenimiento.estado" name="estado">
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                        </select>
+                                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Vehiculo</label>
+                    <select [(ngModel)]="mantenimiento.id_vehiculo" class="form-control form-control-sm" name="id_vehiculo"></select>
+                    <option *ngFor="let vehiculo of lista_vehiculo" value="{{vehiculo.id}}">{{ vehiculo.descripcion}}</option>
+                </div>
+                <div class="col-md-6">
+                    <label>Kilometraje</label>
+                    <input [(ngModel)]="mantenimiento.km" name="km" class="form-control form-control-sm">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button #closeModalMante type="button" class="btn btn-md btn-danger" data-dismiss="modal"> Cancelar
+                          </button>
+            <button type="submit" class="btn btn-md btn-primary">
+                            Guardar
+                          </button>
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+
+</div> -->
+</div>

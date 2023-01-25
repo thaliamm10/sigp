@@ -1,0 +1,52 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h4>
+        <img src="./assets/img/portafolio.png" width="40" height="40" title="Módulo Estratégico" /> Configuración de Categoría Presupuestal
+    </h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <!-- FINAL - Se comento periodo  -->
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+    </div>
+    <br>
+    <div class="row m-1">
+        <div class="col-12 mt-2 p-0">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#categoria" role="tab" data-toggle="tab">Categoria</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#programa" role="tab" data-toggle="tab">Programa(s)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#producto" role="tab" data-toggle="tab">Producto(s)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#actividad" role="tab" data-toggle="tab">Actividad(es)</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="categoria">
+                    <app-efp-categoria></app-efp-categoria>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="programa">
+                    <app-efp-programa></app-efp-programa>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="producto">
+                    <app-efp-producto></app-efp-producto>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="actividad">
+                    <app-efp-actividad></app-efp-actividad>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

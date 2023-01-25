@@ -1,0 +1,8 @@
+.no-border{
+    border-radius: 0 !important;
+}
+
+.font-span{
+    font-size: .8rem;
+    /* font: 400 13.3333px Arial; */
+}

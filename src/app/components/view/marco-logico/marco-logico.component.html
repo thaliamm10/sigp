@@ -1,0 +1,80 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <h5 style="color: #007BFF;">
+        <img src="./assets/img/MLGIF.png" width="40" height="40" title="Marco Lógico" style="background-color: #007BFF;" /> UGP: {{ ugp.nombre }}
+    </h5>
+    <hr />
+    <div class="row">
+        <div class="col-md-7">
+            <p class="text-left">
+                <img src="./assets/img/GIFProceso.png" width="20" height="20" title="Marco Lógico" style="background-color: #F2CF5B;" /> Proceso: {{ ugp.nombre_proceso }}
+            </p>
+        </div>
+        <div class="col-md-5">
+            <p class="text-right">
+                <img src="./assets/img/gifResponsable.png" width="20" height="20" title="Marco Lógico" style="background-color: #A094ED;" /> Responsable: {{ ugp.nombre_responsable }} <br>
+            </p>
+        </div>
+    </div>
+    <div class="row m-1">
+        <div class="col-12 mt-2 p-0">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#fin" role="tab" data-toggle="tab">Finalidad</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#proposito" role="tab" data-toggle="tab"
+                >Propósito</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#producto" role="tab" data-toggle="tab"
+                >Productos</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#acciones" role="tab" data-toggle="tab"
+                >Acciones</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#dependencia" role="tab" data-toggle="tab">Responsable(s)</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#sImportantes" role="tab" data-toggle="tab">
+                    Supuestos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#mVerificacion" role="tab" data-toggle="tab">
+                    Verificación</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="fin">
+                    <app-finalidad></app-finalidad>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="proposito">
+                    <app-proposito></app-proposito>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="producto">
+                    <app-producto></app-producto>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="acciones">
+                    <app-accion></app-accion>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="dependencia">
+                    <app-dependencia></app-dependencia>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="mVerificacion">
+                    <app-medio-verificacion></app-medio-verificacion>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="sImportantes">
+                    <app-supuesto></app-supuesto>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>

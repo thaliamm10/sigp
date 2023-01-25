@@ -1,0 +1,34 @@
+export interface ObjetivoEstragicoInterface {
+  codigo: string;
+  descripcion: string;
+  id: number;
+  id_estado?: number;
+  nombre_estado?: string;
+  id_apertura: number;
+  nombre_apertura?: string;
+  fecha_registro?: string;
+  usuario_registro?: string;
+  nombre_usuario?: String;
+  nombre_indicador?: String;
+  justificacion?: String;
+  limitacion?: String;
+  metodo_calculo?: String;
+  parametro_medicion?: String;
+  sentido_esperado?: String;
+  fuentes_datos?: String;
+  id_organo?: number;
+  nombre_organo?: String;
+  numero_ae?: number;
+  numero_ind_oe?: number;
+  numero_fin_oe?: number;
+  trama_logros_oe?: string;
+  lista_logros?: any;
+  anio_base?: number;
+  valor_base?: number;
+  anio_actual?: number;
+  valor_actual?: number;
+  id_oe?: number;
+  codigo_oe?: string;
+  nombre_oe?: string;
+  id_ciclo?: number;
+}

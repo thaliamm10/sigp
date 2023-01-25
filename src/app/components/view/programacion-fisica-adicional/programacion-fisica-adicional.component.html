@@ -1,0 +1,136 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h3>
+                <img src="./assets/img/GIFProgramacion.png" width="40" height="40" title="Módulo Maestro" style="background-color: #3c97dd;" /> Programación Física de Adicionales
+            </h3>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-1">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-2">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-md-4">
+            <label>UGP:</label>
+            <select *ngIf="lista_ugp != null" [(ngModel)]="id_ugp" class="form-control form-control-sm" name="id_ugp" (change)="getAllProducto()">
+            <option
+                *ngFor="let item_ugp of lista_ugp"
+                value="{{ item_ugp.id }}">
+                {{ item_ugp.nombre }}
+            </option>
+            </select>
+            <div *ngIf="lista_ugp == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <label>Producto:</label>
+            <select *ngIf="lista_producto != null" [(ngModel)]="id_producto" class="form-control form-control-sm" name="id_producto" (change)="getAllPFAcciones()">
+        <option
+            *ngFor="let item_producto of lista_producto"
+            value="{{ item_producto.id }}">
+            {{ item_producto.nombre }}
+        </option>
+        </select>
+            <div *ngIf="lista_producto == null" _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-1 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr />
+
+    <div class="row" *ngIf="pfa == null">
+        <div class="col-md-12">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-3 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="mt-3">
+                    Procesando Consulta de Programación...
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="cantidad_lista == 0">
+        <div class="col-md-12">
+            No hay datos para mostrar
+        </div>
+    </div>
+    <div class="row" *ngFor="let pfpdt of pfa; let i = index">
+        <div class="col-md-12">
+            <h6>{{ pfpdt.nombre_accion }}</h6>
+            <div class="table-responsive">
+                <table id="tablaPFisica" class="table pb-30 dataTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-left align-middle" style="width: 170px;">Centro de Costo</th>
+                            <th class="text-left align-middle" style="width: 150px;">Unidad Medida</th>
+                            <th class="text-left align-middle" style="width: 150px;">Meta Física</th>
+                            <th class="text-center align-middle">ENE</th>
+                            <th class="text-center align-middle">FEB</th>
+                            <th class="text-center align-middle">MAR</th>
+                            <th class="text-center align-middle">ABR</th>
+                            <th class="text-center align-middle">MAY</th>
+                            <th class="text-center align-middle">JUN</th>
+                            <th class="text-center align-middle">JUL</th>
+                            <th class="text-center align-middle">AGO</th>
+                            <th class="text-center align-middle">SET</th>
+                            <th class="text-center align-middle">OCT</th>
+                            <th class="text-center align-middle">NOV</th>
+                            <th class="text-center align-middle">DIC</th>
+                            <th class="text-center align-middle">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody" style="width:700px !important">
+                        <tr style="background-color:#E5E7E9;">
+                            <td rowspan="2" class="text-left align-middle">
+                                {{ pfpdt.nombre_unidad_organo }}
+                            </td>
+                            <td rowspan="2" class="text-left align-middle">
+                                {{ pfpdt.nombre_unidad_medida }}
+                            </td>
+                            <td class="text-left align-middle">
+                                PROGRAMADA
+                            </td>
+                            <td style="width:80px !important; text-align: -webkit-center !important" *ngFor="let item of pfa1[i].lista_periodo" class="text-center align-middle p-0">
+                                <input type="number" class="form-control form-control-sm w-100 text-center" [(ngModel)]="item.cantidad" (keypress)="validarSoloNumeros($event)" [readonly]="true">
+                            </td>
+                            <td style="width:80px !important" class="text-center align-middle">{{ pfa1[i].suma }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left align-middle">
+                                ADICIONAL
+                            </td>
+                            <td style="width:80px !important; text-align: -webkit-center !important" *ngFor="let item of pfpdt.lista_periodo" class="text-center align-middle p-0">
+                                <input type="number" class="form-control form-control-sm w-100 text-center" [(ngModel)]="item.cantidad" (keypress)="validarSoloNumeros($event)" max="99" min="0" step="1" (keyup)="sumarTotal()" [ngClass]="{ 'form-control-plaintext': condicion == true }"
+                                    [readonly]="condicion == true" />
+                            </td>
+                            <td style="width:80px !important" class="text-center align-middle">{{ pfpdt.suma }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12" style="text-align: -webkit-right">
+            <button class="btn btn-primary btn-md" (click)="guardarPFAccion()" [disabled]="x_progreso" *ngIf="condicion == false">
+        Guardar Programación
+      </button>
+        </div>
+    </div>
+    <br>
+</div>

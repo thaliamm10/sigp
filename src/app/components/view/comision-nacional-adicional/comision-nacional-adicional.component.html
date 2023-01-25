@@ -1,0 +1,487 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 col-xs-12 text-left">
+            <span class="btn btn-sm" >
+                <span class="btn btn-sm no-border header_icon">
+                    <img src="./assets/img/icon_ruta.png" width="25"/>
+                </span>
+                <span class="btn btn-sm no-border header_title" style="padding: 0px 5px; font-size: 24px;">
+                    Comisiones Nacionales Adicionales
+                </span>
+            </span>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-4 col-sm-12 col-xs-12 text-right">
+            <span class="btn btn-sm mt-2 ml-1 header_canvas_top">
+                <span class="btn btn-sm no-border header_top_text">Total Programado </span>
+                <span class="btn btn-sm no-border header_top_total">S/. {{ total_comision | thousandsPipe }} </span>
+            </span>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-xs-12">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12">
+            <label>Buscar:</label>
+            <input type="text" class="form-control form-control" placeholder="Ingresa texto para buscar.." [(ngModel)]="term" />
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+            <button class="btn btn-primary float-right" data-toggle="modal" data-target="#modalvehiculo" (click)="getElemento(null)" style="margin-top: 17%;">
+                Agregar Comisión <i class="fas fa-plus-circle"></i>
+            </button>
+            <button *ngIf="flagbtn" class="btn btn-success float-right" (click)="exportAsXLSX()">
+                Exportar Tabla <i class="fas fa-file-excel"></i>
+            </button>
+          <button *ngIf="!flagbtn" class="btn btn-success btn-sm float-right" type="button"
+                  (click)="exportAsXLSX()"
+                  disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </span>
+            Descargando...
+          </button>
+        </div>
+    </div>
+    <br>
+    <div *ngIf="lista_comision == null">
+        <div class="text-center">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="text-center mt-2">Recuperando Comisiones...</h6>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="lista_comision?.length == 0">
+        <h6>
+            No hay datos que mostrar
+        </h6>
+    </div>
+    <div class="row" *ngIf="lista_comision?.length > 0">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table mdbTable class="table table-hover display pb-30 dataTable">
+                    <thead class="bg-blue thead-dark">
+                        <tr>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_comision" sortBy="generado">Código <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_comision" sortBy="nombre_organo">CC <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_comision" sortBy="nombre_ugp">UGP <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_comision" sortBy="nombre_producto">Producto <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_comision" sortBy="nombre_accion">Acción <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer; width:120px;" class="text-left">Información</th>
+                            <th style="cursor: pointer; width:150px;" class="text-left">Costos</th>
+                            <th style="cursor: pointer;" class="text-center" [mdbTableSort]="lista_comision" sortBy="suma">Total <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-center" [mdbTableSort]="lista_comision" sortBy="num_destino"># Destino(s) <mdb-icon fas icon="sort"></mdb-icon></th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody">
+                        <tr *ngFor="let item_comision of lista_comision | comisionFilter: term  | paginate: { itemsPerPage: 20, currentPage: p }">
+                            <td class="text-left align-top">
+                                <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalvehiculo" (click)="getElemento(item_comision)">
+                                {{ item_comision.generado }}
+                                </a>
+                            </td>
+                            <td class="text-left align-top">
+                                {{ item_comision.nombre_organo }}
+                            </td>
+                            <td class="text-left align-top" style="max-width: 230px !important;">
+                                {{ item_comision.nombre_ugp }}
+                            </td>
+                            <td class="text-left align-top" style="max-width: 230px !important;">
+                                {{ item_comision.nombre_producto }}
+                            </td>
+                            <td class="text-left align-top" style="max-width: 230px !important;">
+                                {{ item_comision.nombre_accion }}
+                            </td>
+                            <td class="text-left align-top" style="min-width: 120px !important;">
+                                <i class="far fa-calendar-check"></i> {{ item_comision.fecha_salida }} <br>
+                                <i class="far fa-calendar-check"></i> {{ item_comision.fecha_retorno }} <br>
+                                <i class="far fa-clock"></i> {{ item_comision.nombre_tipo_viatico }} <br>
+                                <i class="fas fa-user-friends"></i> {{ item_comision.cantidad_persona }}
+                            </td>
+                            <td class="text-left align-top" style="min-width: 160px !important;">
+                                <div class="table p-0">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Víatico </span>
+                                            <span class="no-border float-right">{{ item_comision.monto_viatico | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Pasaje </span>
+                                            <span class="no-border float-right">{{ item_comision.monto_pasaje | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Combustible </span>
+                                            <span class="no-border float-right">{{ item_comision.monto_combustible | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Diversos </span>
+                                            <span class="no-border float-right">{{ item_comision.monto_almuerzo | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-right align-middle" style="min-width: 100px !important;">
+                                S/. {{ item_comision.suma | thousandsPipe}}
+                            </td>
+                            <td class="text-center align-middle">
+                                <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalAddDestino" (click)="getDestino(item_comision)">
+                                    {{ pad(item_comision.num_destino,2) }}
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="col-12 text-center" *ngIf="lista_comision?.length > 20">
+                    <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                    </pagination-controls>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- INICIO MODAL AGREGAR COMISION-->
+    <div class="modal fade" id="modalvehiculo" #modalvehiculo tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Comisión de Servicio
+                    </h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form (ngSubmit)="guardarComision()" #dependencia="ngForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Viatico:</label>
+                                        <select class="form-control form-control-sm" [(ngModel)]="comision.id_tipo_viatico" name="id_tipo_viatico">
+                                            <option value="1">SI</option>
+                                            <option value="2">NO</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Estado</label>
+                                        <select class="form-control form-control-sm" [(ngModel)]="comision.id_estado" name="estado">
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                            <label>Centro de Costo:</label>
+                                            <select [(ngModel)]="id_organo" class="form-control form-control-sm" name="id_organo" [disabled]="user.id_estado!=3">
+                                            <option *ngFor="let organo of lista_organo"
+                                                value="{{ organo.id }}">
+                                                {{ organo.nombre }}
+                                            </option>
+                                            </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Fecha Salida:</label>
+                                        <input [(ngModel)]="comision.fecha_salida" type="date" min="{{hoy | date:'yyyy-MM-dd'}}"
+                                            name="fecha_salida" maxlength="10" class="form-control form-control-sm"
+                                            placeholder="dd/mm/aaaa" required />
+                                        <!-- <input [(ngModel)]="comision.fecha_salida" name="fecha_salida" class="form-control form-control-sm" placeholder="dd/mm/aaaa" required /> -->
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Fecha Retorno:</label>
+                                        <input [(ngModel)]="comision.fecha_retorno" type="date" min="{{hoy | date:'yyyy-MM-dd'}}"
+                                        name="fecha_retorno" maxlength="10" class="form-control form-control-sm"
+                                        placeholder="dd/mm/aaaa" required />
+                                        <!-- <input [(ngModel)]="comision.fecha_retorno" name="fecha_retorno" class="form-control form-control-sm" placeholder="dd/mm/aaaa" required /> -->
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label># Personas:</label>
+                                        <input [(ngModel)]="comision.cantidad_persona" name="cantidad_persona" class="form-control form-control-sm" required />
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>UGP:</label>
+                                        <div class="contenedor-list">
+                                            <div class="progressBar text-center" *ngIf="listaUGP == null">
+                                                <div class="progress mt-5 text-right w-50" style="height: 10px; margin: 0 auto">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                                                </div>
+                                                <label class="text-center">Cargando...</label>
+                                            </div>
+                                            <ul class="list-group" id="list_dropdownlist">
+                                                <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let item_ugp of listaUGP" (click)="capturarIdUGP(item_ugp)" [ngClass]="{ selected: id_ugp == item_ugp.id }">
+                                                    <i class="fas fa-caret-right"></i> {{ item_ugp.nombre }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Producto(s):</label>
+                                        <div class="contenedor-list">
+                                            <div class="progressBar text-center" *ngIf="listaProductos == null">
+                                                <div class="progress mt-5 text-right" style="height: 10px; margin: 0 auto">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                                                </div>
+                                                <label class="text-center">Cargando...</label>
+                                            </div>
+                                            <ul class="list-group" id="list_dropdownlist">
+                                                <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let producto of listaProductos" (click)="capturarIdProducto(producto)" [ngClass]="{ selected: id_producto == producto.id }">
+                                                    <i class="fas fa-caret-right"></i> {{ producto.nombre }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Acción(es) del producto:</label>
+                                        <div class="contenedor-list">
+                                            <div class="progressBar text-center" *ngIf="acciones == null">
+                                                <div class="progress mt-5 text-right" style="height: 10px; margin: 0 auto">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                                                </div>
+                                                <label class="text-center">Cargando...</label>
+                                            </div>
+                                            <p *ngIf="acciones?.length == 0" class="text-left mt-5" style="color: red;">
+                                                Acciones sin meta física adicional
+                                            </p>
+                                            <ul class="list-group" id="list_dropdownlist">
+                                                <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let accion of acciones" (click)="capturarIdAccion(accion)" [ngClass]="{ selected: id_accion == accion.id }">
+                                                    <i class="fas fa-caret-right"></i> {{ accion.nombre }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button #closeModalVehiculo type="button" class="btn btn-md btn-danger" data-dismiss="modal"> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-md btn-primary">
+                        Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR COMISION-->
+
+    <!-- INICIO MODAL AGREGAR DESTINO-->
+    <div class="modal fade" id="modalAddDestino" #modalAddDestino tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Programación de Comisión Nacional
+                    </h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+                </div>
+                <form (ngSubmit)="guardarDestino()" autocomplete="off" #dependencia="ngForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Transporte:</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="destino.id_tipo_transporte" name="id_tipo_transporte">
+                    <option value="1">Terrestre</option>
+                    <option value="2">Aéreo</option>
+                    <option value="3">Fluvial</option>
+                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Fecha Salida:</label>
+                                <input [(ngModel)]="comision.fecha_salida" style="background-color: dimgray;" name="fecha_salida" class="form-control form-control-sm" readonly />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Fecha Retorno:</label>
+                                <input [(ngModel)]="comision.fecha_retorno" style="background-color: dimgray;" name="fecha_retorno" class="form-control form-control-sm" readonly />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tarifa:</label>
+                                <select class="form-control form-control-sm" *ngIf="destino.id_tipo_transporte==1" [(ngModel)]="destino.tarifa" name="tarifa">
+                                <option value="80">S/. 80</option>
+                                <option value="100">S/. 100</option>
+                                <option value="150">S/. 150</option>
+                                <option value="180">S/. 180</option>
+                            </select>
+                                <select class="form-control form-control-sm" *ngIf="destino.id_tipo_transporte==2" [(ngModel)]="destino.tarifa" name="tarifa">
+                                <option value="900">S/. 900</option>
+                                <option value="600">S/. 600</option>
+                            </select>
+                                <select class="form-control form-control-sm" *ngIf="destino.id_tipo_transporte==3" [(ngModel)]="destino.tarifa" name="tarifa" disabled>
+                                <option value="0">S/. 0</option>
+                            </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Departamento Origen:</label>
+                                <select [(ngModel)]="id_departamento_o" (change)="getAllProv()" class="form-control form-control-sm" name="id_departamento_d">
+                    <option *ngFor=" let item of lista_dep" value="{{item.CODI_DEPA_DPT}}" > {{item.NOMB_DPTO_DPT}}</option>
+                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Provincia Origen: </label>
+                                <select [(ngModel)]="id_provincia_o" (change)="getAllDis()" class="form-control form-control-sm" name="id_provincia_o">
+                <option *ngFor=" let item of lista_prov" value="{{item.CODI_PROV_TPR}}" > {{item.NOMB_PROV_TPR}}</option>
+                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Distrito Origen: </label>
+                                <select [(ngModel)]="id_distrito_o" class="form-control form-control-sm" name="id_distrito_o">
+                    <option *ngFor=" let item of lista_dis" value="{{item.CODI_DIST_TDI}}" > {{item.NOMB_DIST_TDI}}</option>
+                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Departamento Destino:</label>
+                                <select [(ngModel)]="id_departamento_d" (change)="getAllProvD()" class="form-control form-control-sm" name="id_departamento_d">
+                    <option *ngFor=" let item of lista_dep_d" value="{{item.CODI_DEPA_DPT}}" > {{item.NOMB_DPTO_DPT}}</option>
+                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Provincia Destino: </label>
+                                <select [(ngModel)]="id_provincia_d" (change)="getAllDisD()" class="form-control form-control-sm" name="id_provincia_d">
+                <option *ngFor=" let item of lista_prov_d" value="{{item.CODI_PROV_TPR}}" > {{item.NOMB_PROV_TPR}}</option>
+                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Distrito Destino: </label>
+                                <select [(ngModel)]="id_distrito_d" class="form-control form-control-sm" name="id_distrito_d">
+                    <option *ngFor=" let item of lista_dis_d" value="{{item.CODI_DIST_TDI}}" > {{item.NOMB_DIST_TDI}}</option>
+                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Movilidad</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="destino.id_tipo_movilidad" name="id_tipo_movilidad" [disabled]="destino.id_tipo_transporte!=1">
+                    <option value="1">Con Vehículo</option>
+                    <option value="2">Sin Vehículo</option>
+                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Placa</label>
+                                <select [(ngModel)]="destino.id_vehiculo" class="form-control form-control-sm" name="id_vehiculo" [disabled]="destino.id_tipo_transporte!=1 || destino.id_tipo_movilidad!=1">
+                    <option
+                        *ngFor="let item_vehiculo of lista_vehiculo"
+                        value="{{ item_vehiculo.id }}">
+                        {{ item_vehiculo.placa }} / {{ item_vehiculo.nombre_corto_organo }}
+                    </option>
+                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tipo Carretera</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="destino.id_tipo_carretera" name="id_tipo_carretera" [disabled]="destino.id_tipo_transporte!=1 || destino.id_tipo_movilidad!=1">
+                    <option value="1">Trocha</option>
+                    <option value="2">Asfalto</option>
+                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Kilometraje (KM):</label>
+                                <input [(ngModel)]="destino.kilometro" name="kilometro" class="form-control form-control-sm" [disabled]="destino.id_tipo_transporte!=1 || destino.id_tipo_movilidad!=1" />
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary btn-sm float-right mt-4">
+                Agregar <i class="fas fa-plus-circle"></i>
+                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-hover display pb-30 dataTable">
+                                        <thead class="bg-blue thead-dark">
+                                            <tr>
+                                                <th class="text-center">Orden</th>
+                                                <th class="text-left">Traslado</th>
+                                                <th class="text-center">Placa</th>
+                                                <th class="text-center">Tipo</th>
+                                                <th class="text-center">Kilometros</th>
+                                                <th class="text-center">Combustible</th>
+                                                <th class="text-center">Pasaje</th>
+                                                <th class="text-center"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbody" style="background-color: white;">
+                                            <tr *ngIf="lista_destino == null">
+                                                <td colspan="5" class="text-center">
+                                                    <div _ngcontent-yme-c5="" class="progressBar">
+                                                        <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                                            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                                        </div>
+                                                        <label _ngcontent-yme-c5="" class="text-center">Procesando Consulta de Rutas...</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr *ngIf="lista_destino == []">
+                                                <td colspan="7">
+                                                    No hay datos que mostrar
+                                                </td>
+                                            </tr>
+                                            <tr *ngFor="let item of lista_destino">
+                                                <td class="text-center align-middle">
+                                                    {{ item.orden }}
+                                                </td>
+                                                <td class="text-left align-middle">
+                                                    (O): {{ item.nombre_departamento }} - {{ item.nombre_provincia }} - {{ item.nombre_distrito }}
+                                                    <br> (D): {{ item.nombre_departamento_d }} - {{ item.nombre_provincia_d }} - {{ item.nombre_distrito_d }}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    {{ item.placa }}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    {{ item.nombre_tipo_destino }}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    {{ item.kilometro }}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    {{ item.suma | thousandsPipe}}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    {{ item.tarifa | thousandsPipe}}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <i class="fas fa-trash ml-3" (click)="eliminarDestino(item)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR DESTINO-->
+
+</div>

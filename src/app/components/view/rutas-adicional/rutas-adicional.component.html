@@ -1,0 +1,495 @@
+<app-header></app-header>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 col-xs-12 text-left">
+            <span class="btn btn-sm" >
+                <span class="btn btn-sm no-border header_icon">
+                    <img src="./assets/img/icon_ruta.png" width="25"/>
+                </span>     
+                <span class="btn btn-sm no-border header_title" style="padding: 0px 5px; font-size: 24px;">
+                    Comisión de Rutas Adicionales
+                </span> 
+            </span>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-4 col-sm-12 col-xs-12 text-right">
+            <span class="btn btn-sm mt-2 ml-1 header_canvas_top">
+                <span class="btn btn-sm no-border header_top_text">Total Programado </span>     
+                <span class="btn btn-sm no-border header_top_total">S/. {{ total_comision | thousandsPipe }} </span> 
+            </span>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-xl-1 col-lg-1 col-md-6 col-sm-6 col-xs-12">
+            <label>Periodo:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="anio" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label>Etapa:</label>
+            <input type="text" class="form-control form-control" disabled [(ngModel)]="etapa" style="background-color: #EDEDED;" />
+        </div>
+        <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12">
+            <label>Buscar:</label>
+            <input type="text" class="form-control form-control" placeholder="Ingresa texto para buscar.." [(ngModel)]="term" />
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12">
+            <button class="btn btn-primary float-right ml-2 mt-4" data-toggle="modal" data-target="#modalruta" (click)="getElemento(null)"> 
+                Agregar Ruta <i class="fas fa-plus-circle"></i>
+            </button>
+            <button class="btn btn-success float-right mt-4" (click)="exportAsXLSX()">
+                Exportar Tabla <i class="fas fa-file-excel"></i> 
+            </button>            
+        </div>
+    </div>
+    <br>
+    <div *ngIf="lista_rutas == null">
+        <div class="text-center">
+            <div _ngcontent-yme-c5="" class="progressBar">
+                <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                    <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <h6 class="text-center mt-2">Recuperando Rutas...</h6>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="lista_rutas?.length == 0">
+        <h6>
+            No hay datos que mostrar
+        </h6>
+    </div>
+    <div class="row" *ngIf="lista_rutas?.length > 0">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover display pb-30 dataTable">
+                    <thead class="bg-blue thead-dark">
+                        <tr>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_rutas" sortBy="generado">Código <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_rutas" sortBy="nombre_organo">CC <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_rutas" sortBy="nombre_ugp">UGP <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_rutas" sortBy="nombre_producto">Producto <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left" [mdbTableSort]="lista_rutas" sortBy="nombre_accion">Acción <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-left">Origen</th>
+                            <th style="cursor: pointer;" class="text-left">Información</th>
+                            <th style="cursor: pointer;" class="text-left">Costos</th>
+                            <th style="cursor: pointer;" class="text-center" [mdbTableSort]="lista_rutas" sortBy="suma">Total <mdb-icon fas icon="sort"></mdb-icon></th>
+                            <th style="cursor: pointer;" class="text-center" [mdbTableSort]="lista_rutas" sortBy="num_destino"># Destino(s) <mdb-icon fas icon="sort"></mdb-icon></th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody">
+                        <tr *ngFor="let item_rutas of lista_rutas | comisionFilter: term | paginate: { itemsPerPage: 20, currentPage: p }">
+                            <td class="text-left align-top">
+                                <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalruta" (click)="getElemento(item_rutas)">
+                                {{ item_rutas.generado }}
+                                </a>
+                            </td>
+                            <td class="text-left align-top">
+                                {{ item_rutas.nombre_organo }}
+                            </td>
+                            <td class="text-left align-top" style="max-width: 230px !important;">
+                                {{ item_rutas.nombre_ugp }}
+                            </td>
+                            <td class="text-left align-top" style="max-width: 230px !important;">
+                                {{ item_rutas.nombre_producto }}
+                            </td>
+                            <td class="text-left align-top" style="max-width: 230px !important;">
+                                {{ item_rutas.nombre_accion }}
+                            </td>
+                            <td class="text-left align-top" style="min-width: 120px !important;">
+                                {{ item_rutas.nombre_departamento }}<br> {{ item_rutas.nombre_provincia }}<br> {{ item_rutas.nombre_distrito }}
+                            </td>
+                            <td class="text-left align-top" style="min-width: 120px !important;">
+                                <i class="far fa-calendar-check"></i> {{ item_rutas.fecha_salida }} <br> 
+                                <i class="far fa-clock"></i> {{ item_rutas.hora_salida }} <br>
+                                <i class="fas fa-user-friends"></i> {{ item_rutas.cantidad_persona }}
+                            </td>
+                            <td class="text-left align-top" style="min-width: 160px !important;">
+                                <div class="table p-0">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Viatico </span>  
+                                            <span class="no-border float-right">{{ item_rutas.monto_viatico | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Pasaje </span>  
+                                            <span class="no-border float-right">{{ item_rutas.monto_peaje | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="no-border">Combustible </span>  
+                                            <span class="no-border float-right">{{ item_rutas.monto_combustible | thousandsPipe}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-right align-middle" style="min-width: 100px !important;">
+                                S/. {{ item_rutas.suma | thousandsPipe }}
+                            </td>
+                            <td class="text-center align-middle">
+                                <a style="color: #006DDC; cursor: pointer;" data-toggle="modal" data-target="#modalAddDestino" (click)="getDestino(item_rutas)">
+                                    {{ pad(item_rutas.num_destino,2) }}
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="col-12 text-center" *ngIf="lista_rutas?.length > 20">
+                    <pagination-controls class="my-pagination" (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+                    </pagination-controls>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- INICIO MODAL AGREGAR COMISION-->
+    <div class="modal fade" id="modalruta" #modalruta tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Programación de Rutas
+                    </h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form (ngSubmit)="guardarRutas()" #dependencia="ngForm" autocomplete="off">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <label>Centro de Costo:</label>
+                                <select [(ngModel)]="id_organo" class="form-control form-control-sm" name="id_organo" [disabled]="user.id_estado!=3">
+                                <option *ngFor="let organo of lista_organo"
+                                    value="{{ organo.id }}">
+                                    {{ organo.nombre }}
+                                </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Estado</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="ruta.estado" name="estado">
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Fecha Salida</label>
+                                <input [(ngModel)]="ruta.fecha_salida" type="date" min="{{hoy | date:'yyyy-MM-dd'}}"
+                                name="fecha_salida" maxlength="10" class="form-control form-control-sm" 
+                                placeholder="dd/mm/aaaa" required />
+                            </div>
+                            <div class="col-md-2">
+                                <label>Hora Salida:</label>
+                                <input [(ngModel)]="ruta.hora_salida" name="hora_salida" maxlength="5" class="form-control form-control-sm" placeholder="hh:mm" required />
+                            </div>
+                            <div class="col-md-2">
+                                <label># Personas</label>
+                                <input [(ngModel)]="ruta.cantidad_persona" name="cantidad_persona" class="form-control form-control-sm" maxlength="2" />
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tiempo Traslado</label>
+                                <input [(ngModel)]="ruta.tiempo_traslado" name="tiempo_traslado" class="form-control form-control-sm" maxlength="3" />
+                            </div>
+                            <div class="col-md-2">
+                                <label>Peajes(S/.)</label>
+                                <input [(ngModel)]="ruta.peajes" name="peajes" class="form-control form-control-sm" maxlength="5" />
+                            </div>
+
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Departamento Origen:</label>
+                                <select [(ngModel)]="id_departamento_o" (change)="getAllProv()" class="form-control form-control-sm" name="id_departamento_d"> 
+                        <option *ngFor=" let item of lista_dep" value="{{item.CODI_DEPA_DPT}}" > {{item.NOMB_DPTO_DPT}}</option>
+                    </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Provincia Origen: </label>
+                                <select [(ngModel)]="id_provincia_o" (change)="getAllDis()" class="form-control form-control-sm" name="id_provincia_o"> 
+                    <option *ngFor=" let item of lista_prov" value="{{item.CODI_PROV_TPR}}" > {{item.NOMB_PROV_TPR}}</option>
+                    </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Distrito Origen: </label>
+                                <select [(ngModel)]="id_distrito_o" class="form-control form-control-sm" name="id_distrito_o"> 
+                        <option *ngFor=" let item of lista_dis" value="{{item.CODI_DIST_TDI}}" > {{item.NOMB_DIST_TDI}}</option>
+                    </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>UGP:</label>
+                                <div class="contenedor-list">
+                                    <div class="progressBar text-center" *ngIf="listaUGP == null">
+                                        <div class="progress mt-5 text-right" style="height: 10px; margin: 0 auto">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                                        </div>
+                                        <label class="text-center">Cargando...</label>
+                                    </div>
+                                    <ul class="list-group" id="list_dropdownlist">
+                                        <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let item_ugp of listaUGP" (click)="capturarIdUGP(item_ugp)" [ngClass]="{ selected: id_ugp == item_ugp.id }">
+                                            <i class="fas fa-caret-right"></i> {{ item_ugp.nombre }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Producto(s):</label>
+                                <div class="contenedor-list">
+                                    <div class="progressBar text-center" *ngIf="listaProductos == null">
+                                        <div class="progress mt-5 text-right" style="height: 10px; margin: 0 auto">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                                        </div>
+                                        <label class="text-center">Cargando...</label>
+                                    </div>
+                                    <ul class="list-group" id="list_dropdownlist">
+                                        <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let producto of listaProductos" (click)="capturarIdProducto(producto)" [ngClass]="{ selected: id_producto == producto.id }">
+                                            <i class="fas fa-caret-right"></i> {{ producto.nombre }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Acción(es) del producto:</label>
+                                <div class="contenedor-list">
+                                    <div class="progressBar text-center" *ngIf="acciones == null">
+                                        <div class="progress mt-5 text-right" style="height: 10px; margin: 0 auto">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                                        </div>
+                                        <label class="text-center">Cargando...</label>
+                                    </div>
+                                    <p *ngIf="acciones?.length == 0" class="text-left mt-5" style="color: red;">
+                                        Acciones sin meta física adicional
+                                    </p>
+                                    <ul class="list-group" id="list_dropdownlist">
+                                        <li class="list-group-item list-group-item-action p-1 h-25" *ngFor="let accion of acciones" (click)="capturarIdAccion(accion)" [ngClass]="{ selected: id_accion == accion.id }">
+                                            <i class="fas fa-caret-right"></i> {{ accion.nombre }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button #closeModalRuta type="button" class="btn btn-md btn-danger" data-dismiss="modal"> Cancelar</button>
+                        <button type="submit" class="btn btn-md btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIN MODAL AGREGAR RUTA-->
+
+    <!-- INICIO MODAL AGREGAR DESTINO-->
+    <div class="modal fade" id="modalAddDestino" #modalAddDestino tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header title-popup">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Asignación de Destino(s) en Ruta
+                    </h5>
+                    <button type="button" class="close" style="color: white;" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form (ngSubmit)="guardarDestino()" autocomplete="off" #dependencia="ngForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Fecha Salida:</label>
+                                <input [(ngModel)]="ruta.fecha_salida" name="fecha_salida" class="form-control form-control-sm" style="color: #2F6DEA;" readonly />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Hora Salida:</label>
+                                <input [(ngModel)]="ruta.hora_salida" name="fecha_retorno" class="form-control form-control-sm" style="color: #2F6DEA;" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Dependencia:</label>
+                                <input [(ngModel)]="ruta.nombre_organo" name="nombre_organo" class="form-control form-control-sm" style="color: #2F6DEA;" readonly />
+                            </div>
+                            <!-- <div class="col-md-3">
+                            <label>Tarifa:</label>
+                            <select class="form-control form-control-sm" [(ngModel)]="destino.tarifa" name="tarifa">
+                                <option value="0">Sin Pasaje</option>
+                                <option value="25">S/. 25 - Desayuno</option>
+                                <option value="20">S/. 20 - Almuerzo</option>
+                                <option value="45">S/. 45 - Desayuno y Almuerzo</option>
+                            </select>
+                        </div> -->
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Departamento Destino:</label>
+                                <select [(ngModel)]="id_departamento_d" (change)="getAllProvD()" class="form-control form-control-sm" name="id_departamento_d"> 
+                                <option *ngFor=" let item of lista_dep_d" value="{{item.CODI_DEPA_DPT}}" > {{item.NOMB_DPTO_DPT}}</option>
+                            </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Provincia Destino: </label>
+                                <select [(ngModel)]="id_provincia_d" (change)="getAllDisD()" class="form-control form-control-sm" name="id_provincia_d"> 
+                            <option *ngFor=" let item of lista_prov_d" value="{{item.CODI_PROV_TPR}}" > {{item.NOMB_PROV_TPR}}</option>
+                            </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Distrito Destino: </label>
+                                <select [(ngModel)]="id_distrito_d" class="form-control form-control-sm" name="id_distrito_d"> 
+                                <option *ngFor=" let item of lista_dis_d" value="{{item.CODI_DIST_TDI}}" > {{item.NOMB_DIST_TDI}}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Categoría:</label>
+                                <select [(ngModel)]="destino.id_categoria" class="form-control form-control-sm" name="id_categoria" (change)="getAllEstacion()">
+                            <option *ngFor="let item of lista_categoria" value={{item.id}}>{{item.abreviatura}} - {{item.nombre_categoria}} </option>
+                            </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Estación:</label>
+                                <select [(ngModel)]="destino.id_estacion" class="form-control form-control-sm" name="id_estacion">
+                            <option *ngFor="let item of lista_estacion" value={{item.codigo}}> {{item.codigo}} - {{item.nombre}} </option>
+                            </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Mantenimiento</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="destino.id_mantenimiento" name="id_mantenimiento">
+                                <option value="1">Rutinario</option>
+                                <option value="2">Preventivo</option>
+                                <option value="3">Correctivo</option>
+                                <option value="4">Medición de Caudal</option>
+                            </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tiempo Mant:</label>
+                                <input [(ngModel)]="destino.tiempo_mantenimiento" name="tiempo_mantenimiento" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Movilidad</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="destino.id_tipo_movilidad" name="id_tipo_movilidad" [disabled]="destino.id_tipo_transporte!=1">
+                                <option *ngFor=" let listaT of lista_tipo_vehiculo" value="{{listaT.id}}">{{listaT.descripcion}}</option>
+                            </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Placa</label>
+                                <select [(ngModel)]="destino.id_vehiculo" class="form-control form-control-sm" name="id_vehiculo">
+                                <option
+                                    *ngFor="let item_vehiculo of lista_vehiculo"
+                                    value="{{ item_vehiculo.id }}">
+                                    {{ item_vehiculo.placa }} / {{ item_vehiculo.nombre_corto_organo }}
+                                </option>
+                            </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tipo Carretera</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="destino.id_tipo_carretera" name="id_tipo_carretera">
+                                <option value="1">Trocha</option>
+                                <option value="2">Asfalto</option>
+                            </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Kilometraje (KM):</label>
+                                <input [(ngModel)]="destino.kilometro" name="kilometro" class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tiempo Traslado:</label>
+                                <input [(ngModel)]="destino.tiempo_traslado" name="tiempo_traslado" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10"></div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary btn-sm float-right mt-4"> 
+                            Agregar <i class="fas fa-plus-circle"></i>
+                            </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-hover display pb-30 dataTable">
+                                        <thead class="bg-blue thead-dark">
+                                            <tr>
+                                                <th class="text-center">Orden</th>
+                                                <th class="text-left">Traslado</th>
+                                                <th class="text-left">Placa</th>
+                                                <th class="text-center">Código Estación</th>
+                                                <th class="text-center">Tipo</th>
+                                                <th class="text-center">Km</th>
+                                                <th class="text-center">TM</th>
+                                                <th class="text-center">TT</th>
+                                                <th class="text-center"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="background-color: white;">
+                                            <tr *ngIf="lista_destino == null">
+                                                <td colspan="5" class="text-center">
+                                                    <div _ngcontent-yme-c5="" class="progressBar">
+                                                        <div _ngcontent-yme-c5="" class="progress mt-5 text-right" style="height: 20px; margin: 0 auto">
+                                                            <div _ngcontent-yme-c5="" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                                                        </div>
+                                                        <label _ngcontent-yme-c5="" class="text-center">Procesando Consulta de Rutas...</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr *ngIf="lista_destino == []">
+                                                <td colspan="7">
+                                                    No hay datos que mostrar
+                                                </td>
+                                            </tr>
+                                            <tr *ngFor="let item of lista_destino">
+                                                <td class="text-center align-middle">
+                                                    {{ item.orden }}
+                                                </td>
+                                                <td class="text-left align-middle">
+                                                    (D): {{ item.nombre_departamento_d }} - {{ item.nombre_provincia_d }} - {{ item.nombre_distrito_d }}
+                                                </td>
+                                                <td class="text-left">
+                                                    {{item.placa}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{item.nombre_estacion}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ item.nombre_tipo_destino }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ item.kilometro }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ item.tiempo_mantenimiento }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ item.tiempo_traslado }}
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <i class="fas fa-trash ml-3" (click)="eliminarDestino(item)">
+                          </i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- FIN MODAL AGREGAR DESTINO-->
+</div>

@@ -1,0 +1,6 @@
+#list-personal {
+    height: 30em;
+    overflow-y: scroll;
+    cursor: pointer;
+  }
+  
